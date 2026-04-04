@@ -1,0 +1,20 @@
+{
+  "name": "htmx-app-in-typescript-with-hono-playwright-on-bun_my-app",
+  "module": "src/index",
+  "type": "module",
+  "scripts": {
+    "e2e": "bun run --hot src/index.tsx & bun test ./src/index.e2e.ts; kill $(ps aux | grep '[0-9] bun run --hot src/index.tsx' | awk '{print $2}')",
+    "dev": "bun run --hot src/index.tsx"
+  },
+  "dependencies": {
+    "hono": "^4.12.10",
+    "playwright-chromium": "^1.58.2"
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "^20.6.1",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
