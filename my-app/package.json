@@ -13,8 +13,7 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.6.1",
-    "@types/bun": "latest",
-    "typed-htmx": "^0.3.1"
+    "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
