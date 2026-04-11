@@ -7,12 +7,14 @@
     "dev": "bun run --hot src/index.tsx"
   },
   "dependencies": {
+    "@hono/node-server": "^1.19.13",
     "hono": "^4.12.10",
     "playwright-chromium": "^1.58.2"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.6.1",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "typed-htmx": "^0.3.1"
   },
   "peerDependencies": {
     "typescript": "^5"

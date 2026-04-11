@@ -1,14 +1,18 @@
 import { Hono } from 'hono'
 import type { FC } from 'hono/jsx'
+import { serve } from '@hono/node-server'
+import { serveStatic } from '@hono/node-server/serve-static'
 
 const app = new Hono()
+
+app.use('*', serveStatic({ root: './public' }))
 
 const Layout: FC = (props) => {
     return (
         <html>
         <head>
             <title>htmx sample </title>
-            <script src="https://unpkg.com/htmx.org@2"></script>
+            <script src="/htmx.js" defer></script>
         </head>
             <body>{ props.children }</body>
         </html>
@@ -46,4 +50,6 @@ app.get('/hello', (c) => {
     )
 })
 
-export default app
+const server = serve(app)
+
+export default server
