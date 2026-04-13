@@ -5,14 +5,14 @@ import { serveStatic } from '@hono/node-server/serve-static'
 
 const app = new Hono()
 
-app.use('*', serveStatic({ root: './public' }))
+app.use('*', serveStatic({ root: './static' }))
 
 const Layout: FC = (props) => {
     return (
         <html>
         <head>
             <title>htmx sample </title>
-            <script src="/htmx.js" defer></script>
+            <script src="/htmx/htmx.js" defer></script>
         </head>
             <body>{ props.children }</body>
         </html>

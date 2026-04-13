@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "e2e": "bun run --hot src/index.tsx & bun test ./src/index.e2e.ts; kill $(ps aux | grep '[0-9] bun run --hot src/index.tsx' | awk '{print $2}')",
-    "dev": "bun run --hot src/index.tsx"
+    "dev": "bun run --hot src/index.tsx",
+    "main": "bun run --hot src/main.tsx"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.13",
