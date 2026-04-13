@@ -40,7 +40,7 @@ app.get('/section3', (c) => {
 })
 
 const server = serve({
-    port: 3000,
+    port: 3001,
     fetch: app.fetch
 })
 
