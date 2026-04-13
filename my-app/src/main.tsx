@@ -39,6 +39,9 @@ app.get('/section3', (c) => {
     )
 })
 
-const server = serve(app)
+const server = serve({
+    port: 3000,
+    fetch: app.fetch
+})
 
 export default server

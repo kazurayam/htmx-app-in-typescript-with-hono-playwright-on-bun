@@ -1,10 +1,10 @@
 // src/index.e2e.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
-import { chromium } from 'playwright-chromium';
+import { Browser, chromium } from 'playwright-chromium';
 
 describe('E2E testing using playwright-chromium', async () => {
-    // Here I assume that the server at http://localhost:300 is already up and running.
-    let browser = null;
+    // Here I assume that the server at http://localhost:3000 is already up and running.
+    let browser: Browser;
     beforeAll(async () => {
         // launch the browser
         browser = await chromium.launch()
