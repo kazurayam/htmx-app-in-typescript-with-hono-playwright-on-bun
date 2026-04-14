@@ -15,11 +15,11 @@ describe('E2E testing using playwright-chromium', async () => {
         await page.goto('http://localhost:3000');
         // Select the button
         const button = page.getByText('読み込み');
-        expect(await button.isVisible()).toBeTrue();
+        expect(await button.isVisible());
         // Click the button!
         await button.click();
         const p = page.getByText('こんにちは!');
-        expect(await p.isVisible()).toBeTrue();
+        expect(await p.isVisible());
     });
     afterAll(async () => {
         // Clean up

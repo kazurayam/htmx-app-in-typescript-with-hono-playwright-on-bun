@@ -1,8 +1,8 @@
-// src/main.e2e.ts
+// e2e/main.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import { Browser, chromium } from 'playwright-chromium';
 
-describe('Assert the server is up and running', async () => {
+describe('Test if the server is up and running', async () => {
     // Here I assume that the server at http://localhost:3001 is already up and running.
     let browser: Browser;
     beforeAll(async () => {
@@ -15,11 +15,11 @@ describe('Assert the server is up and running', async () => {
         await page.goto('http://localhost:3001');
         // Select the link
         const link = page.getByText('Section 3');
-        expect(await link.isVisible()).toBeTrue();
+        expect(await link.isVisible());
         // Click the link!
         await link.click();
         const h1 = page.getByText('Section3');
-        expect(await h1.isVisible()).toBeTrue();
+        expect(await h1.isVisible());
     });
     afterAll(async () => {
         // Clean up
