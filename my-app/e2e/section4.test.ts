@@ -2,7 +2,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import { Browser, Page, chromium } from 'playwright-chromium';
 
-describe('test http://localhost:3001/section3', async () => {
+describe('test http://localhost:3001/section4', async () => {
     // Here I assume that the server at http://localhost:3001 is already up and running.
     let browser: Browser;
     let page: Page;
@@ -39,6 +39,27 @@ describe('test http://localhost:3001/section3', async () => {
         expect(!text.includes("B"))
         expect(text.includes("やっほー!"))
     });
+    it("click <button hx-get=/yahoo hx-target=find p>", async () => {
+        const button = page.locator('css=button[hx-target="find p"]');
+        expect(await button.isVisible())
+        await button.click();
+        const p = page.locator('xpath=//h3[text()="find CSSセレクタ"]/following-sibling::button[1]/p[1]');
+        expect((await p.innerText()).includes("やっほー!"))
+    })
+    it("click <button hx-get=/yahoo hx-target=next p>", async () => {
+        const button = page.locator('css=button[hx-target="next p"]');
+        expect(await button.isVisible())
+        await button.click();
+        const p = page.locator('xpath=//h3[text()="next CSSセレクタ"]/following-sibling::button[1]/p[1]');
+        expect((await p.innerText()).includes("やっほー!"))
+    })
+    it("click <button hx-get/yahoo hx-target=previous p>", async () => {
+        const button = page.locator('css=button[hx-target="previous p"]');
+        expect(await button.isVisible())
+        await button.click();
+        const p = page.locator('xpath=//h3[text()="previous CSSセレクタ"]/following-sibling::button[1]/preceding-sibling::p[1]');
+        expect((await p.innerText()).includes("やっほー!"))
+    })
     afterAll(async () => {
         // Clean up
         await browser.close()

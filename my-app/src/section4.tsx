@@ -30,6 +30,28 @@ const Section4: FC = () => {
                         <button hx-get="/yahoo" hx-target="closest div">クリック</button>
                     </div>
                 </div>
+
+                <h3>find CSSセレクタ</h3>
+                <p>A</p>
+                <button hx-get="/yahoo" hx-target="find p">
+                    <p>B</p>
+                    <p>C</p>
+                    クリック
+                </button>
+
+                <h3>next CSSセレクタ</h3>
+                <p>A</p>
+                <button hx-get="/yahoo" hx-target="next p">
+                    <p>B</p>
+                    <p>C</p>
+                    クリック
+                </button>
+
+                <h3>previous CSSセレクタ</h3>
+                <p>A</p>
+                <p>B</p>
+                <button hx-get="/yahoo" hx-target="previous p">クリック</button>
+                <p>C</p>
             </div>
         </Layout>
     )
