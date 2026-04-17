@@ -4,6 +4,7 @@ import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 import Top from './top'
 import Section3 from './section3'
+import Section4 from './section4'
 
 const app = new Hono()
 
@@ -32,10 +33,21 @@ app.on(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], '/hello', (c) => {
     }
 })
 
+app.get('/yahoo', (c) => {
+    return c.render(<span style='color:#ff0000'>やっほー!</span>)
+})
+
 app.get('/section3', (c) => {
     const messages = ['Hello htmx']
     return c.render(
         <Section3 messages={messages} />
+    )
+})
+
+app.get('/section4', (c) => {
+    const messages = ['Hello htmx']
+    return c.render(
+        <Section4 messages={messages} />
     )
 })
 
