@@ -5,6 +5,7 @@ import { serveStatic } from '@hono/node-server/serve-static'
 import Top from './top'
 import Section3 from './section3'
 import Section4 from './section4'
+import Section5 from './section5'
 
 const app = new Hono()
 
@@ -48,6 +49,13 @@ app.get('/section4', (c) => {
     const messages = ['Hello htmx']
     return c.render(
         <Section4 messages={messages} />
+    )
+})
+
+app.get('/section5', (c) => {
+    const messages = ['Hello htmx']
+    return c.render(
+        <Section5 messages={messages} />
     )
 })
 
