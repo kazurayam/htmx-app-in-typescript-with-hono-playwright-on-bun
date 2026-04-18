@@ -1,0 +1,99 @@
+// section6.tsx
+import type { FC } from 'hono/jsx'
+import Layout from "./layout"
+
+const Section6: FC = () => {
+    return (
+        <Layout>
+            <div class="section-contents">
+                <h1>Section6</h1>
+
+                <h2>トリガー修飾子</h2>
+
+                <h3>once</h3>
+                <p id="once-target1">onceなし</p>
+                <button hx-get="/random" hx-target="#once-target1" hx-trigger="click">クリック</button>
+                <p id="once-target2">onceあり</p>
+                <button hx-get="/random" hx-target="#once-target2" hx-trigger="click once">クリック</button>
+
+                <h3>changed</h3>
+                <p id="changed-target1">changeなし</p>
+                <input hx-get="/random" hx-target="#changed-target1" hx-trigger="keyup" />
+                <p id="changed-target2">changeあり</p>
+                <input hx-get="/random" hx-target="#changed-target2" hx-trigger="keyup changed" />
+
+                <h3>delay:時間</h3>
+                <p id="delay-target1">delayなし</p>
+                <input hx-get="/random" hx-target="#delay-target1" hx-trigger="keyup changed" />
+                <p id="delay-target2">delay 3秒</p>
+                <input hx-get="/random" hx-target="#delay-target2" hx-trigger="keyup changed delay:3s" />
+
+                <h3>throttle:時間</h3>
+                <p id="throttle-target1">throttleなし</p>
+                <input hx-get="/random" hx-target="#throttle-target1" hx-trigger="keyup changed" />
+                <p id="throttle-target2">throttle 3秒</p>
+                <input hx-get="/random" hx-target="#throttle-target2" hx-trigger="keyup changed throttle:3s" />
+
+                <h3>from:CSSセレクタ</h3>
+                <p id="from-target">foo</p>
+                <input id="input1" placeholder="入力1" hx-get="/random" hx-target="#from-target" hx-trigger="keyup from:#input4" />
+                <input id="input2" placeholder="入力2" />
+                <input id="input3" placeholder="入力3" />
+                <input id="input4" placeholder="入力4" />
+                <input id="input5" placeholder="入力5" />
+
+                <h3>target:CSSセレクタ</h3>
+                <p id="target-target">foo</p>
+                <div id="container">
+                    <button class="btn">ボタン1</button>
+                </div>
+                <button class="btn">ボタン2</button>
+                <div hx-trigger="click target:.btn" hx-get="/random" hx-target="#target-target">
+                    <div>
+                        <button class="btn">ボタン3</button>
+                    </div>
+                    <button class="btn">ボタン4</button>
+                </div>
+
+                <h3>consume</h3>
+                <p id="consume-target1">consumeなし</p>
+                <div hx-get="/random" hx-target="#consume-target1">
+                    <button hx-trigger="click">
+                        クリック
+                    </button>
+                </div>
+                <p id="consume-target2">consumeあり</p>
+                <div hx-get="/random" hx-target="#consume-target2">
+                    <button hx-trigger="click consume">
+                        クリック
+                    </button>
+                </div>
+
+                <h3>queue</h3>
+                <p>all</p>
+                <button hx-post="/now" hx-trigger="click queue:all" hx-target="#result1" hx-swap="beforeend">
+                    全部送信
+                </button>
+                <div id="result1"></div>
+                <p>first</p>
+                <button hx-post="/now" hx-trigger="click queue:first" hx-target="#result2" hx-swap="beforeend">
+                    最初だけ送信
+                </button>
+                <div id="result2"></div>
+                <p>last</p>
+                <button hx-post="/now" hx-trigger="click queue:last" hx-target="#result3" hx-swap="beforeend">
+                    最後だけ送信
+                </button>
+                <div id="result3"></div>
+                <p>none</p>
+                <button hx-post="/now" hx-trigger="click queue:none" hx-target="#result4" hx-swap="beforeend">
+                    無視する
+                </button>
+                <div id="result4"></div>
+
+            </div>
+        </Layout>
+    )
+}
+
+export default Section6

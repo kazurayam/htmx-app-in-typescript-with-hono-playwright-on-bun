@@ -6,6 +6,7 @@ import Top from './top'
 import Section3 from './section3'
 import Section4 from './section4'
 import Section5 from './section5'
+import Section6 from './section6'
 
 const app = new Hono()
 
@@ -58,6 +59,32 @@ app.get('/section5', (c) => {
         <Section5 messages={messages} />
     )
 })
+
+app.get('/section6', (c) => {
+    const messages = ['Hello htmx']
+    return c.render(
+        <Section6 messages={messages} />
+    )
+})
+
+app.get("/random", (c) => {
+    const random_number: number = getRandomInt(100);
+    const html_content: string =
+        `<p style='color:#ff0000;'>${random_number}</p>`;
+    return c.render(html_content);
+})
+
+app.get("/random_polling", (c) => {
+    const random_number: number = getRandomInt(100);
+    const html_content: string =
+        `<p style='color:#ff0000;' hx-get='random_polling'
+            hx-trigger='load delay:1s'>${random_number}</p>`;
+    return c.render(html_content);
+})
+
+function getRandomInt(max: number) {
+    return Math.floor(Math.random() * max);
+}
 
 const server = serve({
     port: 3001,

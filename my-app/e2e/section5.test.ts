@@ -1,4 +1,4 @@
-// e2/section5.test.ts
+// e2e/section5.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import { Browser, Page, chromium } from 'playwright-chromium';
 
