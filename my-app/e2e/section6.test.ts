@@ -109,6 +109,30 @@ describe('test http://localhost:3001/section6', async () => {
         expect((await content).match(/[0-9]+/))
     })
 
+    it("target:CSS selector", async () => {
+        const button3 = page.locator('css=div[hx-trigger="click target:.btn"] div button')
+        expect(await button3.isVisible())
+        await button3.click()
+        const p = page.locator('css=p#target-target')
+        expect((await p.innerText()).match(/[0-9]+/))
+    })
+
+    it("consume", async () => {
+        const button = page.locator('css=button[hx-trigger="click consume"]')
+        expect(await button.isVisible())
+        await button.click()
+        const p = page.locator('css=p#consume-target2');
+        expect((await p.innerText()).match(/consumeあり/))
+    })
+
+    it("queue", async () => {
+        const button = page.locator('css=button[hx-trigger="click queue:all"]')
+        expect(await button.isVisible())
+        await button.click()
+        await button.click()
+        const result = await page.locator('css=div#result1').count()
+        expect(result == 2)
+    })
 
     afterAll(async () => {
         await browser.close();

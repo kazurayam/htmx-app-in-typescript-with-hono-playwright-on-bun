@@ -86,6 +86,11 @@ function getRandomInt(max: number) {
     return Math.floor(Math.random() * max);
 }
 
+app.post("/now", (c) => {
+    const now: string = new Date().toLocaleString();
+    return c.render(`<div>${now}</div>`)
+})
+
 const server = serve({
     port: 3001,
     fetch: app.fetch
