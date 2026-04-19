@@ -11,7 +11,7 @@ describe('test http://localhost:3001/section6', async () => {
         await page.goto('http://localhost:3001/section6', { timeout: 10000 })
     });
 
-    it("click without once", async () => {
+    it("hx-trigger=click without once", async () => {
         const button = page.locator('css=button[hx-target="#once-target1"]');
         expect(await button.isVisible());
         await button.click();
@@ -25,7 +25,7 @@ describe('test http://localhost:3001/section6', async () => {
         expect(content1 != content2);
     })
 
-    it("click with once", async () => {
+    it("hx-trigger=click with once", async () => {
         const button = page.locator('css=button[hx-target="#once-target2"]');
         expect(await button.isVisible());
         await button.click();
@@ -39,7 +39,7 @@ describe('test http://localhost:3001/section6', async () => {
         expect(content1 == content2);
     })
 
-    it("keyup without changed", async () => {
+    it("hx-trigger=keyup without changed", async () => {
         const input = page.locator('css=input[hx-target="#changed-target1"]');
         expect(await input.isVisible());
         await input.fill('abc');
@@ -47,7 +47,7 @@ describe('test http://localhost:3001/section6', async () => {
         expect(content1.match(/abc/))
     })
 
-    it("keyup with changed", async () => {
+    it("hx-trigger=keyup with changed", async () => {
         const input = page.locator('css=input[hx-target="#changed-target2"]');
         expect(await input.isVisible())
         await input.fill('abc')
@@ -58,7 +58,7 @@ describe('test http://localhost:3001/section6', async () => {
         expect(content2.match(/abc/));
     })
 
-    it("keyup without delay", async () => {
+    it("hx-trigger=keyup without delay", async () => {
         const input = page.locator('css=input[hx-target="#delay-target1"]');
         expect(await input.isVisible())
         await input.fill('abc')
@@ -66,7 +66,7 @@ describe('test http://localhost:3001/section6', async () => {
         expect(content1.match(/abc/))
     })
 
-    it("keyup with delay of 3s", async () => {
+    it("hx-trigger=keyup with delay of 3s", async () => {
         const input = page.locator('css=input[hx-target="#delay-target2"]');
         expect(await input.isVisible())
         await input.fill('abc')
@@ -83,7 +83,7 @@ describe('test http://localhost:3001/section6', async () => {
         expect(content3.match(/123/))
     })
 
-    it("keyup change throttle:3s", async () => {
+    it("hx-trigger=keyup change throttle:3s", async () => {
         const input = page.locator('css=input[hx-target="#throttle-target2"]');
         expect(await input.isVisible())
         await input.fill("abc")
@@ -101,7 +101,7 @@ describe('test http://localhost:3001/section6', async () => {
         expect(content3.match(/XYZ/));
     })
 
-    it("from:CSS selector", async () => {
+    it("hx-trigger=from:CSS selector", async () => {
         const input4 = page.locator('css=input#input4');
         expect(await input4.isVisible())
         await input4.fill("abc")
@@ -109,7 +109,7 @@ describe('test http://localhost:3001/section6', async () => {
         expect((await content).match(/[0-9]+/))
     })
 
-    it("target:CSS selector", async () => {
+    it("hx-trigger=target:CSS selector", async () => {
         const button3 = page.locator('css=div[hx-trigger="click target:.btn"] div button')
         expect(await button3.isVisible())
         await button3.click()
@@ -117,7 +117,7 @@ describe('test http://localhost:3001/section6', async () => {
         expect((await p.innerText()).match(/[0-9]+/))
     })
 
-    it("consume", async () => {
+    it("hx-trigger=consume", async () => {
         const button = page.locator('css=button[hx-trigger="click consume"]')
         expect(await button.isVisible())
         await button.click()
@@ -125,7 +125,7 @@ describe('test http://localhost:3001/section6', async () => {
         expect((await p.innerText()).match(/consumeあり/))
     })
 
-    it("queue", async () => {
+    it("hx-trigger=queue", async () => {
         const button = page.locator('css=button[hx-trigger="click queue:all"]')
         expect(await button.isVisible())
         await button.click()
