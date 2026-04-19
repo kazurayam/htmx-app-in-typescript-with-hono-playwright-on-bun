@@ -8,10 +8,10 @@ describe('test http://localhost:3001/section3', async () => {
     let page: Page;
     beforeAll(async () => {
         // launch the browser
-        browser = await chromium.launch()
+        browser = await chromium.launch({ timeout: 10000 })
         // Create a new page and navigate to a URL
         page = await browser.newPage();
-        await page.goto('http://localhost:3001/section3');
+        await page.goto('http://localhost:3001/section3', { timeout: 10000 });
     })
     it("click <button hx-get=/hello>, then the button should show GETリクエスト!", async () => {
         // Select the button

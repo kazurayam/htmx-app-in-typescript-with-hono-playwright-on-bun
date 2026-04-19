@@ -6,9 +6,9 @@ describe('test http://localhost:3001/section5', async () => {
     let browser: Browser;
     let page: Page;
     beforeAll(async () => {
-        browser = await chromium.launch();
+        browser = await chromium.launch({ timeout: 10000 });
         page = await browser.newPage();
-        await page.goto('http://localhost:3001/section5')
+        await page.goto('http://localhost:3001/section5', { timeout: 10000 })
     });
 
     it("<button hx-get=/yahoo hx-target=#target1 hx-trigger=click[true]>", async () => {
