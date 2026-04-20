@@ -16,47 +16,52 @@ describe('test http://localhost:3001/section3', async () => {
     it("click <button hx-get=/hello>, then the button should show GETリクエスト!", async () => {
         // Select the button
         const button = page.locator('css=button[hx-get]');
-        expect(await button.isVisible());
+        expect(await button.isVisible()).toBeTruthy();
         // Click the button!
         await button.click();
+        await page.waitForTimeout(500)
         const span = page.getByText('GETリクエスト!');
-        expect(await span.isVisible());
+        expect(await span.isVisible()).toBeTruthy();
     });
     it("click <button hx-post=/hello>, then the button should show POSTリクエスト!", async () => {
         // Select the button
         const button = page.locator('css=button[hx-post]');
-        expect(await button.isVisible());
+        expect(await button.isVisible()).toBeTruthy();
         // Click the button!
         await button.click();
+        await page.waitForTimeout(500)
         const span = page.getByText('POSTリクエスト!');
-        expect(await span.isVisible());
+        expect(await span.isVisible()).toBeTruthy();
     });
     it("click <button hx-put=/hello>, then the button should show PUTリクエスト!", async () => {
         // Select the button
         const button = page.locator('css=button[hx-put]');
-        expect(await button.isVisible());
+        expect(await button.isVisible()).toBeTruthy();
         // Click the button!
         await button.click();
+        await page.waitForTimeout(500)
         const span = page.getByText('PUTリクエスト!');
-        expect(await span.isVisible());
+        expect(await span.isVisible()).toBeTruthy();
     });
     it("click <button hx-patch=/hello>, then the button should show PATCHリクエスト!", async () => {
         // Select the button
         const button = page.locator('css=button[hx-patch]');
-        expect(await button.isVisible());
+        expect(await button.isVisible()).toBeTruthy();
         // Click the button!
         await button.click();
+        await page.waitForTimeout(500)
         const span = page.getByText('PATCHリクエスト!');
-        expect(await span.isVisible());
+        expect(await span.isVisible()).toBeTruthy();
     });
     it("click <button hx-delete=/hello>, then the button should show DELETEリクエスト!", async () => {
         // Select the button
         const button = page.locator('css=button[hx-delete]');
-        expect(await button.isVisible());
+        expect(await button.isVisible()).toBeTruthy();
         // Click the button!
         await button.click();
+        await page.waitForTimeout(500)
         const span = page.getByText('DELETEリクエスト!');
-        expect(await span.isVisible());
+        expect(await span.isVisible()).toBeTruthy();
     });
     afterAll(async () => {
         // Clean up

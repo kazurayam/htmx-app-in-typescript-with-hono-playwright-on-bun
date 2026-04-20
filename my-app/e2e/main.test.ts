@@ -16,11 +16,11 @@ describe('Test if the server is up and running', async () => {
     it("Navigate to the top page, click the link Section 3; then <h1>Section3</h1> should be there", async () => {
         // Select the link
         const link = page.getByText('Section 3');
-        expect(await link.isVisible());
+        expect(await link.isVisible()).toBeTruthy();
         // Click the link!
         await link.click({ timeout: 10000 });
         const h1 = page.getByText('Section3');
-        expect(await h1.isVisible());
+        expect(await h1.isVisible()).toBeTruthy();
     });
     afterAll(async () => {
         // Clean up

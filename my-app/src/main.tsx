@@ -9,6 +9,7 @@ import Section5 from './section5'
 import Section6 from './section6'
 import Section7 from './section7'
 import Section8 from './section8'
+import Section9 from './section9'
 
 const app = new Hono()
 
@@ -83,6 +84,13 @@ app.get('/section8', (c) => {
     )
 })
 
+app.get('/section9', (c) => {
+    const messages = ['Hello htmx']
+    return c.render(
+        <Section9 messages={messages} />
+    )
+})
+
 app.get("/random", (c) => {
     const random_number: number = getRandomInt(100);
     const html_content: string =
@@ -106,6 +114,15 @@ app.post("/now", (c) => {
     const now: string = new Date().toLocaleString();
     return c.render(`<div>${now}</div>`)
 })
+
+const sleep = (ms: number): Promise<void> => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+app.get("/heavy", async (c) => {
+    await sleep(5000);    // sleep for 5s
+    return c.render(`<span style='color:#ff0000;'>ロード完了!</span>`)
+})
+
 
 const server = serve({
     port: 3001,

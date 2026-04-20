@@ -7,8 +7,8 @@
     "testdev": "bun run --hot src/index.tsx & bun test ./src/index.e2e.ts; kill $(ps aux | grep '[0-9] bun run --hot src/index.tsx' | awk '{print $2}')",
     "main": "bun run --hot src/main.tsx",
     "testmain": "bun run --hot src/main.tsx & bun test; kill $(ps aux | grep '[0-9] bun run --hot' | awk '{print $2}')",
-    "testsection": "bun run --hot src/main.tsx & bun test e2e/section8.test.ts; kill $(ps aux | grep '[0-9] bun run --hot' | awk '{print $2}')"
-},
+    "testsection": "bun run --hot src/main.tsx & bun test e2e/section9.test.ts; kill $(ps aux | grep '[0-9] bun run --hot' | awk '{print $2}')"
+  },
   "dependencies": {
     "@hono/node-server": "^1.19.13",
     "hono": "^4.12.10",
@@ -16,7 +16,8 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.6.1",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "bun-types": "^1.3.12"
   },
   "peerDependencies": {
     "typescript": "^5"

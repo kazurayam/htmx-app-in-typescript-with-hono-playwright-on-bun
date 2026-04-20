@@ -13,19 +13,20 @@ describe('test http://localhost:3001/section7', async () => {
 
     it("hx-trigger=load delay:3s", async () => {
         const p = page.locator('css=p[hx-trigger="load delay:3s"]');
-        expect((await p.innerText()).match(/foo/));
+        expect(await p.innerText()).toMatch(/foo/);
         await page.waitForTimeout(4000);
-        expect((await p.innerText()).match(/[0-9]+/));
+        expect(await p.innerText()).toMatch(/[0-9]+/);
     })
 
     it("hx-trigger=revealed delay:1s", async () => {
         const p_as_target = page.locator('css=p#target1');
-        expect((await p_as_target.innerText()).match(/foo/))
+        expect(await p_as_target.innerText()).toMatch(/foo/);
         const p_as_trigger = page.locator('css=p[hx-trigger="revealed delay:1s"]');
         // scroll to the element
         await p_as_trigger.scrollIntoViewIfNeeded();
-        await page.waitForTimeout(1000);
-        expect((await p_as_target.innerText()).match(/[0-9]+/))
+        // will show a digit after delay:1s
+        await page.waitForTimeout(2000);
+        expect(await p_as_target.innerText()).toMatch(/[0-9]+/);
     })
 
     /*
