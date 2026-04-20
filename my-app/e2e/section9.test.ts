@@ -27,7 +27,7 @@ describe('test http://localhost:3001/section9', async () => {
 
     it("click the button, a spinner appears for 5s, then the label changes from クリック to ロード完了", async () => {
         const button = page.locator('css=button[hx-indicator="#spinner"]');
-        expect(await button.isVisible())
+        expect(await button.isVisible()).toBeTruthy()
         await button.click()
         const img: Locator = page.locator('css=img#spinner')
         // https://jestjs.io/docs/expect
