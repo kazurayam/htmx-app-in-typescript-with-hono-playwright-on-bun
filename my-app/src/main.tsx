@@ -132,6 +132,30 @@ app.get("/heavy", async (c) => {
     return c.render(`<span style='color:#ff0000;'>ロード完了!</span>`)
 })
 
+app.get("/ja-saying", async (c) => {
+    return c.render(`
+        <p>挑戦を受け入れよう。それらは成長への踏み石なのだから。</p>
+    <button hx-get='/en-saying' hx-swap='innerHTML transition:true' hx-target='closest div'>
+        原文に戻す
+    </button>
+        `)
+})
+
+app.get("/en-saying", async (c) => {
+    return c.render(`
+        <p>Embrace challenges, for they are the stepping stones to growth.</p>
+    <button hx-get='/ja-saying' hx-swap='innerHTML transition:true' hx-target='closest div'>
+        翻訳する
+    </button>
+        `)
+})
+
+app.get("/update-title", async (c) => {
+    return c.render(`
+        <title>New Title</title>
+        <p>hello!</p>
+        `)
+})
 
 const server = serve({
     port: 3001,
