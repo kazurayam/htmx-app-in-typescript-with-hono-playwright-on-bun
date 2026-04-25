@@ -13,6 +13,7 @@ import Section9 from './section9'
 import Section10 from './section10'
 import Section11 from './section11'
 import Section12 from './section12'
+import Section13 from './section13'
 
 const app = new Hono()
 
@@ -112,6 +113,13 @@ app.get('/section12', (c) => {
     const messages = ['Hello htmx']
     return c.render(
         <Section12 messages={messages} />
+    )
+})
+
+app.get('/section13', (c) => {
+    const messages = ['Hello htmx']
+    return c.render(
+        <Section13 messages={messages} />
     )
 })
 
