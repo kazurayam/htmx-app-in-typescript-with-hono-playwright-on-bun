@@ -12,6 +12,7 @@ import Section8 from './section8'
 import Section9 from './section9'
 import Section10 from './section10'
 import Section11 from './section11'
+import Section12 from './section12'
 
 const app = new Hono()
 
@@ -107,6 +108,13 @@ app.get('/section11', (c) => {
     )
 })
 
+app.get('/section12', (c) => {
+    const messages = ['Hello htmx']
+    return c.render(
+        <Section12 messages={messages} />
+    )
+})
+
 app.get("/random", (c) => {
     const random_number: number = getRandomInt(100);
     const html_content: string =
@@ -166,12 +174,22 @@ app.get("/update-title", async (c) => {
 
 app.post("/send-form", async (c) => {
     await sleep(1000);    // sleep for 1s
-    return c.render(`<span style='color:#ff0000; font-weight: bold;'>送信完了しました。</span>`)
+    console.log("Content-Type: " + c.req.header('Content-Type'))
+    return c.render(`<span style='color:#ff0000; font-weight: bold;'>送信完了しました。${await c.req.text()}</span>`)
 })
 
 app.post("/validate", async (c) => {
     await sleep(1000);    // sleep for 1s
     return c.render(`<span style='color:#ff0000; font-weight: bold;'>正しい値を入力してください</span>`)
+})
+
+app.post("/greeting", async (c) => {
+    return c.render(`<span style='color:#ff0000; font-weight: bold;'>送信完了しました!</span>`)
+})
+
+app.post("/last-key", async (c) => {
+    const { lastkey } = c.req.query()
+    return c.render(`<span style="color:#ff0000; font-weight: bold;">最後に押したキーは「${lastkey}」です。</span>`)
 })
 
 const server = serve({
