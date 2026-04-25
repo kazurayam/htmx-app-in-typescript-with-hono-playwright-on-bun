@@ -183,13 +183,12 @@ app.post("/validate", async (c) => {
     return c.render(`<span style='color:#ff0000; font-weight: bold;'>正しい値を入力してください</span>`)
 })
 
-app.post("/greeting", async (c) => {
-    return c.render(`<span style='color:#ff0000; font-weight: bold;'>送信完了しました!</span>`)
+app.on(["GET", "POST"], "/greeting", async (c) => {
+    return c.render(`<span style='color:#ff0000; font-weight: bold;'>送信完了しました! ${await c.req.text()}</span>`)
 })
 
-app.post("/last-key", async (c) => {
-    const { lastkey } = c.req.query()
-    return c.render(`<span style="color:#ff0000; font-weight: bold;">最後に押したキーは「${lastkey}」です。</span>`)
+app.on(["GET", "POST"], "/last-key", async (c) => {
+    return c.render(`<span style="color:#ff0000; font-weight: bold;">最後に押したキーは「${await c.req.text()}」です。</span>`)
 })
 
 const server = serve({

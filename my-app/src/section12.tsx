@@ -55,7 +55,6 @@ const Section12: FC = () => {
                     <button hx-post="/send-form" hx-include="previous [name='name']" hx-target="#include-target">送信</button>
                 </div>
 
-
                 <h2>hx-vals</h2>
                 <p id="vals-target1">foo</p>
                 <button hx-post="/greeting" hx-vals='{"title": "Hello", "name": "Taro"}' hx-target="#vals-target1">送信</button>
