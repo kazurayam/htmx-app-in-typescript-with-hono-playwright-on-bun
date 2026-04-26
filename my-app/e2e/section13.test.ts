@@ -6,16 +6,17 @@ describe('test http://localhost:3001/section13', async () => {
     let browser: Browser;
     let page: Page;
     beforeAll(async () => {
-        browser = await chromium.launch({ timeout: 10000 });
+        browser = await chromium.launch({ headless: true });
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section13')
     });
 
     it("ダイアログ", async () => {
-        page.on('dialog', dialog =>
-            //console.log(dialog.message())
+        page.on('dialog', async (dialog) => {
+            await page.waitForTimeout(500)
             expect(dialog.message()).toMatch(/ハロー/)
-        );
+            dialog.accept()
+        });
         const button = page.locator('css=button[hx-confirm="ハロー"]')
         await button.click()
     })
