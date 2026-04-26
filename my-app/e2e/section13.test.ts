@@ -13,7 +13,7 @@ describe('test http://localhost:3001/section13', async () => {
 
     it("ダイアログ", async () => {
         page.on('dialog', async (dialog) => {
-            await page.waitForTimeout(500)
+            await page.waitForTimeout(100)
             expect(dialog.message()).toMatch(/ハロー/)
             dialog.accept()
         });
