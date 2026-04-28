@@ -10,6 +10,7 @@ const Layout: FC = (props) => {
                 <title>server-side JSX with client-side htmx on Hono</title>
                 <link rel="stylesheet" href="/styles/tutorial.css"></link>
                 <script src="/htmx/htmx.min.js"></script>
+                <script src="/htmx/ext/head-support.js" hx-preserve="true" defer></script>
                 <link rel="icon" href="/favicon.ico"></link>
             </head>
             <body>

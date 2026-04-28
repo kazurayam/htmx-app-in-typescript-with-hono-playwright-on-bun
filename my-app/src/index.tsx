@@ -1,41 +1,11 @@
 import { Hono } from 'hono'
-import type { FC } from 'hono/jsx'
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
+import Top from './top'
 
 const app = new Hono()
 
 app.use('*', serveStatic({ root: './static' }))
-
-const Layout: FC = (props) => {
-    return (
-        <html>
-        <head>
-            <title>htmx sample </title>
-            <script src="/htmx/htmx.js" defer></script>
-        </head>
-            <body>{ props.children }</body>
-        </html>
-    )
-}
-
-const Top: FC<{ messages: string[] }> = (props: {
-    messages: String[]
-}) => {
-    return (
-        <Layout>
-            {
-                props.messages.map((message) => {
-                    return <p>{message}</p>
-                })
-            }
-            <buton hx-get="/hello" hx-target="#result">
-                読み込み
-            </buton>
-            <div id="result">ここに結果が表示されます</div>
-        </Layout>
-    )
-}
 
 app.get('/', (c) => {
     const messages = ['Hello htmx']
