@@ -15,6 +15,7 @@ import Section11 from './section11'
 import Section12 from './section12'
 import Section13 from './section13'
 import Section14 from './section14'
+import Section15 from './section15'
 
 const app = new Hono()
 
@@ -131,6 +132,13 @@ app.get('/section14', (c) => {
     )
 })
 
+app.get('/section15', (c) => {
+    const messages = ['Hello htmx']
+    return c.render(
+        <Section15 messages={messages} />
+    )
+})
+
 app.get("/random", (c) => {
     const random_number: number = getRandomInt(100);
     const html_content: string =
@@ -166,18 +174,18 @@ app.get("/heavy", async (c) => {
 app.get("/ja-saying", async (c) => {
     return c.render(`
         <p>挑戦を受け入れよう。それらは成長への踏み石なのだから。</p>
-    <button hx-get='/en-saying' hx-swap='innerHTML transition:true' hx-target='closest div'>
-        原文に戻す
-    </button>
+        <button hx-get='/en-saying' hx-swap='innerHTML transition:true' hx-target='closest div'>
+            原文に戻す
+        </button>
         `)
 })
 
 app.get("/en-saying", async (c) => {
     return c.render(`
         <p>Embrace challenges, for they are the stepping stones to growth.</p>
-    <button hx-get='/ja-saying' hx-swap='innerHTML transition:true' hx-target='closest div'>
-        翻訳する
-    </button>
+        <button hx-get='/ja-saying' hx-swap='innerHTML transition:true' hx-target='closest div'>
+            翻訳する
+        </button>
         `)
 })
 
@@ -185,6 +193,34 @@ app.get("/update-title", async (c) => {
     return c.render(`
         <title>New Title</title>
         <p>hello!</p>
+        `)
+})
+
+app.get("/update-head", async (c) => {
+    return c.render(`
+        <head hx-head="merge">
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>htmx ext head-support example</title>
+            <link rel="stylesheet" href="/styles/tutorial2.css">
+        </head>
+        `)
+})
+
+app.get("/re-eval-head", async (c) => {
+    return c.render(`
+        <head hx-head="merge" >
+            <title>Hello</title>
+            <script hx-head="re-eval" src="/foo.js"></script>
+        </head>
+        `)
+})
+
+app.get("/append-head", async (c) => {
+    return c.render(`
+        <head hx-head="append">
+            <link rel="stylesheet" href="/styles/tutorial2.css">
+        </head>
         `)
 })
 
@@ -205,6 +241,21 @@ app.on(["GET", "POST"], "/greeting", async (c) => {
 
 app.on(["GET", "POST"], "/last-key", async (c) => {
     return c.render(`<span style="color:#ff0000; font-weight: bold;">最後に押したキーは「${await c.req.text()}」です。</span>`)
+})
+
+app.get("/success", async (c) => {
+    c.status(200)
+    return c.render(`<span style='color:#ff0000; font-weight: bold;'>Success!</span>`)
+})
+
+app.get("/not-found", async (c) => {
+    c.status(404)
+    return c.render(`<span style='color:#ff0000; font-weight: bold;'>Not Found!</span>`)
+})
+
+app.get("/server-error", async (c) => {
+    c.status(500)
+    return c.render(`<span style='color:#ff0000; font-weight: bold;'>Internal Server Error!</span>`)
 })
 
 const server = serve({
