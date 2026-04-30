@@ -51,6 +51,16 @@ describe('test http://localhost:3001/section15', async () => {
         expect(backgroundColor).toEqual("rgb(255, 255, 0)")   // yellow
     })
 
+    it("hx-ext=preload preloadあり", async () => {
+        const button = page.locator('css=p#preload-target2 + button[preload]')
+        // click the button with preload attribute
+        await button.click()
+        await page.waitForTimeout(500)
+        // the target should be updated to "GETリクエスト!"
+        const target = page.locator('css=#preload-target2')
+        const text = await target.textContent()
+        expect(text).toBe("GETリクエスト!")
+    })
 
 
     afterAll(async () => {
