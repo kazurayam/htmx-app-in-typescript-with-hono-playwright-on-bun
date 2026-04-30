@@ -26,10 +26,10 @@ describe('test http://localhost:3001/section11', async () => {
         await button.click()
         await page.waitForTimeout(1500)  // wait for 1.5s for the response from the /validate
         // the p#drop-target2 won't change
-        const content1 = page.locator('css=p#drop-target1').innerText()
+        const content1 = await page.locator('css=p#drop-target1').innerText()
         expect(content1).toMatch(/foo/)
         // the p#drop-target2 will change
-        const content2 = page.locator('css=p#drop-target2').innerText()
+        const content2 = await page.locator('css=p#drop-target2').innerText()
         expect(content2).toMatch(/正しい値を入力してください/)
     })
 
