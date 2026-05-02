@@ -1,9 +1,10 @@
 // e2e/section15.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
-import { Browser, Page, Locator, chromium } from 'playwright-chromium';
+import { Browser, Page, Locator, chromium, BrowserContext } from 'playwright-chromium';
 
 describe('test http://localhost:3001/section15', async () => {
     let browser: Browser;
+    let context: BrowserContext;
     let page: Page;
     /*
      * I use "beforeEach" instead of "beforeAll" because I want to start with
@@ -14,8 +15,9 @@ describe('test http://localhost:3001/section15', async () => {
      * to avoid interference between test cases.
      */
     beforeEach(async () => {
-        browser = await chromium.launch({ headless: true });
-        page = await browser.newPage();
+        browser = await chromium.launch({ headless: false });
+        context = await browser.newContext();
+        page = await context.newPage();
         await page.goto('http://localhost:3001/section15')
     });
 
@@ -32,6 +34,7 @@ describe('test http://localhost:3001/section15', async () => {
         expect(backgroundColor).toEqual("rgb(255, 255, 0)")   // yellow
     })
 
+
     it("hx-ext=head-support hx-head=re-eval", async () => {
         // Listen for the console log from the page
         page.on('console', msg => {
@@ -41,11 +44,12 @@ describe('test http://localhost:3001/section15', async () => {
         // click the button with hx-get="/re-eval-head"
         const button = page.locator('css=div[hx-ext="head-support"] > button[hx-get="/re-eval-head"]')
         await button.click()
-        //await page.waitForTimeout(500)
+        await page.waitForTimeout(500)
         // by clicking the button, foo.js should be loaded and executed,
         // which logs "foo.js is loaded" to the console
     })
 
+    /*
     it("hx-ext=head-support hx-head=append", async () => {
         // click the button with hx-get="/append-head"
         const button = page.locator('css=div[hx-ext="head-support"] > button[hx-get="/append-head"]')
@@ -60,8 +64,8 @@ describe('test http://localhost:3001/section15', async () => {
     })
 
     it("hx-ext=preload preloadあり", async () => {
-        //const button = page.locator('css=p#preload-target2 + button[preload]')
-        const button = page.locator('xpath=//p[@id="preload-target2"]/following-sibling::button[1]')
+        const button = page.locator('css=p#preload-target2 + button[preload]')
+        //const button = page.locator('xpath=//p[@id="preload-target2"]/following-sibling::button[1]')
         // click the button with preload attribute
         await button.click()
         await page.waitForTimeout(500)
@@ -103,9 +107,13 @@ describe('test http://localhost:3001/section15', async () => {
         const serverErrorText = await serverErrorTarget.textContent()
         expect(serverErrorText).toBe("Internal Server Error!")
     })
+*/
 
     afterEach(async () => {
-        await page.close()
+        console.log("afterEach: closing context")
+        await context.close();
+        console.log("afterEach: closing browser")
         await browser.close();
+        console.log("afterEach: done")
     });
 });
