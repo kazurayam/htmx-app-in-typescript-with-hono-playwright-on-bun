@@ -1,25 +1,46 @@
+// src/index.tsx
 import { Hono } from 'hono'
-import { serve } from '@hono/node-server'
-import { serveStatic } from '@hono/node-server/serve-static'
-import Top from './top'
+import type { FC } from 'hono/jsx'
 
-const app = new Hono()
+export const app = new Hono()
+    .get('/', (c) => {
+        const messages = ['Hello htmx!']
+        return c.render(
+            <Top messages={messages} />
+        )
+    })
+    .get('/hello', (c) => {
+        return c.render(
+            <p>こんにちは!</p>
+        )
+    })
 
-app.use('*', serveStatic({ root: './static' }))
-
-app.get('/', (c) => {
-    const messages = ['Hello htmx']
-    return c.render(
-        <Top messages={messages} />
+const Layout: FC = (props) => {
+    return (
+        <html>
+            <head>
+                <title>htmx sample</title>
+                <script src="https://unpkg.com/htmx.org@2"></script>
+            </head>
+            <body>{props.children}</body>
+        </html>
     )
-})
+}
 
-app.get('/hello', (c) => {
-    return c.render(
-        <p>こんにちは! <code><b>/hello</b></code></p>
+const Top: FC<{ messages: string[] }> = (props: {
+    messages: string[]
+}) => {
+    return (
+        <Layout>
+            {
+                props.messages.map((message) => {
+                    return <p>{message}</p>
+                })
+            }
+            <button hx-get="/hello" hx-target="#result">
+                読み込み
+            </button>
+            <div id="result">ここに結果が表示されます</div>
+        </Layout>
     )
-})
-
-const server = serve(app)
-
-export default server
+}

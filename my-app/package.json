@@ -3,11 +3,11 @@
   "module": "src/index",
   "type": "module",
   "scripts": {
+    "dev": "bun run --hot ./src/index.tsx",
+    "testdev": "bun run --hot ./src/index.tsx & bun test ./src/index.test.ts; kill $(ps aux | grep '[0-9] bun run --hot ./src/index.tsx' | awk '{print $2}')",
     "main": "bun run --hot ./src/main.tsx",
     "testmain": "bun run --hot ./src/main.tsx & bun test; kill $(ps aux | grep '[0-9] bun run --hot' | awk '{print $2}')",
-    "testsection": "bun run --hot src/main.tsx & bun test ./e2e/main.test.ts; kill $(ps aux | grep '[0-9] bun run --hot' | awk '{print $2}')",
-    "dev": "bun run --hot ./src/index.tsx",
-    "testdev": "bun run --hot ./src/index.tsx & bun test ./src/index.e2e.ts; kill $(ps aux | grep '[0-9] bun run --hot ./src/index.tsx' | awk '{print $2}')"
+    "testsection": "bun run --hot src/main.tsx & bun test ./e2e/main.test.ts; kill $(ps aux | grep '[0-9] bun run --hot' | awk '{print $2}')"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.13",
