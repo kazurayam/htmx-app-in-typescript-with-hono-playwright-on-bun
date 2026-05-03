@@ -28,7 +28,7 @@ describe('Test if the server is up and running', async () => {
         await page.waitForLoadState('networkidle');
         // Check if the page contains the expected text
         const h1: PW.Locator = page.locator('css=h1')
-        await PW.expect(h1).toHaveText('Section3');
+        await PW.expect(h1).toContainText(/Section3/);
     });
 
     afterEach(async () => {

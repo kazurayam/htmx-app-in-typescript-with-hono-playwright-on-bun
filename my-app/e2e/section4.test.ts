@@ -1,28 +1,35 @@
 // e2e/section4.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
-import { Browser, Page, chromium } from 'playwright-chromium';
+import * as PW from '@playwright/test';
 
 describe('test http://localhost:3001/section4', async () => {
     // Here I assume that the server at http://localhost:3001 is already up and running.
-    let browser: Browser;
-    let page: Page;
+    let browser: PW.Browser;
+    let page: PW.Page;
     beforeAll(async () => {
         // launch the browser
-        browser = await chromium.launch({ timeout: 10000 })
+        browser = await PW.chromium.launch({ timeout: 10000 })
+    })
+    beforeEach(async () => {
         // Create a new page and navigate to a URL
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section4', { timeout: 10000 });
     })
     it("click <button hx-get=/yahoo hx-target=#htmx>, then <p id=html></p> should show やっほー!", async () => {
         // Select the button
-        const button = page.locator('css=button[hx-target="#htmx"]');
-        expect(await button.isVisible()).toBeTruthy();
+        const button: PW.Locator = page.locator('css=button[hx-target="#htmx"]');
+        await PW.expect(button).toBeVisible();
+        // Start waiting for response before clicking. Note no await.
+        // See https://playwright.dev/docs/api/class-page#page-wait-for-response
+        const responsePromise = page.waitForResponse(/\yahoo/, { timeout: 10000 });
         // Click the button!
         await button.click();
-        await page.waitForTimeout(1500)
-        // Assert expected text to appear
-        const p = page.locator('css=p#htmx')
-        expect(await p.innerText()).toMatch('やっほー!');
+        // await for the response
+        await responsePromise;
+        // assert expected text to appear
+        const p: PW.Locator = page.locator('css=p#htmx')
+        await PW.expect(p).toContainText(/やっほー!/);
+        // See https://playwright.dev/docs/api/class-locatorassertions#locator-assertions-to-contain-text
     });
     it("click <button hx-get=/yahoo hx-target=this> then <button>やっほー!</button> should be rendered", async () => {
         const button = page.locator('css=button[hx-target="this"]');
@@ -64,6 +71,9 @@ describe('test http://localhost:3001/section4', async () => {
         await page.waitForTimeout(1500)
         const p = page.locator('xpath=//h3[text()="previous CSSセレクタ"]/following-sibling::button[1]/preceding-sibling::p[1]');
         expect(await p.innerText()).toMatch("やっほー!");
+    })
+    afterEach(async () => {
+        await page.close();
     })
     afterAll(async () => {
         // Clean up
