@@ -21,7 +21,7 @@ describe('test http://localhost:3001/section4', async () => {
         await PW.expect(button).toBeVisible();
         // Start waiting for response before clicking. Note no await.
         // See https://playwright.dev/docs/api/class-page#page-wait-for-response
-        const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+        const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         // Click the button!
         await button.click();
         // await for the response
