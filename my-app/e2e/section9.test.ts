@@ -33,16 +33,20 @@ describe('test http://localhost:3001/section9', async () => {
         //click the button, a spinner appears and moves for 5seconds until the response is received, then the label changes from クリック to ロード完了
         const button = page.locator('css=button[hx-indicator="#spinner"]');
         await PW.expect(button).toBeVisible()
-        const responsePromise: Promise<PW.Response> =
-            page.waitForResponse(/\/heavy/, { timeout: 10_000 });
+
+        // I could not specify the timeout for waitForResponse() to be longer than 5 seconds, so I will wait for the response after clicking the button without specifying the timeout
+        // see https://github.com/kazurayam/htmx-app-in-typescript-with-hono-playwright-on-bun/issues/17
+        const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/heavy/, { timeout: 10_000 });
         await button.click()
+        
         const img: PW.Locator = page.locator('css=img#spinner')
         expect(await toHaveClasses(img, 'htmx-indicator htmx-request')).toBeTruthy()
         await responsePromise;
+
         // then the label changes from クリック to ロード完了 after 5 seconds when the response is received
         const label = page.locator('css=button[hx-indicator="#spinner"]');
         await PW.expect(label).toHaveText("ロード完了!", { timeout: 10_000 });
-    });
+    }, 10000);  // I set the timeout for this test to 10 seconds because the response takes 5 seconds and I want to give it some extra time
 
     afterEach(async () => {
         await page.close();
