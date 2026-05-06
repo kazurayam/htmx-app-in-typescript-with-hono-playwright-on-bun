@@ -6,9 +6,10 @@ describe('test http://localhost:3001/section10', async () => {
     let browser: Browser;
     let page: Page;
     beforeAll(async () => {
-        browser = await chromium.launch({ timeout: 10000 });
+        browser = await chromium.launch();
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section10')
+        await page.waitForLoadState('networkidle', { timeout: 10_000 });
     });
 
     it("click button with hx-swap=innerHTML", async () => {

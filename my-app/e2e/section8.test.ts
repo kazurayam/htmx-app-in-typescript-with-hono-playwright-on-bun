@@ -6,11 +6,12 @@ describe('test http://localhost:3001/section8', async () => {
     let browser: PW.Browser;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await PW.chromium.launch({ timeout: 10000 });
+        browser = await PW.chromium.launch();
     });
     beforeEach(async () => {
         page = await browser.newPage();
-        await page.goto('http://localhost:3001/section8', { timeout: 10000 })
+        await page.goto('http://localhost:3001/section8')
+        await page.waitForLoadState('networkidle', { timeout: 10_000 });
     });
 
     it("hx-trigger=every 1s", async () => {

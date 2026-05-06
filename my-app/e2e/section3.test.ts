@@ -15,6 +15,7 @@ describe('test http://localhost:3001/section3', async () => {
         page = await browser.newPage();
         // Navigate to the URL before each test
         await page.goto('http://localhost:3001/section3');
+        await page.waitForLoadState('networkidle', { timeout: 10_000 });
     })
 
     it("click <button hx-get=/hello>, then the button should show GETリクエスト!", async () => {

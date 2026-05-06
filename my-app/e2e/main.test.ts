@@ -16,6 +16,7 @@ describe('Test if the server is up and running', async () => {
         context = await browser.newContext();
         page = await context.newPage();
         await page.goto('http://localhost:3001');
+        await page.waitForLoadState('networkidle', { timeout: 10_000 });
     })
 
     it("In the Top page, click the link 'Section 3'; then will navigate to another URL where <h1>Section3</h1> is visible", async () => {

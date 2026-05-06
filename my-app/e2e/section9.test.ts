@@ -1,39 +1,52 @@
 // e2e/section9.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
-import { Browser, Page, Locator, chromium } from 'playwright-chromium';
+import * as PW from '@playwright/test';
 
 
 // A helper function that verifies the class attribute of an element to which the locator points
 // original: https://stackoverflow.com/questions/66241109/check-if-element-class-contains-string-using-playwright
-async function toHaveClasses(locator: Locator, classNames: string): Promise<Boolean> {
+
+async function toHaveClasses(locator: PW.Locator, classNames: string): Promise<Boolean> {
     // get current classes of element
     const attrClass = await locator.getAttribute('class')  // may be null
     const elementClasses: string[] = attrClass ? attrClass.split(' ') : []
     const targetClasses: string[] = classNames.split(' ')
     // Every class should be present in the current class list
     const isValid = targetClasses.every(classItem => elementClasses.includes(classItem))
-    console.log("isValid: " + isValid)
     return Promise.resolve(isValid)
 }
 
+
 describe('test http://localhost:3001/section9', async () => {
-    let browser: Browser;
-    let page: Page;
+    let browser: PW.Browser;
+    let page: PW.Page;
     beforeAll(async () => {
-        browser = await chromium.launch({ timeout: 10000 });
+        browser = await PW.chromium.launch();
+    });
+    beforeEach(async () => {
         page = await browser.newPage();
-        await page.goto('http://localhost:3001/section9', { timeout: 10000 })
+        await page.goto('http://localhost:3001/section9')
+        await page.waitForLoadState('networkidle', { timeout: 10_000 });
     });
 
-    it("click the button, a spinner appears for 5s, then the label changes from クリック to ロード完了", async () => {
+    it("スピナー", async () => {
+        //click the button, a spinner appears and moves for 5seconds until the response is received, then the label changes from クリック to ロード完了
         const button = page.locator('css=button[hx-indicator="#spinner"]');
-        expect(await button.isVisible()).toBeTruthy()
+        await PW.expect(button).toBeVisible()
+        const responsePromise: Promise<PW.Response> =
+            page.waitForResponse(/\/heavy/, { timeout: 10_000 });
         await button.click()
-        const img: Locator = page.locator('css=img#spinner')
-        // https://jestjs.io/docs/expect
+        const img: PW.Locator = page.locator('css=img#spinner')
         expect(await toHaveClasses(img, 'htmx-indicator htmx-request')).toBeTruthy()
+        await responsePromise;
+        // then the label changes from クリック to ロード完了 after 5 seconds when the response is received
+        const label = page.locator('css=button[hx-indicator="#spinner"]');
+        await PW.expect(label).toHaveText("ロード完了!", { timeout: 10_000 });
     });
 
+    afterEach(async () => {
+        await page.close();
+    });
     afterAll(async () => {
         await browser.close();
     });

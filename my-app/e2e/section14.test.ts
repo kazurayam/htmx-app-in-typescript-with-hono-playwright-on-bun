@@ -9,6 +9,7 @@ describe('test http://localhost:3001/section14', async () => {
         browser = await chromium.launch({ headless: true });
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section14')
+        await page.waitForLoadState('networkidle', { timeout: 10_000 });
     });
 
     it("継承 hx-targetの例", async () => {

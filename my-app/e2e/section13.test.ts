@@ -9,6 +9,7 @@ describe('test http://localhost:3001/section13', async () => {
         browser = await chromium.launch({ headless: true });
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section13')
+        await page.waitForLoadState('networkidle', { timeout: 10_000 });
     });
 
     it("ダイアログ", async () => {

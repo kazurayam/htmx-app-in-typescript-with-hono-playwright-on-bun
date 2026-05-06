@@ -8,12 +8,13 @@ describe('test http://localhost:3001/section4', async () => {
     let page: PW.Page;
     beforeAll(async () => {
         // launch the browser
-        browser = await PW.chromium.launch({ timeout: 10000 })
+        browser = await PW.chromium.launch()
     })
     beforeEach(async () => {
         // Create a new page and navigate to a URL
         page = await browser.newPage();
-        await page.goto('http://localhost:3001/section4', { timeout: 10000 });
+        await page.goto('http://localhost:3001/section4');
+        await page.waitForLoadState('networkidle', { timeout: 10_000 });
     })
     it("click <button hx-get=/yahoo hx-target=#htmx>, then <p id=html></p> should show やっほー!", async () => {
         // Select the button
