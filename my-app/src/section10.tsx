@@ -90,7 +90,7 @@ const Section10: FC = () => {
                 </button>
 
 
-                <h2>transition</h2>
+                <h2>transition:true</h2>
                 <div>
                     <p>Embrace challenges, for they are the stepping stones to growth.</p>
                     <button hx-get="/ja-saying" hx-swap="innerHTML transition:true" hx-target="closest div">
@@ -104,10 +104,10 @@ const Section10: FC = () => {
                     クリック
                 </button>
 
-                <h2>settle</h2>
+                <h2>transition:true settle:3s</h2>
                 <div>
                     <p>Embrace challenges, for they are the stepping stones to growth.</p>
-                    <button hx-get="/ja-saying" hx-swap="innerHTML transition:true swap:3s" hx-target="closest div">
+                    <button hx-get="/ja-saying" hx-swap="innerHTML transition:true settle:3s" hx-target="closest div">
                         日本語で翻訳
                     </button>
                 </div>
