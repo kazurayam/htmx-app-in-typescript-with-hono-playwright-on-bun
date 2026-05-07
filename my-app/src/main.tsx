@@ -226,7 +226,7 @@ app.get("/append-head", async (c) => {
 
 app.post("/send-form", async (c) => {
     await sleep(1000);    // sleep for 1s
-    console.log("Content-Type: " + c.req.header('Content-Type'))
+    //console.log("Content-Type: " + c.req.header('Content-Type'))
     return c.render(`<span style='color:#ff0000; font-weight: bold;'>送信完了しました。${await c.req.text()}</span>`)
 })
 

@@ -1,12 +1,14 @@
 // e2e/section11.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
-import { Browser, Page, Locator, chromium } from 'playwright-chromium';
+import * as PW from '@playwright/test';
 
 describe('test http://localhost:3001/section11', async () => {
-    let browser: Browser;
-    let page: Page;
+    let browser: PW.Browser;
+    let page: PW.Page;
     beforeAll(async () => {
-        browser = await chromium.launch();
+        browser = await PW.chromium.launch();
+    });
+    beforeEach(async () => {
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section11')
         await page.waitForLoadState('networkidle', { timeout: 10_000 });
@@ -14,24 +16,31 @@ describe('test http://localhost:3001/section11', async () => {
 
     it("drop", async () => {
         // check the initial state
-        const p1 = page.locator('css=p#drop-target1')
-        const p2 = page.locator('css=p#drop-target2')
-        expect(await p1.innerText()).toMatch(/foo/)
-        expect(await p2.innerText()).toMatch(/hoge/)
-        // inter "abc" into the input field, click the button
+        await PW.expect(page.locator('css=p#drop-target1')).toContainText(/foo/)
+        await PW.expect(page.locator('css=p#drop-target2')).toContainText(/hoge/)
+        // inter "abc" into the input field
         const form = page.locator('xpath=//h2[contains(.,"drop")]/following-sibling::form[1]')
         const input = form.locator('css=input')
+        const buttonResponsePromise: Promise<PW.Response> =
+            page.waitForResponse(/\/validate/);
         await input.fill('abc')
         await input.press('Enter')
-        const button = form.locator('css=button')
-        await button.click()
-        await page.waitForTimeout(1500)  // wait for 1.5s for the response from the /validate
+        await buttonResponsePromise;
+        // then only <p id="drop-target2">hoge</p> will be updated, and <p id="drop-target1">foo</p> won't be updated because of hx-sync="this:drop"
         // the p#drop-target2 won't change
         const content1 = await page.locator('css=p#drop-target1').innerText()
         expect(content1).toMatch(/foo/)
         // the p#drop-target2 will change
         const content2 = await page.locator('css=p#drop-target2').innerText()
         expect(content2).toMatch(/正しい値を入力してください/)
+        // Next, click the button
+        const button = form.locator('css=button')
+        const formResponsePromise: Promise<PW.Response> =
+            page.waitForResponse(/\/send-form/);
+        await button.click()
+        await formResponsePromise;
+        // the p#drop-target1 will change to "送信完了しました"
+        await PW.expect(page.locator('css=p#drop-target1')).toContainText(/送信完了しました/)
     })
 
     it("abort", async () => {
@@ -46,6 +55,9 @@ describe('test http://localhost:3001/section11', async () => {
         // for what use? I don't have any idea how to use this.
     })
 
+    afterEach(async () => {
+        await page.close();
+    });
     afterAll(async () => {
         await browser.close();
     });
