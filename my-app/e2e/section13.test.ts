@@ -1,12 +1,14 @@
 // e2e/section13.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
-import { Browser, Page, Locator, chromium } from 'playwright-chromium';
+import * as PW from '@playwright/test';
 
 describe('test http://localhost:3001/section13', async () => {
-    let browser: Browser;
-    let page: Page;
+    let browser: PW.Browser;
+    let page: PW.Page;
     beforeAll(async () => {
-        browser = await chromium.launch({ headless: true });
+        browser = await PW.chromium.launch({ headless: true });
+    });
+    beforeEach(async () => {
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section13')
         await page.waitForLoadState('networkidle', { timeout: 10_000 });
@@ -59,7 +61,9 @@ describe('test http://localhost:3001/section13', async () => {
         // I don't see what's the use
     })
 
-
+    afterEach(async () => {
+        await page.close();
+    })
     afterAll(async () => {
         await browser.close();
     });
