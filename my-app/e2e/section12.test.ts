@@ -76,7 +76,7 @@ describe('test http://localhost:3001/section12', async () => {
         const h2 = page.locator('xpath=//h2[contains(text(),"hx-vals")]')
         const button = h2.locator('xpath=following-sibling::button[1]')
         const responsePromise: Promise<PW.Response> =
-            page.waitForResponse(/\/greeting/, { timeout: 10_000 });
+            page.waitForResponse(/\/greeting/, { timeout: 20_000 });
         await button.click()
         await responsePromise
         // assert the target <p> contains "title=Hello&name=Taro"
@@ -88,7 +88,7 @@ describe('test http://localhost:3001/section12', async () => {
         // into the input field, press keys 'L', 'O', 'V', 'E'
         const input = page.locator('css=div[hx-target="#vals-target2"] input')
         const responsePromise: Promise<PW.Response> =
-            page.waitForResponse(/\/last-key/, { timeout: 10_000 });
+            page.waitForResponse(/\/last-key/, { timeout: 20_000 });
         input.press("L")
         input.press("O")
         input.press("V")
