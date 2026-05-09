@@ -1,7 +1,7 @@
 // layout.tsx
 import type { FC } from 'hono/jsx'
 
-const Layout: FC = (props) => {
+export const Layout: FC = (props) => {
     return (
         <html lang="ja">
             <head>
@@ -23,7 +23,5 @@ const Layout: FC = (props) => {
                 <body>{props.children}</body>
             </body>
         </html>
-    )
-}
-
-export default Layout
+    );
+};

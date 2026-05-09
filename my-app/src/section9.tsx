@@ -1,8 +1,8 @@
 // section9.tsx
 import type { FC } from 'hono/jsx'
-import Layout from "./layout"
+import { Layout } from "./layout"
 
-const Section9: FC = () => {
+export const Section9: FC = () => {
     return (
         <Layout>
             <div class="section-contents">
@@ -29,5 +29,3 @@ const Section9: FC = () => {
         </Layout>
     )
 }
-
-export default Section9

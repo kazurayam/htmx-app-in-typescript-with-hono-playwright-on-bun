@@ -2,20 +2,20 @@
 import { Hono } from 'hono'
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
-import Top from './top'
-import Section3 from './section3'
-import Section4 from './section4'
-import Section5 from './section5'
-import Section6 from './section6'
-import Section7 from './section7'
-import Section8 from './section8'
-import Section9 from './section9'
-import Section10 from './section10'
-import Section11 from './section11'
-import Section12 from './section12'
-import Section13 from './section13'
-import Section14 from './section14'
-import Section15 from './section15'
+import { Top } from './top'
+import { Section3 } from './section3'
+import { Section4 } from './section4'
+import { Section5 } from './section5'
+import { Section6 } from './section6'
+import { Section7 } from './section7'
+import { Section8 } from './section8'
+import { Section9 } from './section9'
+import { Section10 } from './section10'
+import { Section11 }  from './section11'
+import { Section12 } from './section12'
+import { Section13 } from './section13'
+import { Section14 } from './section14'
+import { Section15 }  from './section15'
 
 const app = new Hono()
 
@@ -258,9 +258,7 @@ app.get("/server-error", async (c) => {
     return c.render(`<span style='color:#ff0000; font-weight: bold;'>Internal Server Error!</span>`)
 })
 
-const server = serve({
+export const server = serve({
     port: 3001,
     fetch: app.fetch
 })
-
-export default server

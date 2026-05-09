@@ -1,8 +1,8 @@
 // top.tsx
 import type { FC } from 'hono/jsx'
-import Layout from "./layout"
+import { Layout } from "./layout"
 
-const Top: FC<{ messages: string[] }> = (props: {
+export const Top: FC<{ messages: string[] }> = (props: {
     messages: String[]
 }) => {
     return (
@@ -36,5 +36,3 @@ const Top: FC<{ messages: string[] }> = (props: {
         </Layout>
     )
 }
-
-export default Top
