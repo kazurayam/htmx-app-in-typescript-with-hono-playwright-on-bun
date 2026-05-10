@@ -26,7 +26,8 @@ describe('test http://localhost:3001/section4', async () => {
         // Click the button!
         await button.click();
         // await for the response
-        await responsePromise;
+        const response: PW.Response = await responsePromise;
+        expect(response.status()).toBe(200);
         // assert expected text to appear
         await PW.expect(page.locator('css=p#htmx')).toContainText(/やっほー!/);
         // See https://playwright.dev/docs/api/class-locatorassertions#locator-assertions-to-contain-text
@@ -36,7 +37,8 @@ describe('test http://localhost:3001/section4', async () => {
         await PW.expect(button).toBeVisible()
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         await PW.expect(button).toContainText(/やっほー!/);
     })
     it("click <button hx-get=/yahoo hx-target=closest div> then the innerText B is replaced with やっほー!", async () => {
@@ -44,7 +46,8 @@ describe('test http://localhost:3001/section4', async () => {
         await PW.expect(button).toBeVisible();
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         const closestDiv = page.locator('xpath=//h3[text()="closest CSSセレクタ"]/following-sibling::div[1]/div')
         const text: string = await closestDiv.innerText()
         expect(text).not.toMatch(/B/);      // Here I use Jest's expect, not Playwright's expect, just to show that you can use any assertion library you like!
@@ -55,7 +58,8 @@ describe('test http://localhost:3001/section4', async () => {
         await PW.expect(button).toBeVisible()
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         const p = page.locator('css=button[hx-target="find p"] p:first-child');
         await PW.expect(p).toContainText(/やっほー!/);
     })
@@ -64,7 +68,8 @@ describe('test http://localhost:3001/section4', async () => {
         await PW.expect(button).toBeVisible()
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         const p = page.locator('css=button[hx-target="next p"] + p');
         await PW.expect(p).toContainText(/やっほー!/);
     })
@@ -73,7 +78,8 @@ describe('test http://localhost:3001/section4', async () => {
         await PW.expect(button).toBeVisible();
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         const p = page.locator('xpath=//button[@hx-target="previous p"]/preceding-sibling::p[1]');
         await PW.expect(p).toContainText(/やっほー!/);
     })

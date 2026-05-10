@@ -19,7 +19,8 @@ describe('test http://localhost:3001/section5', async () => {
         await PW.expect(button).toBeVisible();
         const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         await PW.expect(page.locator('css=p#target1')).toContainText(/やっほー!/);
     });
 
@@ -41,7 +42,8 @@ describe('test http://localhost:3001/section5', async () => {
         await PW.expect(button).toBeVisible();
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click({ modifiers: ['Shift'] });   // Shift + Click
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         await PW.expect(page.locator('css=p#target3')).toContainText(/やっほー!/)
     });
 
@@ -50,7 +52,8 @@ describe('test http://localhost:3001/section5', async () => {
         await PW.expect(button).toBeVisible();
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
-        await responsePromise
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         await PW.expect(page.locator('css=p#target4')).toContainText(/やっほー!/);
     });
 
@@ -59,7 +62,8 @@ describe('test http://localhost:3001/section5', async () => {
         await PW.expect(button).toBeVisible();
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click({ modifiers: ['Shift', 'Alt'] });   // Shift + Alt + Click
-        await responsePromise
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         await PW.expect(page.locator('css=p#target5')).toContainText(/やっほー!/)
     });
 

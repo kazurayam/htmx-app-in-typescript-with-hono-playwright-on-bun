@@ -21,7 +21,8 @@ describe('test http://localhost:3001/section6', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/, { timeout: 10000 });
         await button.click();
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         const content1 = await page.locator('css=p#once-target1').innerText();
         expect(content1).toMatch(/[0-9]/);   // ランダムな数字
         // click the button once again
@@ -47,7 +48,8 @@ describe('test http://localhost:3001/section6', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/, { timeout: 10000 });
         await button.click();
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         const content1 = await page.locator('css=p#once-target2').innerText();
         expect(content1).toMatch(/[0-9]/);
         // click the button once again
@@ -65,7 +67,8 @@ describe('test http://localhost:3001/section6', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/, { timeout: 10000 });
         await input.press('Enter');
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         const content1 = await page.locator('css=p#changed-target1').innerText();
         expect(content1).toMatch(/[0-9]+/);
     })
@@ -78,7 +81,8 @@ describe('test http://localhost:3001/section6', async () => {
         // type some characters into the <input> element
         await input.fill('abc')
         await input.press('Enter')
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         // assert the content of <p id="changed-target2"> is changed
         const content1 = await page.locator('css=p#changed-target2').innerText();
         expect(content1).toMatch(/[0-9]/);
@@ -96,7 +100,8 @@ describe('test http://localhost:3001/section6', async () => {
             page.waitForResponse(/\/random/, { timeout: 10000 });
         await input.fill('a');
         await input.press('Enter');
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         await PW.expect(page.locator('css=p#delay-target1')).toContainText(/[0-9]+/);
     })
 
@@ -111,7 +116,8 @@ describe('test http://localhost:3001/section6', async () => {
             page.waitForResponse(/\/random/, { timeout: 10000 });
         await input.fill('abc')
         await input.press('Enter')
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         // after keyup, the <p id="delay-target"> has new content
         const content2 = await page.locator('css=p#delay-target2').innerText()
         expect(content2).toMatch(/[0-9]+/);
@@ -153,7 +159,8 @@ describe('test http://localhost:3001/section6', async () => {
             page.waitForResponse(/\/random/, { timeout: 10000 });
         await input4.fill("abc");
         await input4.press('Enter');
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         await PW.expect(page.locator('css=#from-target')).toContainText(/[0-9]+/);
     })
 
@@ -163,22 +170,23 @@ describe('test http://localhost:3001/section6', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/, { timeout: 10000 });
         await button3.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200)
         await PW.expect(page.locator('css=p#target-target')).toContainText(/[0-9]+/);
     })
 
     it("hx-trigger=consume", async () => {
         const button = page.locator('css=button[hx-trigger="click consume"]')
-        expect(await button.isVisible()).toBeTruthy();
+        await PW.expect(button).toBeVisible();
         await button.click()
         // no interaction will be fired becase of hx-tregger="click consume"
         const p = page.locator('css=p#consume-target2');
-        expect(await p.innerText()).toMatch(/consumeあり/);
+        await PW.expect(p).toContainText(/consumeあり/);
     })
 
     it("hx-trigger=queue", async () => {
-        const button = page.locator('css=button[hx-trigger="click queue:all"]')
-        expect(await button.isVisible()).toBeTruthy()
+        const button = page.locator('css=button[hx-trigger="click queue:all"]');
+        await PW.expect(button).toBeVisible();
         await button.click()
         await button.click()
         await page.waitForTimeout(500)

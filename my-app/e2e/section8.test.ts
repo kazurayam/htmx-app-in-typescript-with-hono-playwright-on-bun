@@ -30,11 +30,14 @@ describe('test http://localhost:3001/section8', async () => {
     })
 
     it("hx-trigger=load delay:3s", async () => {
-        const p1 = page.locator('css=p[hx-trigger="load delay:3s"]')
-        expect((await p1.innerText()).match(/hoge/))
-        await page.waitForTimeout(3100);
+        const p1 = page.locator('css=p[hx-trigger="load delay:3s"]');
+        await PW.expect(p1).toContainText(/hoge/);
+        const responsePromise: Promise<PW.Response> =
+                    page.waitForResponse(/\/random_polling/, { timeout: 10000 });
+        const response = await responsePromise
+        expect(response.status()).toBe(200);
         const p2 = page.locator('css=p[hx-trigger="load delay:3s"]')
-        expect(await p2.innerText()).toMatch(/[0-9]+/);
+        await PW.expect(p2).toContainText(/[0-9]+/);
     })
 
     it("hx-trigger=load, click delay: 0.5s", async () => {

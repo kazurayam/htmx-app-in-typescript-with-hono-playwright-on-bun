@@ -25,7 +25,8 @@ describe('test http://localhost:3001/section11', async () => {
             page.waitForResponse(/\/validate/);
         await input.fill('abc')
         await input.press('Enter')
-        await buttonResponsePromise;
+        const buttonResponse = await buttonResponsePromise;
+        expect(buttonResponse.status()).toBe(200);
         // then only <p id="drop-target2">hoge</p> will be updated, and <p id="drop-target1">foo</p> won't be updated because of hx-sync="this:drop"
         // the p#drop-target2 won't change
         const content1 = await page.locator('css=p#drop-target1').innerText()
@@ -38,7 +39,8 @@ describe('test http://localhost:3001/section11', async () => {
         const formResponsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/send-form/);
         await button.click()
-        await formResponsePromise;
+        const formResponse = await formResponsePromise;
+        expect(formResponse.status()).toBe(200);
         // the p#drop-target1 will change to "送信完了しました"
         await PW.expect(page.locator('css=p#drop-target1')).toContainText(/送信完了しました/)
     })

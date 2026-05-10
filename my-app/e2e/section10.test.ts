@@ -20,7 +20,8 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         const p: PW.Locator = page.locator('css=p#inner-target')
         expect(await p.innerHTML()).toMatch(/[0-9]/)
         const p2 = page.locator('css=p#inner-target > p')
@@ -38,7 +39,8 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         // after the button.click(), the p#outer-target is no longer there)
         const p1 = page.locator('css=p#outer-target')
         await PW.expect(p1).toHaveCount(0)
@@ -51,7 +53,8 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         // after click, the content of p#text-taregt contains "&lt;p style='color:#ff0000;'&gt;2&lt;/p&gt;"
         const content2 = await page.locator('css=p#text-target').innerText();
         // content2 will be like <p style='color:#ff0000;'>2</p>
@@ -66,7 +69,8 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         // after click, a digit will be inserted before the first child of the target element
         const content = await page.locator('css=p#afterbegin-target').innerText()
         expect(content).toMatch(/[0-9]+\s+hoge/)
@@ -78,7 +82,8 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         // after click, a digit will be inserted before the target element
         const p = page.locator('xpath=//p[@id="beforebegin-target"]/preceding-sibling::p[1]')
         expect(await p.innerText()).toMatch(/[0-9]+/)
@@ -90,7 +95,8 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         // after click, a digit will be inserted after the last child of the target element
         const p = page.locator('css=p#beforeend-target')
         await PW.expect(p).toContainText(/hoge\s*[0-9]+/)
@@ -102,7 +108,8 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         // after click, a digit will be inserted after the target element
         const parentDiv = page.locator('xpath=//p[@id="afterend-target"]//parent::div')
         const content = await parentDiv.innerText()
@@ -115,7 +122,8 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         // click the button, then the target p will be deleted
         const parentDiv = button.locator('xpath=/preceding-sibling::div[1]')
         const content = await parentDiv.innerText()
@@ -130,7 +138,8 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         const content2 = await div.innerText()
         expect(content2).toEqual(content1)
     })
@@ -143,7 +152,8 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/ja-saying/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         //
         const p2 = button.locator('xpath=./parent::div/child::p')
         await PW.expect(p2).toContainText(/挑戦を受け入れよう/)
@@ -157,7 +167,9 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
+        // swap:3s means that the content will be swapped after 3 seconds, so we need to wait for 3 seconds before checking the content
         await page.waitForTimeout(3000)
         const content2 = await page.locator('p#swap-target').innerText()
         expect(content2).toMatch(/[0-9]+/)
@@ -172,7 +184,9 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/ja-saying/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
+        // settle:3s means that the content will change settled after 3 seconds, so we need to wait for 3 seconds before checking the content
         await page.waitForTimeout(3000);
         const content2 = await div.locator('css=p').innerText()
         expect(content2).toMatch(/挑戦を受け入れよう/)
@@ -184,7 +198,8 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/update-title/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         //expect(await page.title()).toMatch(/New Title/)
         await PW.expect(page).toHaveTitle(/New Title/)
     })
@@ -195,7 +210,8 @@ describe('test http://localhost:3001/section10', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/update-title/);
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200)
         await PW.expect(page).not.toHaveTitle(/New Title/)
     })
 

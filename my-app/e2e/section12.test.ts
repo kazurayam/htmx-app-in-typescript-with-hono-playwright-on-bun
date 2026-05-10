@@ -28,7 +28,8 @@ describe('test http://localhost:3001/section12', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/send-form/, { timeout: 10_000 });
         await button.click()
-        await responsePromise;
+        const response: PW.Response = await responsePromise;
+        expect(response.status()).toBe(200);
         // assert the target to contain "title=aaa&name=bbb&age=66"
         await PW.expect(page.locator('css=p#all-target'))
             .toContainText(/title=greeting&name=kazurayam&age=66/)
@@ -47,7 +48,8 @@ describe('test http://localhost:3001/section12', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/send-form/, { timeout: 10_000 });
         await button.click();
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         // assert the target to contain "title=aaa&age=66"
         await PW.expect(page.locator('css=p#param-target'))
             .toContainText(/title=greeting&age=66/)
@@ -65,7 +67,8 @@ describe('test http://localhost:3001/section12', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/send-form/, { timeout: 10_000 });
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         // assert the target <p> contains "name=kazurayam"
         const p = page.locator('p#include-target')
         expect(await p.innerText()).toMatch(/kazurayam/)
@@ -78,7 +81,8 @@ describe('test http://localhost:3001/section12', async () => {
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/greeting/, { timeout: 20_000 });
         await button.click()
-        await responsePromise
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         // assert the target <p> contains "title=Hello&name=Taro"
         const p = page.locator('css=p#vals-target1')
         expect(await p.innerText()).toMatch(/title=Hello&name=Taro/)
@@ -93,7 +97,8 @@ describe('test http://localhost:3001/section12', async () => {
         input.press("O")
         input.press("V")
         input.press("E")
-        await responsePromise
+        const response = await responsePromise
+        expect(response.status()).toBe(200);
         // asser the target <p> contains "lastkey=E"
         const p = page.locator('css=p#vals-target2')
         expect(await p.innerText()).toMatch(/lastkey=E/)

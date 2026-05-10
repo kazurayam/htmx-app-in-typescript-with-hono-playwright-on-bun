@@ -25,17 +25,20 @@ describe('test http://localhost:3001/section14', async () => {
         // ボタン1をクリックするとp#target1の内容が変化する。なぜならbutton1はdivの子要素で、divにhx-target="#target1"が指定されているから。
         const responsePromise1: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await button1.click()
-        await responsePromise1;
+        const response1 = await responsePromise1;
+        expect(response1.status()).toBe(200);
         await PW.expect(page.locator('css=p#target1')).toContainText(/[0-9]+/)
         // ボタン2をクリックするとp#target2の内容が変化する。なぜならbutton2にhx-target="#target2"が指定されているから。親要素のdivのhx-targetは継承されない。
         const responsePromise2: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await button2.click()
-        await responsePromise2;
+        const response2 = await responsePromise2;
+        expect(response2.status()).toBe(200);
         await PW.expect(page.locator('css=p#target2')).toContainText(/[0-9]+/)
         // ボタン3をクリックするとbutton3の内容が変化する。なぜならbutton3はdivの子要素ではないから。buttonにhx-targetが指定されていないから、デフォルト動作としてbutton自身の内容文字列が変化する。
         const responsePromise3: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await button3.click()
-        await responsePromise3;
+        const response3 = await responsePromise3;
+        expect(response3.status()).toBe(200);
         await PW.expect(button3).toContainText(/[0-9]+/)
     })
 
@@ -55,21 +58,24 @@ describe('test http://localhost:3001/section14', async () => {
         buttonName = 'A'
         const responsePromiseA: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await buttonA.click()
-        await responsePromiseA
+        const responseA = await responsePromiseA;
+        expect(responseA.status()).toBe(200);
         await PW.expect(buttonA).toContainText(/[0-9]+/)
         //
         const buttonB: PW.Locator = div.locator('xpath=button[2]')
         buttonName = 'B'
         const responsePromiseB: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await buttonB.click()
-        await responsePromiseB;
+        const responseB = await responsePromiseB;
+        expect(responseB.status()).toBe(200);
         await PW.expect(buttonB).toContainText(/[0-9]+/)
         //しかしボタンCはdialogを表示しない。hx-confirm="unset"しているから。
         const buttonC: PW.Locator = div.locator('xpath=button[3]')
         buttonName = 'C'
         const responsePromiseC: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await buttonC.click()
-        await responsePromiseC;
+        const responseC = await responsePromiseC;
+        expect(responseC.status()).toBe(200);
         await PW.expect(buttonC).toContainText(/[0-9]+/)
     })
 
@@ -83,7 +89,8 @@ describe('test http://localhost:3001/section14', async () => {
         //buttonをクリックするとp要素の内容が変化する。なぜならbuttonはdivの子要素で、divにhx-target="#no-disinherit-target1"が指定されているから。
         const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         const p = page.locator('p#no-disinherit-target1')
         await PW.expect(p).toContainText(/[0-9]+/)
     })
@@ -98,7 +105,8 @@ describe('test http://localhost:3001/section14', async () => {
         await PW.expect(button).toBeVisible()
         const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         const p = page.locator('p#disinherit-target1')
         await PW.expect(p).toContainText(/foo/)
         await PW.expect(button).toContainText(/[0-9]+/)
@@ -114,7 +122,8 @@ describe('test http://localhost:3001/section14', async () => {
         await PW.expect(button).toBeVisible()
         const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await button.click()
-        await responsePromise;
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
         const p = page.locator('css=p#disinherit-target2')
         await PW.expect(p).toContainText(/foo/)
         await PW.expect(button).toContainText(/[0-9]+/)
