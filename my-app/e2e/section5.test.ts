@@ -11,7 +11,7 @@ describe('test http://localhost:3001/section5', async () => {
     beforeEach(async () => {
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section5')
-        await page.waitForLoadState('networkidle', { timeout: 10_000 });
+        await page.waitForLoadState('load', { timeout: 10_000 });
     });
 
     it("<button hx-get=/yahoo hx-target=#target1 hx-trigger=click[true]>", async () => {

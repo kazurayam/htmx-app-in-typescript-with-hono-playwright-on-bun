@@ -11,7 +11,7 @@ describe('test http://localhost:3001/section15', async () => {
     beforeEach(async () => {
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section15')
-        await page.waitForLoadState('networkidle', { timeout: 10_000 });
+        await page.waitForLoadState('load', { timeout: 10_000 });
     });
 
     it("hx-ext=head-support hx-head=merge", async () => {

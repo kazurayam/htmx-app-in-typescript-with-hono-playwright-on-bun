@@ -26,7 +26,7 @@ describe('test http://localhost:3001/section9', async () => {
     beforeEach(async () => {
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section9')
-        await page.waitForLoadState('networkidle', { timeout: 10_000 });
+        await page.waitForLoadState('load', { timeout: 10_000 });
     });
 
     it("スピナー", async () => {
