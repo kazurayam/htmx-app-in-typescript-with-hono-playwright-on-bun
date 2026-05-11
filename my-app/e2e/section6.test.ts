@@ -123,34 +123,35 @@ describe('test http://localhost:3001/section6', async () => {
         expect(content2).toMatch(/[0-9]+/);
     })
 
-    /* FIXME: error: forTimeout: Target page, context or browser has been closed
     it("hx-trigger=keyup change throttle:3s", async () => {
         const input = page.locator('css=input[hx-target="#throttle-target2"]');
         await PW.expect(input).toBeVisible();
         //
-        await input.fill("a")
-        await input.press('Enter')
-        await page.waitForTimeout(3500)
-        const content1 = await page.locator('css=p#throttle-target2').innerText()
+        const responsePromise: Promise<PW.Response> =
+            page.waitForResponse(/\/random/, { timeout: 5_000 });
+        await input.pressSequentially("a")
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
+        const content1 = await page.locator('css=p#throttle-target2').innerText();
         expect(content1).toMatch(/[0-9]+/);
-        //
-        // typing "1" will trigger web interaction after 3 seconds as the "throttle" is given
-        // therefore, immediately after typing, the <p id="throttle-target2"> won't change
-        await input.fill("1")
-        await input.press('Enter')
+        // Typing "1" will trigger web interaction only after 3 seconds, as the "throttle:3s" is given.
+        // Therefore, immediately after typing, the <p id="throttle-target2"> won't change
+        await input.pressSequentially("1")
         const content2 = await page.locator('css=p#throttle-target2').innerText()
         expect(content2).toEqual(content1);
-        await page.waitForTimeout(3500);
-        //
-        // typing "X" will trigger web interaction after 3 seconds as the "throttle" is given
-        // let's wait for the request to finish which will change the <p id="throttle-target2">
-        await input.fill("X");
-        await input.press('Enter')
-        await page.waitForTimeout(3500)
+        // Typing "X" will trigger web interaction after 3 seconds, as the "throttle:3s" is given.
+        // Let's wait for the request to finish which will change the <p id="throttle-target2">
+        await page.waitForTimeout(3000)
+        const responsePromise2: Promise<PW.Response> =
+            page.waitForResponse(/\/random/, { timeout: 5_000 });
+        await input.pressSequentially("X");
+        await page.keyboard.up("Shift");
+        const response2 = await responsePromise2;
+        expect(response2.status()).toBe(200);
         const content3 = await page.locator('css=p#throttle-target2').innerText();
+        //console.log(content1, content2, content3);
         expect(content3).not.toEqual(content2);
-    })
-    */
+    }, 10_000)
 
     it("hx-trigger=from:CSS selector", async () => {
         const input4 = page.locator('css=input#input4');
