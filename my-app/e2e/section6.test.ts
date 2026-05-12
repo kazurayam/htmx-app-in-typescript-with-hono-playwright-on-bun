@@ -16,7 +16,9 @@ describe('test http://localhost:3001/section6', async () => {
 
     it("hx-trigger=click onceなし", async () => {
         const button = page.locator('css=button[hx-target="#once-target1"]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        //
         await PW.expect(page.locator('css=p#once-target1')).toContainText(/onceなし/);
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/, { timeout: 10000 });
@@ -44,7 +46,8 @@ describe('test http://localhost:3001/section6', async () => {
 
     it("hx-trigger=click onceあり", async () => {
         const button = page.locator('css=button[hx-target="#once-target2"]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/, { timeout: 10000 });
         await button.click();
@@ -63,7 +66,8 @@ describe('test http://localhost:3001/section6', async () => {
 
     it("hx-trigger=keyup without changed", async () => {
         const input = page.locator('css=input[hx-target="#changed-target1"]');
-        await PW.expect(input).toBeVisible();
+        await input.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(input).toBeEnabled();
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/, { timeout: 10000 });
         await input.press('Enter');
@@ -75,7 +79,9 @@ describe('test http://localhost:3001/section6', async () => {
 
     it("hx-trigger=keyup with changed", async () => {
         const input = page.locator('css=input[hx-target="#changed-target2"]');
-        await PW.expect(input).toBeVisible();
+        await input.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(input).toBeEnabled();
+        //
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/, { timeout: 10000 });
         // type some characters into the <input> element
@@ -95,7 +101,9 @@ describe('test http://localhost:3001/section6', async () => {
 
     it("hx-trigger=keyup without delay", async () => {
         const input = page.locator('css=input[hx-target="#delay-target1"]');
-        await PW.expect(input).toBeVisible();
+        await input.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(input).toBeEnabled();
+        //
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/, { timeout: 10000 });
         await input.fill('a');
@@ -107,7 +115,8 @@ describe('test http://localhost:3001/section6', async () => {
 
     it("hx-trigger=keyup with delay of 3s", async () => {
         const input = page.locator('css=input[hx-target="#delay-target2"]');
-        await PW.expect(input).toBeVisible();
+        await input.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(input).toBeEnabled();
         // before keyup, the <p id="delay-target2"> has content of "delay 3秒"
         const content1 = await page.locator('css=p#delay-target2').innerText()
         expect(content1).toMatch(/delay 3秒/);
@@ -125,7 +134,8 @@ describe('test http://localhost:3001/section6', async () => {
 
     it("hx-trigger=keyup change throttle:3s", async () => {
         const input = page.locator('css=input[hx-target="#throttle-target2"]');
-        await PW.expect(input).toBeVisible();
+        await input.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(input).toBeEnabled();
         //
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/, { timeout: 5_000 });
@@ -155,7 +165,9 @@ describe('test http://localhost:3001/section6', async () => {
 
     it("hx-trigger=from:CSS selector", async () => {
         const input4 = page.locator('css=input#input4');
-        await PW.expect(input4).toBeVisible();
+        await input4.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(input4).toBeEnabled();
+        //
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/, { timeout: 10000 });
         await input4.fill("abc");
@@ -167,7 +179,9 @@ describe('test http://localhost:3001/section6', async () => {
 
     it("hx-trigger=target:CSS selector", async () => {
         const button3 = page.locator('css=div[hx-trigger="click target:.btn"] div button')
-        await PW.expect(button3).toBeVisible();
+        await button3.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button3).toBeEnabled();
+        //
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/, { timeout: 10000 });
         await button3.click()
@@ -178,7 +192,9 @@ describe('test http://localhost:3001/section6', async () => {
 
     it("hx-trigger=consume", async () => {
         const button = page.locator('css=button[hx-trigger="click consume"]')
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        //
         await button.click()
         // no interaction will be fired becase of hx-tregger="click consume"
         const p = page.locator('css=p#consume-target2');
@@ -187,7 +203,9 @@ describe('test http://localhost:3001/section6', async () => {
 
     it("hx-trigger=queue", async () => {
         const button = page.locator('css=button[hx-trigger="click queue:all"]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        //
         await button.click()
         await button.click()
         await page.waitForTimeout(500)

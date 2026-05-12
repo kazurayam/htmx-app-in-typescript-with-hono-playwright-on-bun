@@ -16,7 +16,9 @@ describe('test http://localhost:3001/section10', async () => {
 
     it("click button with hx-swap=innerHTML", async () => {
         const button: PW.Locator = page.locator('css=button[hx-target="#inner-target"][hx-swap="innerHTML"]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        //
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
@@ -32,7 +34,9 @@ describe('test http://localhost:3001/section10', async () => {
 
     it("click button with hx-swap=outerHTML", async () => {
         const button = page.locator('css=button[hx-target="#outer-target"][hx-swap="outerHTML"]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+
         // before the button.click(), the p#outer-target is present
         const p = page.locator('css=p#outer-target')
         await PW.expect(p).toContainText(/hoge/)
@@ -48,6 +52,9 @@ describe('test http://localhost:3001/section10', async () => {
 
     it("click button with hx-swap=textContent", async () => {
         const button = page.locator('css=button[hx-target="#text-target"][hx-swap="textContent"]');
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+
         // before click, the content of p#text-target contains "hoge"
         await PW.expect(page.locator('css=p#text-target')).toContainText(/hoge/)
         const responsePromise: Promise<PW.Response> =
@@ -65,7 +72,9 @@ describe('test http://localhost:3001/section10', async () => {
 
     it("click button with hx-swap=beforeend", async () => {
         const button = page.locator('css=button[hx-target="#afterbegin-target"][hx-swap="afterbegin"]')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        //
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
@@ -78,7 +87,9 @@ describe('test http://localhost:3001/section10', async () => {
 
     it("click button with hx-swap=beforebegin", async () => {
         const button = page.locator('css=button[hx-target="#beforebegin-target"][hx-swap="beforebegin"]')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        //
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
@@ -91,7 +102,9 @@ describe('test http://localhost:3001/section10', async () => {
 
     it("click button with hx-swap=beforeend", async () => {
         const button = page.locator('css=button[hx-target="#beforeend-target"][hx-swap="beforeend"]')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        //
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
@@ -104,7 +117,9 @@ describe('test http://localhost:3001/section10', async () => {
 
     it("click button with hx-swap=afterend", async () => {
         const button = page.locator('css=button[hx-target="#afterend-target"][hx-swap="afterend"]')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        //
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
@@ -118,7 +133,9 @@ describe('test http://localhost:3001/section10', async () => {
 
     it("click button with hx-swap=delete", async () => {
         const button = page.locator('css=button[hx-swap="delete"]')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        //
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
@@ -132,6 +149,9 @@ describe('test http://localhost:3001/section10', async () => {
 
     it("click button with hx-swap=none", async () => {
         const button = page.locator('css=button[hx-swap="none"]')
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        //
         const div = page.locator('xpath=//p[@id="none-target"]/parent::div')
         const content1 = await div.innerText()
         await PW.expect(button).toBeVisible()
@@ -146,7 +166,9 @@ describe('test http://localhost:3001/section10', async () => {
 
     it("transition:true", async () => {
         const button = page.locator('xpath=//h2[contains(.,"transition:true")][not(contains(.,"settle"))]/following-sibling::div[1]/button[contains(@hx-swap,"transition:true")]')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        //
         const p = button.locator('xpath=./parent::div/child::p')
         await PW.expect(p).toContainText(/Embrace challenges/)
         const responsePromise: Promise<PW.Response> =
@@ -163,7 +185,9 @@ describe('test http://localhost:3001/section10', async () => {
         const content = await page.locator('p#swap-target').innerText()
         expect(content).toMatch(/foo/)
         const button = page.locator('p#swap-target').locator('xpath=following-sibling::button[1]')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        //
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/random/);
         await button.click()
@@ -181,6 +205,8 @@ describe('test http://localhost:3001/section10', async () => {
         const content = await div.locator('css=p').innerText()
         expect(content).toMatch(/Embrace challenges/)
         const button = div.locator('css=button')
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/ja-saying/);
         await button.click()
@@ -194,7 +220,8 @@ describe('test http://localhost:3001/section10', async () => {
 
     it("ignoreTitle:false", async () => {
         const button = page.locator('xpath=//h3[contains(.,"ignoreTitleがfalseの時")]/following-sibling::button[1]')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/update-title/);
         await button.click()
@@ -206,7 +233,8 @@ describe('test http://localhost:3001/section10', async () => {
 
     it("ignoreTitle:true", async () => {
         const button = page.locator('xpath=//h3[contains(.,"ignoreTitleがtrueの時")]/following-sibling::button[1]')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/update-title/);
         await button.click()

@@ -23,18 +23,24 @@ describe('test http://localhost:3001/section14', async () => {
         await PW.expect(button2).toBeVisible()
         await PW.expect(button3).toBeVisible()
         // ボタン1をクリックするとp#target1の内容が変化する。なぜならbutton1はdivの子要素で、divにhx-target="#target1"が指定されているから。
+        await button1.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button1).toBeEnabled();
         const responsePromise1: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await button1.click()
         const response1 = await responsePromise1;
         expect(response1.status()).toBe(200);
         await PW.expect(page.locator('css=p#target1')).toContainText(/[0-9]+/)
         // ボタン2をクリックするとp#target2の内容が変化する。なぜならbutton2にhx-target="#target2"が指定されているから。親要素のdivのhx-targetは継承されない。
+        await button2.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button2).toBeEnabled();
         const responsePromise2: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await button2.click()
         const response2 = await responsePromise2;
         expect(response2.status()).toBe(200);
         await PW.expect(page.locator('css=p#target2')).toContainText(/[0-9]+/)
         // ボタン3をクリックするとbutton3の内容が変化する。なぜならbutton3はdivの子要素ではないから。buttonにhx-targetが指定されていないから、デフォルト動作としてbutton自身の内容文字列が変化する。
+        await button3.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button3).toBeEnabled();
         const responsePromise3: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await button3.click()
         const response3 = await responsePromise3;
@@ -55,6 +61,8 @@ describe('test http://localhost:3001/section14', async () => {
         //ボタンAとボタンBはクリックするとdialogを表示する
         //というのも親要素のdivが指定したhx-conformを継承するから
         const buttonA: PW.Locator = div.locator('xpath=button[1]')
+        await buttonA.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(buttonA).toBeEnabled();
         buttonName = 'A'
         const responsePromiseA: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await buttonA.click()
@@ -63,6 +71,8 @@ describe('test http://localhost:3001/section14', async () => {
         await PW.expect(buttonA).toContainText(/[0-9]+/)
         //
         const buttonB: PW.Locator = div.locator('xpath=button[2]')
+        await buttonB.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(buttonB).toBeEnabled();
         buttonName = 'B'
         const responsePromiseB: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await buttonB.click()
@@ -71,6 +81,8 @@ describe('test http://localhost:3001/section14', async () => {
         await PW.expect(buttonB).toContainText(/[0-9]+/)
         //しかしボタンCはdialogを表示しない。hx-confirm="unset"しているから。
         const buttonC: PW.Locator = div.locator('xpath=button[3]')
+        await buttonC.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(buttonC).toBeEnabled();
         buttonName = 'C'
         const responsePromiseC: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await buttonC.click()
@@ -85,7 +97,8 @@ describe('test http://localhost:3001/section14', async () => {
         const h3 = page.locator('xpath=//h3[contains(text(),"hx-target指定なし")]')
         await PW.expect(h3).toBeVisible()
         const button = h3.locator('xpath=following-sibling::div[1]/button')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         //buttonをクリックするとp要素の内容が変化する。なぜならbuttonはdivの子要素で、divにhx-target="#no-disinherit-target1"が指定されているから。
         const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await button.click()
@@ -102,7 +115,8 @@ describe('test http://localhost:3001/section14', async () => {
         const h3 = page.locator('xpath=//h3[contains(text(),"hx-targetを指定")]')
         await PW.expect(h3).toBeVisible()
         const button = h3.locator('xpath=following-sibling::div[1]/button')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await button.click()
         const response = await responsePromise;
@@ -119,7 +133,8 @@ describe('test http://localhost:3001/section14', async () => {
         const h3 = page.locator('xpath=//h3[contains(text(),"*を指定")]')
         await PW.expect(h3).toBeVisible()
         const button = h3.locator('xpath=following-sibling::div[1]/button')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
         await button.click()
         const response = await responsePromise;

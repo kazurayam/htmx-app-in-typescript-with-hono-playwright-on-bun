@@ -42,11 +42,19 @@ describe('test http://localhost:3001/section8', async () => {
 
     it("hx-trigger=load, click delay: 0.5s", async () => {
         const p = page.locator('css=p#multiple-trigger-target')
-        const content1 = await p.innerText()
+        const content1 = await p.innerText();
         expect(content1).toMatch(/[0-9]+/);
+        //
         const button = page.locator('css=button[hx-target="#multiple-trigger-target"]')
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        const responsePromise: Promise<PW.Response> =
+                    page.waitForResponse(/\/random/, { timeout: 10000 });
         await button.click();
-        await page.waitForTimeout(1000)
+        await page.waitForTimeout(500);
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
+        //
         const content2 = await p.innerText()
         expect(content2).toMatch(/[0-9]+/);
         expect(content1).not.toEqual(content2)

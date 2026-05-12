@@ -21,7 +21,9 @@ describe('test http://localhost:3001/section3', async () => {
     it("click <button hx-get=/hello>, then the button should show GETリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-get]');
-        await PW.expect(button).toBeVisible();
+        // make sure the button is clickable
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         // Click the button!
         await button.click();
         const span: PW.Locator = page.getByText('GETリクエスト!');
@@ -31,7 +33,8 @@ describe('test http://localhost:3001/section3', async () => {
     it("click <button hx-post=/hello>, then the button should show POSTリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-post]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         // Click the button!
         await button.click();
         const span: PW.Locator = page.getByText('POSTリクエスト!');
@@ -41,7 +44,8 @@ describe('test http://localhost:3001/section3', async () => {
     it("click <button hx-put=/hello>, then the button should show PUTリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-put]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         // Click the button!
         await button.click();
         const span: PW.Locator = page.getByText('PUTリクエスト!');
@@ -51,7 +55,8 @@ describe('test http://localhost:3001/section3', async () => {
     it("click <button hx-patch=/hello>, then the button should show PATCHリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-patch]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         // Click the button!
         await button.click();
         const span: PW.Locator = page.getByText('PATCHリクエスト!');
@@ -61,7 +66,8 @@ describe('test http://localhost:3001/section3', async () => {
     it("click <button hx-delete=/hello>, then the button should show DELETEリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-delete]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         // Click the button!
         await button.click();
         const span: PW.Locator = page.getByText('DELETEリクエスト!');

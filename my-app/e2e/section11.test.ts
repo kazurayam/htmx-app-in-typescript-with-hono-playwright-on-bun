@@ -21,6 +21,8 @@ describe('test http://localhost:3001/section11', async () => {
         // inter "abc" into the input field
         const form = page.locator('xpath=//h2[contains(.,"drop")]/following-sibling::form[1]')
         const input = form.locator('css=input')
+        await input.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(input).toBeEnabled();
         const buttonResponsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/validate/);
         await input.fill('abc')
@@ -36,6 +38,8 @@ describe('test http://localhost:3001/section11', async () => {
         expect(content2).toMatch(/正しい値を入力してください/)
         // Next, click the button
         const button = form.locator('css=button')
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const formResponsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/send-form/);
         await button.click()

@@ -32,7 +32,8 @@ describe('test http://localhost:3001/section9', async () => {
     it("スピナー", async () => {
         //click the button, a spinner appears and moves for 5seconds until the response is received, then the label changes from クリック to ロード完了
         const button = page.locator('css=button[hx-indicator="#spinner"]');
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
 
         // I could not specify the timeout for waitForResponse() to be longer than 5 seconds, so I will wait for the response after clicking the button without specifying the timeout
         // see https://github.com/kazurayam/htmx-app-in-typescript-with-hono-playwright-on-bun/issues/17

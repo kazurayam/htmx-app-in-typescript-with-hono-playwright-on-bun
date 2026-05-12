@@ -16,13 +16,16 @@ describe('test http://localhost:3001/section4', async () => {
         await page.goto('http://localhost:3001/section4');
         await page.waitForLoadState('load', { timeout: 10_000 });
     })
-    it("click <button hx-get=/yahoo hx-target=#htmx>, then <p id=html></p> should show やっほー!", async () => {
+    it("hx-targetを指定した場合", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-target="#htmx"]');
-        await PW.expect(button).toBeVisible();
+        // make sure the button is clickable
+        await button.waitFor({ state: 'visible', timeout: 10_000 });
+        await PW.expect(button).toBeEnabled();
         // Start waiting for response before clicking. Note no await.
         // See https://playwright.dev/docs/api/class-page#page-wait-for-response
-        const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+        const responsePromise: Promise<PW.Response> =
+            page.waitForResponse(/\/yahoo/, { timeout: 10_000 });
         // Click the button!
         await button.click();
         // await for the response
@@ -32,18 +35,20 @@ describe('test http://localhost:3001/section4', async () => {
         await PW.expect(page.locator('css=p#htmx')).toContainText(/やっほー!/);
         // See https://playwright.dev/docs/api/class-locatorassertions#locator-assertions-to-contain-text
     });
-    it("click <button hx-get=/yahoo hx-target=this> then <button>やっほー!</button> should be rendered", async () => {
+    it("拡張CSSセレクタ this", async () => {
         const button = page.locator('css=button[hx-target="this"]');
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({state: 'visible', timeout: 10000});
+        await PW.expect(button).toBeEnabled();
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
         const response = await responsePromise;
         expect(response.status()).toBe(200);
         await PW.expect(button).toContainText(/やっほー!/);
     })
-    it("click <button hx-get=/yahoo hx-target=closest div> then the innerText B is replaced with やっほー!", async () => {
+    it("拡張CSSセレクタ closest", async () => {
         const button = page.locator('css=button[hx-target="closest div"]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
         const response = await responsePromise;
@@ -53,9 +58,10 @@ describe('test http://localhost:3001/section4', async () => {
         expect(text).not.toMatch(/B/);      // Here I use Jest's expect, not Playwright's expect, just to show that you can use any assertion library you like!
         expect(text).toMatch(/やっほー!/);  // Here I use Jest's toMatch, not Playwright's toContainText, just to show that you can use any assertion library you like!
     });
-    it("click <button hx-get=/yahoo hx-target=find p>", async () => {
+    it("拡張CSSセレクタ find", async () => {
         const button = page.locator('css=button[hx-target="find p"]');
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
         const response = await responsePromise;
@@ -63,9 +69,10 @@ describe('test http://localhost:3001/section4', async () => {
         const p = page.locator('css=button[hx-target="find p"] p:first-child');
         await PW.expect(p).toContainText(/やっほー!/);
     })
-    it("click <button hx-get=/yahoo hx-target=next p>", async () => {
+    it("拡張CSSセレクタ next", async () => {
         const button = page.locator('css=button[hx-target="next p"]');
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
         const response = await responsePromise;
@@ -73,9 +80,10 @@ describe('test http://localhost:3001/section4', async () => {
         const p = page.locator('css=button[hx-target="next p"] + p');
         await PW.expect(p).toContainText(/やっほー!/);
     })
-    it("click <button hx-get/yahoo hx-target=previous p>", async () => {
+    it("拡張CSSセレクタ previous", async () => {
         const button = page.locator('css=button[hx-target="previous p"]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
         const response = await responsePromise;

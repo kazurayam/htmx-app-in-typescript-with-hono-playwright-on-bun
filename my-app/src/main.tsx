@@ -21,8 +21,6 @@ import { Section15 }  from './section15'
 
 const app = new Hono()
 
-app.use('*', serveStatic({ root: './static' }))
-
 app.use(logger())   // https://hono.dev/docs/middleware/builtin/logger
 
 app.onError((err, c) => {
@@ -33,6 +31,8 @@ app.onError((err, c) => {
     console.error('[main] Error occurred:', err);
     return c.text('Internal Server Error', 500);
 })
+
+app.use('*', serveStatic({ root: './static' }))
 
 app.get('/', (c) => {
     const messages = ['Hello htmx']

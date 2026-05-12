@@ -22,7 +22,8 @@ describe('Test if the server is up and running', async () => {
     it("In the Top page, click the link 'Section 3'; then will navigate to another URL where <h1>Section3</h1> is visible", async () => {
         // Select the link
         const link: PW.Locator = page.getByText('Section 3');
-        await PW.expect(link).toBeVisible();
+        await link.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(link).toBeEnabled();
         // Click the link!
         await link.click();
         // Wait for another URL to load

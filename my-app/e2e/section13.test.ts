@@ -56,7 +56,6 @@ describe('test http://localhost:3001/section13', async () => {
         // I don't see what's the use
     })
 
-
     it("htmx:after-request", async () => {
         // I don't see what's the use
     })

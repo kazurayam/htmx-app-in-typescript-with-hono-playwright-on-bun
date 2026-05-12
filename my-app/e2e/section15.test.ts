@@ -17,7 +17,8 @@ describe('test http://localhost:3001/section15', async () => {
     it("hx-ext=head-support hx-head=merge", async () => {
         // click the button with hx-get="/update-head"
         const button = page.locator('css=div[hx-ext="head-support"] > button[hx-get="/update-head"]')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/update-head/, { timeout: 10000 });
         await button.click()
@@ -41,7 +42,8 @@ describe('test http://localhost:3001/section15', async () => {
         })
         // click the button with hx-get="/re-eval-head"
         const button = page.locator('css=div[hx-ext="head-support"] > button[hx-get="/re-eval-head"]')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/re-eval-head/, { timeout: 10000 });
         await button.click()
@@ -54,7 +56,8 @@ describe('test http://localhost:3001/section15', async () => {
     it("hx-ext=head-support hx-head=append", async () => {
         // click the button with hx-get="/append-head"
         const button = page.locator('css=div[hx-ext="head-support"] > button[hx-get="/append-head"]')
-        await PW.expect(button).toBeVisible()
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/append-head/, { timeout: 10000 });
         await button.click();
@@ -71,7 +74,8 @@ describe('test http://localhost:3001/section15', async () => {
 
     it("hx-ext=preload preloadあり", async () => {
         const button = page.locator('css=p#preload-target2 + button[preload]')
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         // click the button with preload attribute
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/hello/, { timeout: 10000 });
@@ -85,7 +89,8 @@ describe('test http://localhost:3001/section15', async () => {
 
     it("hx-ext=response-targets hx-get=/success", async () => {
         const button = page.locator('css=button[hx-get="/success"]')
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         // click the button with hx-get="/success"
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/success/, { timeout: 10000 });
@@ -99,7 +104,8 @@ describe('test http://localhost:3001/section15', async () => {
 
     it("hx-ext=response-targets hx-get=/not-found", async () => {
         const button = page.locator('css=button[hx-get="/not-found"]')
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         // click the button with hx-get="/not-found"
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/not-found/, { timeout: 10000 });
@@ -113,7 +119,8 @@ describe('test http://localhost:3001/section15', async () => {
 
     it("hx-ext=response-targets hx-get=/server-error", async () => {
         const button = page.locator('css=button[hx-get="/server-error"]')
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         // click the button with hx-get="/server-error"
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/server-error/, { timeout: 10000 });

@@ -21,9 +21,11 @@ describe('test http://localhost:3001/section12', async () => {
         await form.locator('css=input[name="title"]').fill('greeting')
         await form.locator('css=input[name="name"]').fill('kazurayam')
         await form.locator('css=input[name="age"]').fill('66')
-        // click the button
         const button = form.locator('button')
-        await PW.expect(button).toBeVisible()
+        // make sure the button is clickable
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
+        // click the button
         // hx-post="/send-form" will take longer longer than 1 second
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/send-form/, { timeout: 10_000 });
@@ -45,6 +47,8 @@ describe('test http://localhost:3001/section12', async () => {
         await form.locator('css=input[name="age"]').fill('66')
         // click the button
         const button = form.locator('css=button')
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/send-form/, { timeout: 10_000 });
         await button.click();
@@ -64,6 +68,8 @@ describe('test http://localhost:3001/section12', async () => {
         input.fill("kazurayam")
         // click the button
         const button = div.locator('css=button')
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/send-form/, { timeout: 10_000 });
         await button.click()
@@ -78,6 +84,8 @@ describe('test http://localhost:3001/section12', async () => {
         // click the button
         const h2 = page.locator('xpath=//h2[contains(text(),"hx-vals")]')
         const button = h2.locator('xpath=following-sibling::button[1]')
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/greeting/, { timeout: 20_000 });
         await button.click()
@@ -91,12 +99,11 @@ describe('test http://localhost:3001/section12', async () => {
     it("hx-vals=js:{lastkey: event.key}", async () => {
         // into the input field, press keys 'L', 'O', 'V', 'E'
         const input = page.locator('css=div[hx-target="#vals-target2"] input')
+        await input.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(input).toBeEnabled();
         const responsePromise: Promise<PW.Response> =
             page.waitForResponse(/\/last-key/, { timeout: 20_000 });
-        input.press("L")
-        input.press("O")
-        input.press("V")
-        input.press("E")
+        input.pressSequentially("LOVE")
         const response = await responsePromise
         expect(response.status()).toBe(200);
         // asser the target <p> contains "lastkey=E"

@@ -16,7 +16,8 @@ describe('test http://localhost:3001/section5', async () => {
 
     it("<button hx-get=/yahoo hx-target=#target1 hx-trigger=click[true]>", async () => {
         const button: PW.Locator = page.locator('css=button[hx-trigger="click[true]"]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
         const response = await responsePromise;
@@ -26,7 +27,8 @@ describe('test http://localhost:3001/section5', async () => {
 
     it("<button hx-get=/yahoo hx-target=#target2 hx-trigger=click[false]>", async () => {
         const button: PW.Locator = page.locator('css=button[hx-trigger="click[false]"]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         // Because of hx-trigger="click[false]", clicking the button will trigger no request will be sent.
         // Therefore I should NOT wait for response here
         //const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
@@ -39,7 +41,8 @@ describe('test http://localhost:3001/section5', async () => {
 
     it("<button hx-get=/yahoo hx-target=#target3 hx-trigger=click[shiftKey]>", async () => {
         const button = page.locator('css=button[hx-trigger="click[shiftKey]"]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click({ modifiers: ['Shift'] });   // Shift + Click
         const response = await responsePromise;
@@ -49,7 +52,8 @@ describe('test http://localhost:3001/section5', async () => {
 
     it("<button hx-get=/yahoo hx-target=#target4 hx-trigger=click[checkGlobalState()]>", async () => {
         const button = page.locator('css=button[hx-trigger="click[checkGlobalState()]"]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click();
         const response = await responsePromise;
@@ -59,7 +63,8 @@ describe('test http://localhost:3001/section5', async () => {
 
     it("<button hx-get=/yahoo hx-target=#target5 hx-trigger=click[shiftKey&&altKey]>", async () => {
         const button = page.locator('css=button[hx-trigger="click[shiftKey&&altKey]"]');
-        await PW.expect(button).toBeVisible();
+        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await PW.expect(button).toBeEnabled();
         const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
         await button.click({ modifiers: ['Shift', 'Alt'] });   // Shift + Alt + Click
         const response = await responsePromise;
