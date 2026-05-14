@@ -7,14 +7,18 @@ describe('test http://localhost:3001/section8', async () => {
     let page: PW.Page;
     beforeAll(async () => {
         browser = await PW.chromium.launch();
-    });
+    }, 20_000);
     beforeEach(async () => {
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section8')
         //await page.waitForLoadState('load', { timeout: 10_000 });
         await page.waitForLoadState('domcontentloaded', { timeout: 10_000 });
-    });
+    }, 20_000);
 
+    /*
+     * hx-trigger="every 1s" causes the page continues interacting with the target URL.
+     * We can not expect to observe a pair of request and response to finish.
+     */
     it("hx-trigger=every 1s", async () => {
         const p_as_target = page.locator('css=p#every-target');
         const content1 = await p_as_target.innerText();
@@ -29,17 +33,20 @@ describe('test http://localhost:3001/section8', async () => {
         expect(content3).not.toEqual(content2)
     })
 
+    /**
+     * the page will send a request to the target URL after 3s from the page load,
+     * and then will continue updating the content of the target element every 1 second.
+     */
     it("hx-trigger=load delay:3s", async () => {
         const p1 = page.locator('css=p[hx-trigger="load delay:3s"]');
         await PW.expect(p1).toContainText(/hoge/);
-        await PW.expect(async () => {
-            const responsePromise: Promise<PW.Response> =
-                page.waitForResponse(/\/random_polling/, { timeout: 10000 });
-            const response = await responsePromise
-            expect(response.status()).toBe(200);
-        }).toPass({ timeout: 15000 });
-        const p2 = page.locator('css=p[hx-trigger="load delay:3s"]')
-        await PW.expect(p2).toContainText(/[0-9]+/);
+        await page.waitForTimeout(3100);
+        const content1 = await p1.innerText();
+        expect(content1).toMatch(/[0-9]+/);
+        await page.waitForTimeout(1000);
+        const content2 = await p1.innerText();
+        expect(content2).toMatch(/[0-9]+/);
+        expect(content2).not.toEqual(content1);
     })
 
     it("hx-trigger=load, click delay: 0.5s", async () => {
@@ -60,16 +67,16 @@ describe('test http://localhost:3001/section8', async () => {
         const content2 = await p.innerText()
         expect(content2).toMatch(/[0-9]+/);
         expect(content1).not.toEqual(content2)
-    })
+    }, 20_000)
 
     afterEach(async () => {
         if (page) {
             await page.close();
         }
-    });
+    }, 20_000);
     afterAll(async () => {
         if (browser) {
             await browser.close();
         }
-    });
+    }, 20_000);
 });

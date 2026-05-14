@@ -5,7 +5,6 @@ import * as PW from '@playwright/test';
 describe('Test if the server is up and running', async () => {
     // Here I assume that the server at http://localhost:3001 is already up and running.
     let browser: PW.Browser;
-    let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
         // launch the browser
@@ -13,10 +12,9 @@ describe('Test if the server is up and running', async () => {
     })
     beforeEach(async () => {
         // Create a new page object and navigate to the Top page
-        context = await browser.newContext();
-        page = await context.newPage();
+        page = await browser.newPage();
         await page.goto('http://localhost:3001');
-        await page.waitForLoadState('networkidle', { timeout: 10_000 });
+        await page.waitForLoadState('load', { timeout: 10_000 });
     })
 
     it("In the Top page, click the link 'Section 3'; then will navigate to another URL where <h1>Section3</h1> is visible", async () => {
@@ -34,10 +32,13 @@ describe('Test if the server is up and running', async () => {
     });
 
     afterEach(async () => {
-        await page.close();
-        await context.close();
+        if (page) {
+            await page.close();
+        }
     })
     afterAll(async () => {
-        await browser.close();
+        if (browser) {
+            await browser.close();
+        }
     })
 })

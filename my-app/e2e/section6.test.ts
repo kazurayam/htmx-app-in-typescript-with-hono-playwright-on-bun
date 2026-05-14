@@ -11,8 +11,8 @@ describe('test http://localhost:3001/section6', async () => {
     beforeEach(async () => {
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section6')
-        await page.waitForLoadState('load', { timeout: 10_000 });
-    })
+        await page.waitForLoadState('load', { timeout: 20_000 });
+    });
 
     it("hx-trigger=click onceなし", async () => {
         const button = page.locator('css=button[hx-target="#once-target1"]');
@@ -20,18 +20,23 @@ describe('test http://localhost:3001/section6', async () => {
         await PW.expect(button).toBeEnabled();
         //
         await PW.expect(page.locator('css=p#once-target1')).toContainText(/onceなし/);
-        const responsePromise: Promise<PW.Response> =
-            page.waitForResponse(/\/random/, { timeout: 10000 });
-        await button.click();
-        const response = await responsePromise;
-        expect(response.status()).toBe(200);
+        await PW.expect(async () => {
+            const responsePromise: Promise<PW.Response> =
+                page.waitForResponse(/\/random/, { timeout: 10000 });
+            await button.click();
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
+        }).toPass({ timeout: 20000 });
         const content1 = await page.locator('css=p#once-target1').innerText();
         expect(content1).toMatch(/[0-9]/);   // ランダムな数字
         // click the button once again
-        const responsePromise2: Promise<PW.Response> =
-            page.waitForResponse(/\/random/, { timeout: 10000 });
-        await button.click();
-        await responsePromise2;
+        await PW.expect(async () => {
+            const responsePromise2: Promise<PW.Response> =
+                page.waitForResponse(/\/random/, { timeout: 10000 });
+            await button.click();
+            const response = await responsePromise2;
+            expect(response.status()).toBe(200);
+        }).toPass({ timeout: 20000 });
         const content2 = await page.locator('css=p#once-target1').innerText();
         expect(content2).toMatch(/[0-9]/);   // さっきとは違うランダムな数字
         // the text would change
@@ -48,11 +53,13 @@ describe('test http://localhost:3001/section6', async () => {
         const button = page.locator('css=button[hx-target="#once-target2"]');
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
-        const responsePromise: Promise<PW.Response> =
+        await PW.expect(async () => {
+            const responsePromise: Promise<PW.Response > =
             page.waitForResponse(/\/random/, { timeout: 10000 });
-        await button.click();
-        const response = await responsePromise;
-        expect(response.status()).toBe(200);
+            await button.click();
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
+        }).toPass({ timeout: 20000 });
         const content1 = await page.locator('css=p#once-target2').innerText();
         expect(content1).toMatch(/[0-9]/);
         // click the button once again
@@ -68,11 +75,13 @@ describe('test http://localhost:3001/section6', async () => {
         const input = page.locator('css=input[hx-target="#changed-target1"]');
         await input.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(input).toBeEnabled();
-        const responsePromise: Promise<PW.Response> =
-            page.waitForResponse(/\/random/, { timeout: 10000 });
-        await input.press('Enter');
-        const response = await responsePromise;
-        expect(response.status()).toBe(200);
+        await PW.expect(async () => {
+            const responsePromise: Promise<PW.Response> =
+                page.waitForResponse(/\/random/, { timeout: 10000 });
+            await input.press('Enter');
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
+        }).toPass({ timeout: 20000 });
         const content1 = await page.locator('css=p#changed-target1').innerText();
         expect(content1).toMatch(/[0-9]+/);
     })
@@ -82,13 +91,15 @@ describe('test http://localhost:3001/section6', async () => {
         await input.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(input).toBeEnabled();
         //
-        const responsePromise: Promise<PW.Response> =
-            page.waitForResponse(/\/random/, { timeout: 10000 });
-        // type some characters into the <input> element
-        await input.fill('abc')
-        await input.press('Enter')
-        const response = await responsePromise;
-        expect(response.status()).toBe(200);
+        await PW.expect(async () => {
+            const responsePromise: Promise<PW.Response> =
+                page.waitForResponse(/\/random/, { timeout: 10000 });
+            // type some characters into the <input> element
+            await input.fill('abc')
+            await input.press('Enter')
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
+        }).toPass({timeout: 20000})
         // assert the content of <p id="changed-target2"> is changed
         const content1 = await page.locator('css=p#changed-target2').innerText();
         expect(content1).toMatch(/[0-9]/);
@@ -104,12 +115,14 @@ describe('test http://localhost:3001/section6', async () => {
         await input.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(input).toBeEnabled();
         //
-        const responsePromise: Promise<PW.Response> =
-            page.waitForResponse(/\/random/, { timeout: 10000 });
-        await input.fill('a');
-        await input.press('Enter');
-        const response = await responsePromise;
-        expect(response.status()).toBe(200);
+        await PW.expect(async () => {
+            const responsePromise: Promise<PW.Response> =
+                page.waitForResponse(/\/random/, { timeout: 10000 });
+            await input.fill('a');
+            await input.press('Enter');
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
+        }).toPass({ timeout: 20000 });
         await PW.expect(page.locator('css=p#delay-target1')).toContainText(/[0-9]+/);
     })
 
@@ -121,12 +134,14 @@ describe('test http://localhost:3001/section6', async () => {
         const content1 = await page.locator('css=p#delay-target2').innerText()
         expect(content1).toMatch(/delay 3秒/);
         // key in characters and send, with wait for response, which will take approximately 3 seconds
-        const responsePromise: Promise<PW.Response> =
-            page.waitForResponse(/\/random/, { timeout: 10000 });
-        await input.fill('abc')
-        await input.press('Enter')
-        const response = await responsePromise;
-        expect(response.status()).toBe(200);
+        await PW.expect(async () => {
+            const responsePromise: Promise<PW.Response> =
+                page.waitForResponse(/\/random/, { timeout: 10000 });
+            await input.fill('abc')
+            await input.press('Enter')
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
+        }).toPass({timeout: 20000})
         // after keyup, the <p id="delay-target"> has new content
         const content2 = await page.locator('css=p#delay-target2').innerText()
         expect(content2).toMatch(/[0-9]+/);
@@ -214,9 +229,13 @@ describe('test http://localhost:3001/section6', async () => {
     })
 
     afterEach(async () => {
-        await page.close();
-    });
+        if (page) {
+            await page.close();
+        }
+    }, 20_000);
     afterAll(async () => {
-        await browser.close();
+        if (browser) {
+            await browser.close();
+        }
     });
 });

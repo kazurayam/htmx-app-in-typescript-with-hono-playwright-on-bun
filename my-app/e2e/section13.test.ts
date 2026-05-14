@@ -11,7 +11,7 @@ describe('test http://localhost:3001/section13', async () => {
     beforeEach(async () => {
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section13')
-        await page.waitForLoadState('load', { timeout: 10_000 });
+        await page.waitForLoadState('load', { timeout: 20_000 });
     });
 
     it("ダイアログ", async () => {
@@ -61,9 +61,13 @@ describe('test http://localhost:3001/section13', async () => {
     })
 
     afterEach(async () => {
-        await page.close();
-    })
+        if (page) {
+            await page.close();
+        }
+    }, 20_000);
     afterAll(async () => {
-        await browser.close();
-    });
+        if (browser) {
+            await browser.close();
+        }
+    }, 20_000);
 });

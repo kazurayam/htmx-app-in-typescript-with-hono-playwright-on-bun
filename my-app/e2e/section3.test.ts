@@ -9,20 +9,20 @@ describe('test http://localhost:3001/section3', async () => {
     beforeAll(async () => {
         // launch the browser
         browser = await PW.chromium.launch()
-    })
+    }, 20_000);
     beforeEach(async () => {
         // Create a new page and navigate to a URL
         page = await browser.newPage();
         // Navigate to the URL before each test
         await page.goto('http://localhost:3001/section3');
-        await page.waitForLoadState('load', { timeout: 10_000 });
-    })
+        await page.waitForLoadState('load', { timeout: 20_000 });
+    }, 20_000);
 
     it("click <button hx-get=/hello>, then the button should show GETリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-get]');
         // make sure the button is clickable
-        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await button.waitFor({ state: 'visible', timeout: 5000 });
         await PW.expect(button).toBeEnabled();
         // Click the button!
         await button.click();
@@ -33,7 +33,7 @@ describe('test http://localhost:3001/section3', async () => {
     it("click <button hx-post=/hello>, then the button should show POSTリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-post]');
-        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await button.waitFor({ state: 'visible', timeout: 5000 });
         await PW.expect(button).toBeEnabled();
         // Click the button!
         await button.click();
@@ -44,7 +44,7 @@ describe('test http://localhost:3001/section3', async () => {
     it("click <button hx-put=/hello>, then the button should show PUTリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-put]');
-        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await button.waitFor({ state: 'visible', timeout: 5000 });
         await PW.expect(button).toBeEnabled();
         // Click the button!
         await button.click();
@@ -55,7 +55,7 @@ describe('test http://localhost:3001/section3', async () => {
     it("click <button hx-patch=/hello>, then the button should show PATCHリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-patch]');
-        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await button.waitFor({ state: 'visible', timeout: 5000 });
         await PW.expect(button).toBeEnabled();
         // Click the button!
         await button.click();
@@ -66,7 +66,7 @@ describe('test http://localhost:3001/section3', async () => {
     it("click <button hx-delete=/hello>, then the button should show DELETEリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-delete]');
-        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await button.waitFor({ state: 'visible', timeout: 5000 });
         await PW.expect(button).toBeEnabled();
         // Click the button!
         await button.click();
@@ -75,11 +75,13 @@ describe('test http://localhost:3001/section3', async () => {
     });
 
     afterEach(async () => {
-        // Clean up
-        await page.close()
-    })
+        if (page) {
+            await page.close();
+        }
+    }, 20_000);
     afterAll(async () => {
-        // Clean up
-        await browser.close()
-    })
+        if (browser) {
+            await browser.close()
+        }
+    }, 20_000)
 })

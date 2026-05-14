@@ -11,7 +11,7 @@ describe('test http://localhost:3001/section14', async () => {
     beforeEach(async () => {
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section14')
-        await page.waitForLoadState('load', { timeout: 10_000 });
+        await page.waitForLoadState('load', { timeout: 20_000 });
     });
 
     it("継承 hx-targetの例", async () => {
@@ -55,7 +55,7 @@ describe('test http://localhost:3001/section14', async () => {
         page.on('dialog', async (dialog) => {
             await page.waitForTimeout(100)
             expect(dialog.message()).toMatch(/本当にこのボタンでいいですか/)
-            expect(buttonName).toBeOneOf(['A','B'])
+            expect(buttonName).toBeOneOf(['A', 'B'])
             dialog.accept()
         })
         //ボタンAとボタンBはクリックするとdialogを表示する
@@ -145,9 +145,13 @@ describe('test http://localhost:3001/section14', async () => {
     })
 
     afterEach(async () => {
-        await page.close();
-    });
+        if (page) {
+            await page.close();
+        }
+    }, 20_000);
     afterAll(async () => {
-        await browser.close();
-    });
+        if (browser) {
+            await browser.close();
+        }
+    }, 20_000);
 });

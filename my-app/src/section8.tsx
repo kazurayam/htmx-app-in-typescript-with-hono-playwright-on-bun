@@ -8,7 +8,7 @@ export const Section8: FC = () => {
             <div class="section-contents">
                 <h1>Section8</h1>
 
-                <h2>every</h2>
+                <h2>every 1s</h2>
                 <p id="every-target">foo</p>
                 <p hx-target="#every-target" hx-get="/random" hx-trigger="every 1s">hoge</p>
 

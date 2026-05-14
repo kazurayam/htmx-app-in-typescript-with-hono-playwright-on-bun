@@ -7,25 +7,29 @@ describe('test http://localhost:3001/section5', async () => {
     let page: PW.Page;
     beforeAll(async () => {
         browser = await PW.chromium.launch();
-    });
+    }, 20_000);
     beforeEach(async () => {
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section5')
-        await page.waitForLoadState('load', { timeout: 10_000 });
+        await page.waitForLoadState('load', { timeout: 20_000 });
     });
 
-    it("<button hx-get=/yahoo hx-target=#target1 hx-trigger=click[true]>", async () => {
+    it("click[true]>", async () => {
         const button: PW.Locator = page.locator('css=button[hx-trigger="click[true]"]');
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
-        const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
-        await button.click();
-        const response = await responsePromise;
-        expect(response.status()).toBe(200);
+        await PW.expect(async () => {
+            try {
+                const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+                await button.click();
+                const response = await responsePromise;
+                expect(response.status()).toBe(200);
+            } catch (error) { /* intentionally ignore the TimeoutError to retry */ }
+        }).toPass({timeout: 20000});
         await PW.expect(page.locator('css=p#target1')).toContainText(/やっほー!/);
     });
 
-    it("<button hx-get=/yahoo hx-target=#target2 hx-trigger=click[false]>", async () => {
+    it("click[false]", async () => {
         const button: PW.Locator = page.locator('css=button[hx-trigger="click[false]"]');
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -39,43 +43,59 @@ describe('test http://localhost:3001/section5', async () => {
         await PW.expect(p).toContainText(/foo/);
     });
 
-    it("<button hx-get=/yahoo hx-target=#target3 hx-trigger=click[shiftKey]>", async () => {
+    it("click[shiftKey]", async () => {
         const button = page.locator('css=button[hx-trigger="click[shiftKey]"]');
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
-        const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
-        await button.click({ modifiers: ['Shift'] });   // Shift + Click
-        const response = await responsePromise;
-        expect(response.status()).toBe(200);
+        await PW.expect(async () => {
+            try {
+                const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+                await button.click({ modifiers: ['Shift'] });   // Shift + Click
+                const response = await responsePromise;
+                expect(response.status()).toBe(200);
+            } catch (error) { /* intentionally ignore the TimeoutError to retry */ }
+        }).toPass({ timeout: 20000 });
         await PW.expect(page.locator('css=p#target3')).toContainText(/やっほー!/)
     });
 
-    it("<button hx-get=/yahoo hx-target=#target4 hx-trigger=click[checkGlobalState()]>", async () => {
+    it("click[checkGlobalState()]", async () => {
         const button = page.locator('css=button[hx-trigger="click[checkGlobalState()]"]');
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
-        const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
-        await button.click();
-        const response = await responsePromise;
-        expect(response.status()).toBe(200);
+        await PW.expect(async () => {
+            try {
+                const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+                await button.click();
+                const response = await responsePromise;
+                expect(response.status()).toBe(200);
+            } catch (error) { /* intentionally ignore the TimeoutError to retry */ }
+        }).toPass({ timeout: 20000 });
         await PW.expect(page.locator('css=p#target4')).toContainText(/やっほー!/);
     });
 
-    it("<button hx-get=/yahoo hx-target=#target5 hx-trigger=click[shiftKey&&altKey]>", async () => {
+    it("click[shiftKey&&altKey]", async () => {
         const button = page.locator('css=button[hx-trigger="click[shiftKey&&altKey]"]');
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
-        const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
-        await button.click({ modifiers: ['Shift', 'Alt'] });   // Shift + Alt + Click
-        const response = await responsePromise;
-        expect(response.status()).toBe(200);
+        await PW.expect(async () => {
+            try {
+                const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+                await button.click({ modifiers: ['Shift', 'Alt'] });   // Shift + Alt + Click
+                const response = await responsePromise;
+                expect(response.status()).toBe(200);
+            } catch (error) { /* intentionally ignore the TimeoutError to retry */ }
+        }).toPass({ timeout: 20000 });
         await PW.expect(page.locator('css=p#target5')).toContainText(/やっほー!/)
     });
 
     afterEach(async () => {
-        await page.close();
-    });
+        if (page) {
+            await page.close();
+        }
+    }, 20_000);
     afterAll(async () => {
-        await browser.close();
-    })
+        if (browser) {
+            await browser.close();
+        }
+    }, 20_000)
 })

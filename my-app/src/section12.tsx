@@ -10,7 +10,7 @@ export const Section12: FC = () => {
                 <h1>Section12</h1>
 
                 <h2>hx-params</h2>
-                <h2>*</h2>
+                <h3>*</h3>
                 <p id="all-target">foo</p>
                 <form hx-post="/send-form" hx-params="*" hx-target="#all-target">
                     <input name="title" type="text" placeholder="タイトル" />
@@ -19,7 +19,7 @@ export const Section12: FC = () => {
                     <button type="submit">送信</button>
                 </form>
 
-                <h2>none</h2>
+                <h3>none</h3>
                 <p id="none-target">foo</p>
                 <form hx-post="/send-form" hx-params="none" hx-target="#none-target">
                     <input name="title" type="text" placeholder="タイトル" />
@@ -28,7 +28,7 @@ export const Section12: FC = () => {
                     <button type="submit">送信</button>
                 </form>
 
-                <h2>param-list</h2>
+                <h3>param-list</h3>
                 <p id="param-target">foo</p>
                 <form hx-post="/send-form" hx-params="title,age" hx-target="#param-target">
                     <input name="title" type="text" placeholder="タイトル" />
@@ -37,7 +37,7 @@ export const Section12: FC = () => {
                     <button type="submit">送信</button>
                 </form>
 
-                <h2>not param-list</h2>
+                <h3>not param-list</h3>
                 <p id="no-param-target">foo</p>
                 <form hx-post="/send-form" hx-params="not title,age" hx-target="#no-param-target">
                     <input name="title" type="text" placeholder="タイトル" />
