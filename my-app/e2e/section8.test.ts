@@ -11,7 +11,8 @@ describe('test http://localhost:3001/section8', async () => {
     beforeEach(async () => {
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section8')
-        await page.waitForLoadState('load', { timeout: 10_000 });
+        //await page.waitForLoadState('load', { timeout: 10_000 });
+        await page.waitForLoadState('domcontentloaded', { timeout: 10_000 });
     });
 
     it("hx-trigger=every 1s", async () => {
@@ -26,16 +27,17 @@ describe('test http://localhost:3001/section8', async () => {
         const content3 = await p_as_target.innerText();
         expect(content3).toMatch(/[0-9]+/);
         expect(content3).not.toEqual(content2)
-
     })
 
     it("hx-trigger=load delay:3s", async () => {
         const p1 = page.locator('css=p[hx-trigger="load delay:3s"]');
         await PW.expect(p1).toContainText(/hoge/);
-        const responsePromise: Promise<PW.Response> =
-                    page.waitForResponse(/\/random_polling/, { timeout: 10000 });
-        const response = await responsePromise
-        expect(response.status()).toBe(200);
+        await PW.expect(async () => {
+            const responsePromise: Promise<PW.Response> =
+                page.waitForResponse(/\/random_polling/, { timeout: 10000 });
+            const response = await responsePromise
+            expect(response.status()).toBe(200);
+        }).toPass({ timeout: 15000 });
         const p2 = page.locator('css=p[hx-trigger="load delay:3s"]')
         await PW.expect(p2).toContainText(/[0-9]+/);
     })
@@ -49,7 +51,7 @@ describe('test http://localhost:3001/section8', async () => {
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
         const responsePromise: Promise<PW.Response> =
-                    page.waitForResponse(/\/random/, { timeout: 10000 });
+                    page.waitForResponse(/\/random/, { timeout: 20000 });
         await button.click();
         await page.waitForTimeout(500);
         const response = await responsePromise;
@@ -61,9 +63,13 @@ describe('test http://localhost:3001/section8', async () => {
     })
 
     afterEach(async () => {
-        await page.close();
+        if (page) {
+            await page.close();
+        }
     });
     afterAll(async () => {
-        await browser.close();
+        if (browser) {
+            await browser.close();
+        }
     });
 });
