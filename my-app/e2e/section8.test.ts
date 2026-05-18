@@ -6,10 +6,20 @@ describe('test http://localhost:3001/section8', async () => {
     let browser: PW.Browser;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await PW.chromium.launch();
+        try {
+            browser = await PW.chromium.launch();
+        } catch (error) {
+            console.error('Error launching the browser:', error);
+            throw error;
+        }
     }, 20_000);
     beforeEach(async () => {
-        page = await browser.newPage();
+        try {
+            page = await browser.newPage();
+        } catch (error) {
+            console.error('Error creating a new page:', error);
+            throw error;
+        }
         await page.goto('http://localhost:3001/section8')
         //await page.waitForLoadState('load', { timeout: 10_000 });
         await page.waitForLoadState('domcontentloaded', { timeout: 10_000 });

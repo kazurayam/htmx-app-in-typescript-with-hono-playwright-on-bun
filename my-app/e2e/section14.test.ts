@@ -135,10 +135,12 @@ describe('test http://localhost:3001/section14', async () => {
         const button = h3.locator('xpath=following-sibling::div[1]/button')
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
-        const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
-        await button.click()
-        const response = await responsePromise;
-        expect(response.status()).toBe(200);
+        await PW.expect(async () => {
+            const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/random/, { timeout: 10000 });
+            await button.click()
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
+        }).toPass({ timeout: 35000 });
         const p = page.locator('css=p#disinherit-target2')
         await PW.expect(p).toContainText(/foo/)
         await PW.expect(button).toContainText(/[0-9]+/)

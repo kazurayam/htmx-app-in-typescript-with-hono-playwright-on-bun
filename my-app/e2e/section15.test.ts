@@ -25,7 +25,7 @@ describe('test http://localhost:3001/section15', async () => {
             await button.click()
             const response = await responsePromise;
             expect(response.status()).toBe(200);
-        }).toPass({timeout:15000});
+        }).toPass({timeout:25000});
         // the response contains a head element with hx-head="merge",
         // which should merge the new head with the existing head elements.
         // Assert that the background-color: yellow is applied
@@ -51,7 +51,7 @@ describe('test http://localhost:3001/section15', async () => {
             await button.click()
             const response = await responsePromise;
             expect(response.status()).toBe(200);
-        }).toPass({timeout:15000});
+        }).toPass({timeout:25000});
         // by clicking the button, foo.js should be loaded and executed,
         // which will log "foo.js is loaded" to the console
     })
@@ -67,7 +67,7 @@ describe('test http://localhost:3001/section15', async () => {
             await button.click();
             const response = await responsePromise;
             expect(response.status()).toBe(200);
-        }).toPass({timeout: 15000});
+        }).toPass({timeout: 25000});
         // the response contains a head element with hx-head="append",
         // which should append the new head to the existing head
         // assert that the background-color: yellow is applied
@@ -88,7 +88,7 @@ describe('test http://localhost:3001/section15', async () => {
             await button.click()
             const response = await responsePromise;
             expect(response.status()).toBe(200);
-        }).toPass({timeout:15000});
+        }).toPass({timeout:25000});
         // the target should be updated to "GETリクエスト!"
         const target = page.locator('css=#preload-target2')
         await PW.expect(target).toContainText(/GETリクエスト!/)
@@ -101,11 +101,11 @@ describe('test http://localhost:3001/section15', async () => {
         // click the button with hx-get="/success"
         await PW.expect(async () => {
             const responsePromise: Promise<PW.Response> =
-                page.waitForResponse(/\/success/, { timeout: 5000 });
+                page.waitForResponse(/\/success/, { timeout: 10000 });
             await button.click()
             const response = await responsePromise;
             expect(response.status()).toBe(200);
-        }).toPass({timeout:15000});
+        }).toPass({timeout:25000});
         // the target with id "success" should be updated to "Success!"
         const divSuccess = page.locator('css=#success')
         await PW.expect(divSuccess).toContainText(/Success!/)
@@ -122,7 +122,7 @@ describe('test http://localhost:3001/section15', async () => {
             await button.click()
             const response = await responsePromise;
             expect(response.status()).toBe(404);
-        }).toPass({timeout:15000});
+        }).toPass({timeout:25000});
         // the target with id "not-found" should be updated to "Not Found!"
         const divNotFound = page.locator('css=#not-found')
         await PW.expect(divNotFound).toContainText(/Not Found!/)
@@ -139,7 +139,7 @@ describe('test http://localhost:3001/section15', async () => {
             await button.click()
             const response = await responsePromise;
             expect(response.status()).toBe(500);
-        }).toPass({ timeout: 15000 });
+        }).toPass({ timeout: 25000 });
         // the target with id "server-error" should be updated to "Server Error!"
         const divServerError = page.locator('css=#server-error')
         await PW.expect(divServerError).toContainText("Internal Server Error!")

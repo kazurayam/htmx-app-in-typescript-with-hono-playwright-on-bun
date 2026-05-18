@@ -8,14 +8,14 @@ describe('test http://localhost:3001/section4', async () => {
     let page: PW.Page;
     beforeAll(async () => {
         // launch the browser
-        browser = await PW.chromium.launch()
-    }, 20_000);
+        browser = await PW.firefox.launch({ headless: false });
+    }, 10_000);
     beforeEach(async () => {
         // Create a new page and navigate to a URL
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section4');
-        await page.waitForLoadState('load', { timeout: 20_000 });
-    }, 20_000);
+        await page.waitForLoadState('load', { timeout: 10_000 });
+bu    }, 10_000);
 
     it("hx-targetを指定した場合", async () => {
         // Select the button
@@ -25,100 +25,110 @@ describe('test http://localhost:3001/section4', async () => {
         await PW.expect(button).toBeEnabled();
         // Start waiting for response before clicking. Note no await.
         // See https://playwright.dev/docs/api/class-page#page-wait-for-response
-        let counter = 0;
         await PW.expect(async () => {
-            // console.log(`Clicking the button... (attempt ${++counter})`)
-            try {
-                const responsePromise: Promise<PW.Response> =
-                    page.waitForResponse(/\/yahoo/, { timeout: 10_000 });
-                // Click the button!
-                await button.click();   // a hydration issue may prevent the button.click() to work.
-                // await for the response
-                const response: PW.Response = await responsePromise;
-                expect(response.status()).toBe(200);
-            } catch (error) {
-                console.log("Error in waiting for response or clicking the button, retrying...", error);
-            }
-        }).toPass({ timeout: 35000 });  // retry the function as argument until the assertions inside the func pass.
+            const responsePromise: Promise<PW.Response> =
+                page.waitForResponse(/\/yahoo/, { timeout: 5_000 });
+            // Click the button!
+            await button.click();   // a hydration issue may prevent the button.click() to work.
+            // await for the response
+            const response: PW.Response = await responsePromise;
+            expect(response.status()).toBe(200);
+        }).toPass({
+            intervals: [1_000, 2_000, 10_000],
+            timeout: 25000
+        });  // retry the function as argument until the assertions inside the func pass.
         // assert expected text to appear
         await PW.expect(page.locator('css=p#htmx')).toContainText(/やっほー!/);
         // See https://playwright.dev/docs/api/class-locatorassertions#locator-assertions-to-contain-text
     }, 30_000);
+
     it("拡張CSSセレクタ this", async () => {
         const button = page.locator('css=button[hx-target="this"]');
-        await button.waitFor({state: 'visible', timeout: 10_000});
+        await button.waitFor({ state: 'visible', timeout: 5_000 });
         await PW.expect(button).toBeEnabled();
-        let counter = 0;
         await PW.expect(async () => {
-            //console.log(`Clicking the button... (attempt ${++counter})`)
-            try {
-                const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
-                await button.click();
-                const response = await responsePromise;
-                expect(response.status()).toBe(200);
-            } catch (error) { /* intentionally ignore error to retry */ }
-        }).toPass({ timeout: 25000 });
+            const responsePromise =
+                page.waitForResponse(/\/yahoo/, { timeout: 5000 });
+            await button.click();
+            const response = await responsePromise;
+            expect(response.status()).toBe(200)
+        }).toPass({
+            intervals: [1_000, 2_000, 10_000],
+            timeout: 25000
+        });
         await PW.expect(button).toContainText(/やっほー!/);
     })
+
     it("拡張CSSセレクタ closest", async () => {
         const button = page.locator('css=button[hx-target="closest div"]');
-        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await button.waitFor({ state: 'visible', timeout: 5000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-            try {
-                const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
-                await button.click();
-                const response = await responsePromise;
-                expect(response.status()).toBe(200);
-            } catch (error) { /* intentionally ignore error to retry */ }
-        }).toPass({ timeout: 25000 });
+            const responsePromise =
+                page.waitForResponse(/\/yahoo/, { timeout: 5000 });
+            await button.click();
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
+        }).toPass({
+            intervals: [1_000, 2_000, 10_000],
+            timeout: 25000
+        });
         const closestDiv = page.locator('xpath=//h3[text()="closest CSSセレクタ"]/following-sibling::div[1]/div')
         const text: string = await closestDiv.innerText()
         expect(text).not.toMatch(/B/);      // Here I use Jest's expect, not Playwright's expect, just to show that you can use any assertion library you like!
         expect(text).toMatch(/やっほー!/);  // Here I use Jest's toMatch, not Playwright's toContainText, just to show that you can use any assertion library you like!
     });
+
     it("拡張CSSセレクタ find", async () => {
         const button = page.locator('css=button[hx-target="find p"]');
-        await button.waitFor({ state: 'visible', timeout: 10_000 });
+        await button.waitFor({ state: 'visible', timeout: 5_000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-            try {
-                const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
-                await button.click();
-                const response = await responsePromise;
-                expect(response.status()).toBe(200);
-            } catch (error) { /* intentionally ignore error to retry */ }
-        }).toPass({ timeout: 25000 });
+            const responsePromise =
+                page.waitForResponse(/\/yahoo/, { timeout: 5000 });
+            await button.click();
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
+        }).toPass({
+            intervals: [1_000, 2_000, 10_000],
+            timeout: 25000
+        });
         const p = page.locator('css=button[hx-target="find p"] p:first-child');
         await PW.expect(p).toContainText(/やっほー!/);
     })
+
     it("拡張CSSセレクタ next", async () => {
         const button = page.locator('css=button[hx-target="next p"]');
-        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await button.waitFor({ state: 'visible', timeout: 5000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-            try {
-                const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
-                await button.click();
-                const response = await responsePromise;
-                expect(response.status()).toBe(200);
-            } catch (error) { /* intentionally ignore error to retry */ }
-        }).toPass({ timeout: 25000 });
+            const responsePromise =
+                page.waitForResponse(/\/yahoo/, { timeout: 5000 });
+            await button.click();
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
+        }).toPass({
+            intervals: [1_000, 2_000, 10_000],
+            timeout: 25000
+        });
         const p = page.locator('css=button[hx-target="next p"] + p');
         await PW.expect(p).toContainText(/やっほー!/);
     })
+
     it("拡張CSSセレクタ previous", async () => {
         const button = page.locator('css=button[hx-target="previous p"]');
-        await button.waitFor({ state: 'visible', timeout: 10_000 });
+        await button.waitFor({ state: 'visible', timeout: 5_000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-            try {
-                const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
-                await button.click();
-                const response = await responsePromise;
-                expect(response.status()).toBe(200);
-            } catch (error) { /* intentionally ignore error to retry */ }
-        }).toPass({ timeout: 25000 });
+            const responsePromise =
+                page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+            await button.click();
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
+        }).toPass({
+            intervals: [1_000, 2_000, 10_000],
+            timeout: 25000
+        });
         const p = page.locator('xpath=//button[@hx-target="previous p"]/preceding-sibling::p[1]');
         await PW.expect(p).toContainText(/やっほー!/);
     })

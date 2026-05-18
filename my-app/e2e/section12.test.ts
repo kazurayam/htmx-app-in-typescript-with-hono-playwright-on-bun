@@ -4,12 +4,14 @@ import * as PW from '@playwright/test';
 
 describe('test http://localhost:3001/section12', async () => {
     let browser: PW.Browser;
+    let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
         browser = await PW.chromium.launch();
+        context = await browser.newContext();
     }, 20_000);
     beforeEach(async () => {
-        page = await browser.newPage();
+        page = await context.newPage();
         await page.goto('http://localhost:3001/section12')
         await page.waitForLoadState('load', { timeout: 20_000 });
     }, 20_000);
@@ -28,13 +30,11 @@ describe('test http://localhost:3001/section12', async () => {
         // click the button
         // hx-post="/send-form" will take longer longer than 1 second
         await PW.expect(async () => {
-            try {
                 const responsePromise: Promise<PW.Response> =
                     page.waitForResponse(/\/send-form/, { timeout: 5_000 });
                 await button.click()
                 const response: PW.Response = await responsePromise;
                 expect(response.status()).toBe(200);
-            } catch (error) { /* intentionally ignore the TimeoutError to retry */ }
         }).toPass({ timeout: 15000 });
         // assert the target to contain "title=aaa&name=bbb&age=66"
         await PW.expect(page.locator('css=p#all-target'))
@@ -54,13 +54,11 @@ describe('test http://localhost:3001/section12', async () => {
         await button.waitFor({ state: 'visible', timeout: 5000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-            try {
                 const responsePromise: Promise<PW.Response> =
                     page.waitForResponse(/\/send-form/, { timeout: 5_000 });
                 await button.click();
                 const response = await responsePromise;
                 expect(response.status()).toBe(200);
-            } catch (error) { /* intentionally ignore the TimeoutError to retry */ }
         }).toPass({ timeout: 15000 });
         // assert the target to contain "title=aaa&age=66"
         await PW.expect(page.locator('css=p#param-target'))
@@ -81,13 +79,11 @@ describe('test http://localhost:3001/section12', async () => {
             await PW.expect(button).toBeEnabled();
         }).toPass({timeout: 15000});
         await PW.expect(async () => {
-            try {
                 const responsePromise: Promise<PW.Response> =
                     page.waitForResponse(/\/send-form/, { timeout: 10_000 });
                 await button.click()
                 const response = await responsePromise;
                 expect(response.status()).toBe(200);
-            } catch (error) { /* intentionally ignore the TimeoutError to retry */ }
         }).toPass({ timeout: 25000 });
         // assert the target <p> contains "name=kazurayam"
         const p = page.locator('css=p#include-target')
@@ -103,13 +99,11 @@ describe('test http://localhost:3001/section12', async () => {
         let counter = 0;
         await PW.expect(async () => {
             //console.log(`Clicking the button... (attempt ${++counter})`)
-            try {
                 const responsePromise: Promise<PW.Response> =
                     page.waitForResponse(/\/greeting/, { timeout: 10_000 });
                 await button.click()
                 const response = await responsePromise;
                 expect(response.status()).toBe(200);
-            } catch (error) { /* intentionally ignore the TimeoutError to retry */ }
         }).toPass({ timeout: 25000 });
         // assert the target <p> contains "title=Hello&name=Taro"
         const p = page.locator('css=p#vals-target1')
@@ -125,13 +119,11 @@ describe('test http://localhost:3001/section12', async () => {
         let counter = 0;
         await PW.expect(async () => {
             //console.log(`Pressing keys... (attempt ${++counter})`)
-            try {
-                const responsePromise: Promise<PW.Response> =
-                    page.waitForResponse(/\/last-key/, { timeout: 5_000 });
-                input.pressSequentially("LOVE")
-                const response = await responsePromise
-                expect(response.status()).toBe(200);
-            } catch (error) { }
+            const responsePromise: Promise<PW.Response> =
+                page.waitForResponse(/\/last-key/, { timeout: 5_000 });
+            input.pressSequentially("LOVE")
+            const response = await responsePromise
+            expect(response.status()).toBe(200);
         }).toPass({ timeout: 15000 });
         // asser the target <p> contains "lastkey=E"
         const p = page.locator('css=p#vals-target2')
@@ -145,6 +137,9 @@ describe('test http://localhost:3001/section12', async () => {
         }
     }, 20_000);
     afterAll(async () => {
+        if (context) {
+            await context.close();
+        }
         if (browser) {
             await browser.close();
         }

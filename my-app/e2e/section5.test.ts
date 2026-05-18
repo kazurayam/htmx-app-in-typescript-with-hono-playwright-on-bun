@@ -19,13 +19,11 @@ describe('test http://localhost:3001/section5', async () => {
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-            try {
-                const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
-                await button.click();
-                const response = await responsePromise;
-                expect(response.status()).toBe(200);
-            } catch (error) { /* intentionally ignore the TimeoutError to retry */ }
-        }).toPass({timeout: 20000});
+            const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+            await button.click();
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
+        }).toPass({ timeout: 20000 });
         await PW.expect(page.locator('css=p#target1')).toContainText(/やっほー!/);
     });
 
@@ -48,12 +46,10 @@ describe('test http://localhost:3001/section5', async () => {
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-            try {
-                const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
-                await button.click({ modifiers: ['Shift'] });   // Shift + Click
-                const response = await responsePromise;
-                expect(response.status()).toBe(200);
-            } catch (error) { /* intentionally ignore the TimeoutError to retry */ }
+            const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+            await button.click({ modifiers: ['Shift'] });   // Shift + Click
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
         }).toPass({ timeout: 20000 });
         await PW.expect(page.locator('css=p#target3')).toContainText(/やっほー!/)
     });
@@ -63,12 +59,10 @@ describe('test http://localhost:3001/section5', async () => {
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-            try {
-                const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
-                await button.click();
-                const response = await responsePromise;
-                expect(response.status()).toBe(200);
-            } catch (error) { /* intentionally ignore the TimeoutError to retry */ }
+            const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+            await button.click();
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
         }).toPass({ timeout: 20000 });
         await PW.expect(page.locator('css=p#target4')).toContainText(/やっほー!/);
     });
@@ -78,12 +72,10 @@ describe('test http://localhost:3001/section5', async () => {
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-            try {
-                const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
-                await button.click({ modifiers: ['Shift', 'Alt'] });   // Shift + Alt + Click
-                const response = await responsePromise;
-                expect(response.status()).toBe(200);
-            } catch (error) { /* intentionally ignore the TimeoutError to retry */ }
+            const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+            await button.click({ modifiers: ['Shift', 'Alt'] });   // Shift + Alt + Click
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
         }).toPass({ timeout: 20000 });
         await PW.expect(page.locator('css=p#target5')).toContainText(/やっほー!/)
     });
