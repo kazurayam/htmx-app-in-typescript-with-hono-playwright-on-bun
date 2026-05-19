@@ -4,15 +4,18 @@ import * as PW from '@playwright/test';
 
 describe('test http://localhost:3001/section14', async () => {
     let browser: PW.Browser;
+    let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
         browser = await PW.chromium.launch({ headless: true });
-    });
+        context = await browser.newContext();
+        context.tracing.start({ screenshots: true, snapshots: true })
+    }, 10000);
     beforeEach(async () => {
-        page = await browser.newPage();
+        page = await context.newPage();
         await page.goto('http://localhost:3001/section14')
-        await page.waitForLoadState('load', { timeout: 20_000 });
-    });
+        await page.waitForLoadState('load', { timeout: 10_000 });
+    }, 10000);
 
     it("継承 hx-targetの例", async () => {
         const div = page.locator('css=div[hx-target="#target1"]')
@@ -153,6 +156,7 @@ describe('test http://localhost:3001/section14', async () => {
     }, 20_000);
     afterAll(async () => {
         if (browser) {
+            await context.tracing.stop({ path: `./traces/${Date.now()}-section14.zip` });
             await browser.close();
         }
     }, 20_000);

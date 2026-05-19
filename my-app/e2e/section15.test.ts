@@ -4,15 +4,18 @@ import * as PW from '@playwright/test';
 
 describe('test http://localhost:3001/section15', async () => {
     let browser: PW.Browser;
+    let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
         browser = await PW.chromium.launch({ headless: true });
-    }, 20_000);
+        context = await browser.newContext();
+        context.tracing.start({ screenshots:true, snapshots: true})
+    }, 10_000);
     beforeEach(async () => {
-        page = await browser.newPage();
+        page = await context.newPage();
         await page.goto('http://localhost:3001/section15')
-        await page.waitForLoadState('load', { timeout: 20_000 });
-    }, 20_000);
+        await page.waitForLoadState('load', { timeout: 10_000 });
+    }, 10_000);
 
     it("hx-ext=head-support hx-head=merge", async () => {
         // click the button with hx-get="/update-head"
@@ -157,6 +160,7 @@ describe('test http://localhost:3001/section15', async () => {
     }, 20_000);
     afterAll(async () => {
         if (browser) {
+            await context.tracing.stop({ path: `./traces/${Date.now()}-section15.zip` });
             await browser.close();
         }
     }, 20_000);

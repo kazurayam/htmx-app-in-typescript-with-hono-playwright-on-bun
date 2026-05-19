@@ -4,26 +4,19 @@ import * as PW from '@playwright/test';
 
 describe('test http://localhost:3001/section8', async () => {
     let browser: PW.Browser;
+    let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
-        try {
-            browser = await PW.chromium.launch();
-        } catch (error) {
-            console.error('Error launching the browser:', error);
-            throw error;
-        }
-    }, 20_000);
+        browser = await PW.chromium.launch({ headless: true });
+        context = await browser.newContext();
+        context.tracing.start({ screenshots:true, snapshots: true})
+    }, 10_000);
     beforeEach(async () => {
-        try {
-            page = await browser.newPage();
-        } catch (error) {
-            console.error('Error creating a new page:', error);
-            throw error;
-        }
+        page = await context.newPage();
         await page.goto('http://localhost:3001/section8')
         //await page.waitForLoadState('load', { timeout: 10_000 });
         await page.waitForLoadState('domcontentloaded', { timeout: 10_000 });
-    }, 20_000);
+    }, 10_000);
 
     /*
      * hx-trigger="every 1s" causes the page continues interacting with the target URL.
@@ -86,6 +79,7 @@ describe('test http://localhost:3001/section8', async () => {
     }, 20_000);
     afterAll(async () => {
         if (browser) {
+            await context.tracing.stop({ path: `./traces/${Date.now()}-section8.zip` });
             await browser.close();
         }
     }, 20_000);

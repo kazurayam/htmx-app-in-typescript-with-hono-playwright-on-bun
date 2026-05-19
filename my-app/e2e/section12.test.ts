@@ -7,14 +7,15 @@ describe('test http://localhost:3001/section12', async () => {
     let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await PW.chromium.launch();
+        browser = await PW.chromium.launch({ headless: true });
         context = await browser.newContext();
-    }, 20_000);
+        context.tracing.start({ screenshots:true, snapshots: true})
+    }, 10_000);
     beforeEach(async () => {
         page = await context.newPage();
         await page.goto('http://localhost:3001/section12')
-        await page.waitForLoadState('load', { timeout: 20_000 });
-    }, 20_000);
+        await page.waitForLoadState('load', { timeout: 10_000 });
+    }, 10_000);
 
     it("hx-params=*", async () => {
         const form = page.locator('css=form[hx-params="*"]')
@@ -141,6 +142,7 @@ describe('test http://localhost:3001/section12', async () => {
             await context.close();
         }
         if (browser) {
+            await context
             await browser.close();
         }
     }, 20_000)

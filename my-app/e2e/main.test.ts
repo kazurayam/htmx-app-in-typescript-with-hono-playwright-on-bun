@@ -8,7 +8,7 @@ describe('Test if the server is up and running', async () => {
     let page: PW.Page;
     beforeAll(async () => {
         // launch the browser
-        browser = await PW.chromium.launch({ headless: true })
+        browser = await PW.chromium.launch({ headless: true, tracesDir: './traces' })
     })
     beforeEach(async () => {
         // Create a new page object and navigate to the Top page

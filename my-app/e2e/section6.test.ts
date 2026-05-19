@@ -4,15 +4,18 @@ import * as PW from '@playwright/test';
 
 describe('test http://localhost:3001/section6', async () => {
     let browser: PW.Browser;
+    let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await PW.chromium.launch();
-    });
+        browser = await PW.chromium.launch({ headless: true });
+        context = await browser.newContext();
+        context.tracing.start({ screenshots:true, snapshots: true})
+    }, 10000);
     beforeEach(async () => {
-        page = await browser.newPage();
+        page = await context.newPage();
         await page.goto('http://localhost:3001/section6')
         await page.waitForLoadState('load', { timeout: 20_000 });
-    });
+    }, 10000);
 
     it("hx-trigger=click onceなし", async () => {
         const button = page.locator('css=button[hx-target="#once-target1"]');
@@ -235,6 +238,7 @@ describe('test http://localhost:3001/section6', async () => {
     }, 20_000);
     afterAll(async () => {
         if (browser) {
+            await context.tracing.stop({ path: `./traces/${Date.now()}-section6.zip` });
             await browser.close();
         }
     });

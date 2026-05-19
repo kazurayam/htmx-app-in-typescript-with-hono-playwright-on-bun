@@ -5,17 +5,20 @@ import * as PW from '@playwright/test';
 describe('test http://localhost:3001/section4', async () => {
     // Here I assume that the server at http://localhost:3001 is already up and running.
     let browser: PW.Browser;
+    let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
         // launch the browser
-        browser = await PW.firefox.launch({ headless: false });
+        browser = await PW.chromium.launch({ headless: true });
+        context = await browser.newContext();
+        context.tracing.start({ screenshots:true, snapshots: true})
     }, 10_000);
     beforeEach(async () => {
         // Create a new page and navigate to a URL
-        page = await browser.newPage();
+        page = await context.newPage();
         await page.goto('http://localhost:3001/section4');
         await page.waitForLoadState('load', { timeout: 10_000 });
-bu    }, 10_000);
+    }, 10_000);
 
     it("hx-targetを指定した場合", async () => {
         // Select the button
@@ -140,6 +143,7 @@ bu    }, 10_000);
     }, 20_000);
     afterAll(async () => {
         if (browser) {
+            await context.tracing.stop({ path: `./traces/${Date.now()}-section4.zip` });
             await browser.close()
         }
     }, 20_000)

@@ -18,15 +18,18 @@ async function toHaveClasses(locator: PW.Locator, classNames: string): Promise<B
 
 describe('test http://localhost:3001/section9', async () => {
     let browser: PW.Browser;
+    let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await PW.chromium.launch();
-    }, 20_000);
+        browser = await PW.chromium.launch({ headless: true });
+        context = await browser.newContext();
+        context.tracing.start({ screenshots:true, snapshots: true})
+    }, 10_000);
     beforeEach(async () => {
         page = await browser.newPage();
         await page.goto('http://localhost:3001/section9')
-        await page.waitForLoadState('load', { timeout: 20_000 });
-    }, 20_000);
+        await page.waitForLoadState('load', { timeout: 10_000 });
+    }, 10_000);
 
     it("スピナー", async () => {
         //click the button, a spinner appears and moves for 5seconds until the response is received, then the label changes from クリック to ロード完了
@@ -58,6 +61,7 @@ describe('test http://localhost:3001/section9', async () => {
     }, 20_000);
     afterAll(async () => {
         if (browser) {
+            await context.tracing.stop({ path: `./traces/${Date.now()}-section9.zip` });
             await browser.close();
         }
     });

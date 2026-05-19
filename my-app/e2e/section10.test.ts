@@ -4,15 +4,18 @@ import * as PW from '@playwright/test';
 
 describe('test http://localhost:3001/section10', async () => {
     let browser: PW.Browser;
+    let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await PW.chromium.launch();
-    }, 20_000);
+        browser = await PW.chromium.launch({ headless: true });
+        context = await browser.newContext();
+        context.tracing.start({ screenshots:true, snapshots: true})
+    }, 10_000);
     beforeEach(async () => {
-        page = await browser.newPage();
+        page = await context.newPage();
         await page.goto('http://localhost:3001/section10')
-        await page.waitForLoadState('load', { timeout: 20_000 });
-    });
+        await page.waitForLoadState('load', { timeout: 10_000 });
+    }, 10000);
 
     it("click button with hx-swap=innerHTML", async () => {
         const button: PW.Locator = page.locator('css=button[hx-target="#inner-target"][hx-swap="innerHTML"]');
@@ -258,6 +261,7 @@ describe('test http://localhost:3001/section10', async () => {
     }, 20_000);
     afterAll(async () => {
         if (browser) {
+            await context.tracing.stop({ path: `./traces/${Date.now()}-section10.zip` });
             await browser.close();
         }
     }, 20_000);
