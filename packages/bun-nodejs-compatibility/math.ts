@@ -6,7 +6,7 @@ export function add(arg1: number, arg2: number): number {
 }
 
 // カスタム関数をfunctionリテラルで定義する
-export const multiply = function (arg1: number, arg2: number): number {
+export const multiplycd = function (arg1: number, arg2: number): number {
     return arg1 * arg2;
 }
 
