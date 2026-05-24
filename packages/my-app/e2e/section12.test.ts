@@ -142,7 +142,7 @@ describe('test http://localhost:3001/section12', async () => {
             await context.close();
         }
         if (browser) {
-            await context
+            await context.tracing.stop({ path: `./build/traces/${Date.now()}-section12.zip` });
             await browser.close();
         }
     }, 20_000)

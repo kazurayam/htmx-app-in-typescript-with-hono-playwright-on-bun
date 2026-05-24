@@ -1,6 +1,6 @@
 {
-  "name": "htmx-app-in-typescript-with-hono-playwright-on-bun_my-app",
-  "module": "src/index",
+  "name": "@kazurayam/htmx-app-in-typescript-with-hono-playwright-on-bun_my-app",
+  "main": "src/index",
   "type": "module",
   "scripts": {
     "dev": "bun run --hot ./src/index.tsx",

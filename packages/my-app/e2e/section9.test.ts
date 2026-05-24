@@ -61,7 +61,7 @@ describe('test http://localhost:3001/section9', async () => {
     }, 20_000);
     afterAll(async () => {
         if (browser) {
-            await context.tracing.stop({ path: `./traces/${Date.now()}-section9.zip` });
+            await context.tracing.stop({ path: `./build/traces/${Date.now()}-section9.zip` });
             await browser.close();
         }
     });
