@@ -1,7 +1,7 @@
 // e2e/recoveringFromBrowserCrash/sessionstatepreservation.ts
 // quoted from https://markaicode.com/playwright-mcp-browser-crash-recovery-patterns-2025/
 
-import { Browser, Page } from '@playwright/test';
+import type { Browser, Page } from '@playwright/test';
 import fs from 'fs';
 
 // Session state preservation pattern
@@ -10,7 +10,7 @@ export async function preserveSessionState(page: Page) {
     const storageState = await page.context().storageState();
 
     // Write to temporary file
-    await fs.writeFile('build/session-state.json', JSON.stringify(storageState));
+    fs.writeFileSync('build/session-state.json', JSON.stringify(storageState));
 
     return storageState;
 }
