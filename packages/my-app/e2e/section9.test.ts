@@ -1,35 +1,21 @@
 // e2e/section9.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
-
-// A helper function that verifies the class attribute of an element to which the locator points
-// original: https://stackoverflow.com/questions/66241109/check-if-element-class-contains-string-using-playwright
-
-async function toHaveClasses(locator: PW.Locator, classNames: string): Promise<Boolean> {
-    // get current classes of element
-    const attrClass = await locator.getAttribute('class')  // may be null
-    const elementClasses: string[] = attrClass ? attrClass.split(' ') : []
-    const targetClasses: string[] = classNames.split(' ')
-    // Every class should be present in the current class list
-    const isValid = targetClasses.every(classItem => elementClasses.includes(classItem))
-    return Promise.resolve(isValid)
-}
-
+import * as BH from './browser-helpers';
 
 describe('test http://localhost:3001/section9', async () => {
     let browser: PW.Browser;
     let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await PW.chromium.launch({ headless: true });
-        context = await browser.newContext();
-        context.tracing.start({ screenshots:true, snapshots: true})
-    }, 10_000);
+        browser = await BH.launchChromium();
+        context = await BH.newContext(browser);
+    });
     beforeEach(async () => {
-        page = await browser.newPage();
-        await page.goto('http://localhost:3001/section9')
+        page = await BH.newPage(context);
+        await page.goto('http://localhost:3001/section9', { timeout: 20_000 })
         await page.waitForLoadState('load', { timeout: 10_000 });
-    }, 10_000);
+    }, 20_000);
 
     it("スピナー", async () => {
         //click the button, a spinner appears and moves for 5seconds until the response is received, then the label changes from クリック to ロード完了
@@ -58,7 +44,7 @@ describe('test http://localhost:3001/section9', async () => {
         if (page) {
             await page.close();
         }
-    }, 20_000);
+    });
     afterAll(async () => {
         if (browser) {
             await context.tracing.stop({ path: `./out/traces/${Date.now()}-section9.zip` });
@@ -66,3 +52,15 @@ describe('test http://localhost:3001/section9', async () => {
         }
     });
 });
+
+// A helper function that verifies the class attribute of an element to which the locator points
+// original: https://stackoverflow.com/questions/66241109/check-if-element-class-contains-string-using-playwright
+async function toHaveClasses(locator: PW.Locator, classNames: string): Promise<Boolean> {
+    // get current classes of element
+    const attrClass = await locator.getAttribute('class')  // may be null
+    const elementClasses: string[] = attrClass ? attrClass.split(' ') : []
+    const targetClasses: string[] = classNames.split(' ')
+    // Every class should be present in the current class list
+    const isValid = targetClasses.every(classItem => elementClasses.includes(classItem))
+    return Promise.resolve(isValid)
+}

@@ -1,6 +1,7 @@
 // e2e/section3.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
+import * as BH from './browser-helper';
 
 describe('test http://localhost:3001/section3', async () => {
     // Here I assume that the server at http://localhost:3001 is already up and running.
@@ -8,18 +9,14 @@ describe('test http://localhost:3001/section3', async () => {
     let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
-        // launch the browser
-            browser = await PW.chromium.launch({ headless: true });
-            context = await browser.newContext();
-            context.tracing.start({ screenshots:true, snapshots: true})
-    }, 10_000);
+        browser = await BH.launchChromium();
+        context = await BH.newContext(browser);
+    });
     beforeEach(async () => {
-        // Create a new page and navigate to a URL
-        page = await context.newPage();
-        // Navigate to the URL before each test
-        await page.goto('http://localhost:3001/section3');
+        page = await BH.newPage(context);
+        await page.goto('http://localhost:3001/section3', { timeout: 20_000 });
         await page.waitForLoadState('load', { timeout: 20_000 });
-    }, 10_000);
+    }, 20_000);
 
     it("click <button hx-get=/hello>, then the button should show GETリクエスト!", async () => {
         // Select the button
@@ -81,11 +78,11 @@ describe('test http://localhost:3001/section3', async () => {
         if (page) {
             await page.close();
         }
-    }, 20_000);
+    });
     afterAll(async () => {
         if (browser) {
             await context.tracing.stop({ path: `./out/traces/${Date.now()}-section3.zip` });
             await browser.close()
         }
-    }, 20_000)
+    })
 })

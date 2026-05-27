@@ -1,21 +1,21 @@
 // e2e/section13.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
+import * as BH from './browser-helpers';
 
 describe('test http://localhost:3001/section13', async () => {
     let browser: PW.Browser;
     let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await PW.chromium.launch({ headless: true });
-        context = await browser.newContext();
-        context.tracing.start({ screenshots:true, snapshots: true})
-    }, 10000);
+        browser = await BH.launchChromium();
+        context = await BH.newContext(browser);
+    });
     beforeEach(async () => {
-        page = await context.newPage();
-        await page.goto('http://localhost:3001/section13')
+        page = await BH.newPage(context);
+        await page.goto('http://localhost:3001/section13', { timeout: 20_000 });
         await page.waitForLoadState('load', { timeout: 10_000 });
-    }, 10000);
+    }, 20_000);
 
     it("ダイアログ", async () => {
         page.on('dialog', async (dialog) => {
@@ -67,11 +67,11 @@ describe('test http://localhost:3001/section13', async () => {
         if (page) {
             await page.close();
         }
-    }, 20_000);
+    });
     afterAll(async () => {
         if (browser) {
             await context.tracing.stop({ path: `./out/traces/${Date.now()}-section13.zip` });
             await browser.close();
         }
-    }, 20_000);
+    });
 });

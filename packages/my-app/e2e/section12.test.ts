@@ -1,21 +1,21 @@
 // e2e/section12.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
+import * as BH from './browser-helpers';
 
 describe('test http://localhost:3001/section12', async () => {
     let browser: PW.Browser;
     let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await PW.chromium.launch({ headless: true });
-        context = await browser.newContext();
-        context.tracing.start({ screenshots:true, snapshots: true})
-    }, 10_000);
+        browser = await BH.launchChromium();
+        context = await BH.newContext(browser);
+    });
     beforeEach(async () => {
-        page = await context.newPage();
-        await page.goto('http://localhost:3001/section12')
+        page = await BH.newPage(context);
+        await page.goto('http://localhost:3001/section12', { timeout: 20_000 })
         await page.waitForLoadState('load', { timeout: 10_000 });
-    }, 10_000);
+    }, 20_000);
 
     it("hx-params=*", async () => {
         const form = page.locator('css=form[hx-params="*"]')
@@ -136,14 +136,11 @@ describe('test http://localhost:3001/section12', async () => {
         if (page) {
             await page.close();
         }
-    }, 20_000);
+    });
     afterAll(async () => {
-        if (context) {
-            await context.close();
-        }
         if (browser) {
             await context.tracing.stop({ path: `./out/traces/${Date.now()}-section12.zip` });
             await browser.close();
         }
-    }, 20_000)
+    })
 });

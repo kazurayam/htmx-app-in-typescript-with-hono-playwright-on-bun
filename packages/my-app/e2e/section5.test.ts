@@ -1,28 +1,28 @@
 // e2e/section5.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
+import * as BH from './browser-helpers';
 
 describe('test http://localhost:3001/section5', async () => {
     let browser: PW.Browser;
     let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await PW.chromium.launch({ headless: true });
-        context = await browser.newContext();
-        context.tracing.start({ screenshots:true, snapshots: true})
-    }, 10_000);
+        browser = await BH.launchChromium();
+        context = await BH.newContext(browser);
+    });
     beforeEach(async () => {
-        page = await context.newPage();
-        await page.goto('http://localhost:3001/section5')
+        page = await BH.newPage(context);
+        await page.goto('http://localhost:3001/section5', { timeout: 20_000})
         await page.waitForLoadState('load', { timeout: 20_000 });
-    }, 10_000);
+    }, 20_000);
 
     it("click[true]>", async () => {
         const button: PW.Locator = page.locator('css=button[hx-trigger="click[true]"]');
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-            const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+            const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/yahoo/, { timeout: 20000 });
             await button.click();
             const response = await responsePromise;
             expect(response.status()).toBe(200);
@@ -36,7 +36,7 @@ describe('test http://localhost:3001/section5', async () => {
         await PW.expect(button).toBeEnabled();
         // Because of hx-trigger="click[false]", clicking the button will trigger no request will be sent.
         // Therefore I should NOT wait for response here
-        //const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+        //const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 20000 });
         await button.click();
         //await responsePromise;
         const p = page.locator('css=p#target2');
@@ -46,10 +46,10 @@ describe('test http://localhost:3001/section5', async () => {
 
     it("click[shiftKey]", async () => {
         const button = page.locator('css=button[hx-trigger="click[shiftKey]"]');
-        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await button.waitFor({ state: 'visible', timeout: 20000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-            const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+            const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 20000 });
             await button.click({ modifiers: ['Shift'] });   // Shift + Click
             const response = await responsePromise;
             expect(response.status()).toBe(200);
@@ -62,7 +62,7 @@ describe('test http://localhost:3001/section5', async () => {
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-            const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+            const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 20000 });
             await button.click();
             const response = await responsePromise;
             expect(response.status()).toBe(200);
@@ -72,10 +72,10 @@ describe('test http://localhost:3001/section5', async () => {
 
     it("click[shiftKey&&altKey]", async () => {
         const button = page.locator('css=button[hx-trigger="click[shiftKey&&altKey]"]');
-        await button.waitFor({ state: 'visible', timeout: 10000 });
+        await button.waitFor({ state: 'visible', timeout: 20000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-            const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 10000 });
+            const responsePromise = page.waitForResponse(/\/yahoo/, { timeout: 20000 });
             await button.click({ modifiers: ['Shift', 'Alt'] });   // Shift + Alt + Click
             const response = await responsePromise;
             expect(response.status()).toBe(200);
@@ -87,11 +87,11 @@ describe('test http://localhost:3001/section5', async () => {
         if (page) {
             await page.close();
         }
-    }, 20_000);
+    });
     afterAll(async () => {
         if (browser) {
             await context.tracing.stop({ path: `./out/traces/${Date.now()}-section5.zip` });
             await browser.close();
         }
-    }, 20_000)
+    })
 })

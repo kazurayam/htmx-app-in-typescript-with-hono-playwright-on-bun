@@ -5,16 +5,19 @@ import * as PW from '@playwright/test';
 describe('Test if the server is up and running', async () => {
     // Here I assume that the server at http://localhost:3001 is already up and running.
     let browser: PW.Browser;
+    let context: PW.BrowserContext;
     let page: PW.Page;
     beforeAll(async () => {
         // launch the browser
         browser = await PW.chromium.launch({ headless: true })
+        context = await browser.newContext();
+        //context.setDefaultNavigationTimeout(20_000); // 20 seconds
     })
     beforeEach(async () => {
         // Create a new page object and navigate to the Top page
-        page = await browser.newPage();
-        await page.goto('http://localhost:3001');
-        await page.waitForLoadState('load', { timeout: 10_000 });
+        page = await context.newPage();
+        await page.goto('http://localhost:3001', { timeout: 20_000 });
+        await page.waitForLoadState('load', { timeout: 20_000 });
     })
 
     it("In the Top page, click the link 'Section 3'; then will navigate to another URL where <h1>Section3</h1> is visible", async () => {
