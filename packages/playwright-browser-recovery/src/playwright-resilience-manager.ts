@@ -10,9 +10,9 @@ export class PlaywrightResilienceManager {
         heartbeatInterval: number;
     };
     browser: PW.Browser | null;
-    context: PW.BrowserContext | undefined | null;
-    page: PW.Page | undefined | null;
-    heartbeatMonitor: BrowserHeartbeatMonitor | undefined | null;
+    context: PW.BrowserContext | null;
+    page: PW.Page | null;
+    heartbeatMonitor: BrowserHeartbeatMonitor | null;
     checkpointData: any | null;
 
     constructor(options = {}) {
@@ -53,17 +53,18 @@ export class PlaywrightResilienceManager {
     }
 
     async _restoreOrCreateSession() {
+        if (!this.browser) throw new Error("this.browser is null.");
         try {
             const stateFile = fs.readFileSync('session-state.json', 'utf8');
             const storageState = JSON.parse(stateFile);
 
-            this.context = await this.browser?.newContext({ storageState });
+            this.context = await this.browser.newContext({ storageState });
         } catch (error) {
             // No saved state or invalid state
-            this.context = await this.browser?.newContext();
+            this.context = await this.browser.newContext();
         }
 
-        this.page = await this.context?.newPage();
+        this.page = await this.context.newPage();
 
         // Set up error handlers
         this.page.on('crash', () => this._handlePageCrash());
@@ -73,6 +74,7 @@ export class PlaywrightResilienceManager {
     _setupHeartbeatMonitor() {
         this.heartbeatMonitor = {
             intervalId: setInterval(async () => {
+                if (!this.browser) throw new Error("this.browser is null");
                 try {
                     // Check browser connection
                     await this.browser.version();
@@ -107,14 +109,14 @@ export class PlaywrightResilienceManager {
         await this._recover();
     }
 
-    async _handlePageError(error) {
+    async _handlePageError(error: Error) {
         console.error('Page error:', error);
         if (error.message.includes('crash') || error.message.includes('closed')) {
             await this._recover();
         }
     }
 
-    async _handleConnectionFailure(error) {
+    async _handleConnectionFailure(error: Error) {
         console.error('Connection failure:', error);
         clearInterval(this.heartbeatMonitor?.intervalId);
         await this._recover();

@@ -1,7 +1,7 @@
 // e2e/section7.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
-import * as BH from './browser-helpers';
+import * as BH from './playwright-browser-helpers';
 
 describe('test http://localhost:3001/section7', async () => {
     let browser: PW.Browser;

@@ -10,7 +10,7 @@ describe('run resilience tests', async () => {
     })
     beforeEach(async () => {
         // Initialize with recovery capabilities
-        { page } = await manager.initialize();
+        ({ page } = await manager.initialize());
     })
 
     it("step1 page.goto()", async () => {
@@ -38,7 +38,7 @@ describe('run resilience tests', async () => {
         }
         await process(page, manager, step)
     });
-    
+
     it("step4 p.$$eval", async () => {
         let step = async (p: PW.Page) => {
             await p.goto('https://example.com/dashboard');
@@ -56,7 +56,9 @@ describe('run resilience tests', async () => {
     })
 });
 
-async function process(page: PW.Page, manager: PlaywrightResilienceManager, step) {
+async function process(page: PW.Page,
+        manager: PlaywrightResilienceManager,
+        step: (p: PW.Page) => Promise<void>) {
     try {
         await step(page);
     } catch (error) {

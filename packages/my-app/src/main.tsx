@@ -1,5 +1,6 @@
 // main.tsx
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
@@ -24,6 +25,7 @@ const app = new Hono()
 //app.use(logger())   // https://hono.dev/docs/middleware/builtin/logger
 
 app.use('*', serveStatic({ root: './static' }))
+app.use(cors());
 
 app.get('/', (c) => {
     const messages = ['Hello htmx']
