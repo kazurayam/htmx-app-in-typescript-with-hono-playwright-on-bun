@@ -1,7 +1,10 @@
 // e2e/section12.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
+import { getLogger } from '@logtape/logtape';
 import * as PW from '@playwright/test';
 import * as BH from './browser-helpers';
+
+const logger = getLogger(["my-app", "section12.test"]);
 
 describe('test http://localhost:3001/section12', async () => {
     let browser: PW.Browser;
@@ -100,12 +103,12 @@ describe('test http://localhost:3001/section12', async () => {
         await PW.expect(button).toBeEnabled();
         let counter = 0;
         await PW.expect(async () => {
-            //console.log(`Clicking the button... (attempt ${++counter})`)
-                const responsePromise: Promise<PW.Response> =
-                    page.waitForResponse(/\/greeting/, { timeout: 10_000 });
-                await button.click()
-                const response = await responsePromise;
-                expect(response.status()).toBe(200);
+            logger.debug(`Clicking the button... (attempt ${++counter})`)
+            const responsePromise: Promise<PW.Response> =
+                page.waitForResponse(/\/greeting/, { timeout: 10_000 });
+            await button.click()
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
         }).toPass({ timeout: 25000 });
         // assert the target <p> contains "title=Hello&name=Taro"
         const p = page.locator('css=p#vals-target1')
@@ -120,7 +123,7 @@ describe('test http://localhost:3001/section12', async () => {
         await PW.expect(input).toBeEnabled();
         let counter = 0;
         await PW.expect(async () => {
-            //console.log(`Pressing keys... (attempt ${++counter})`)
+            logger.debug(`Pressing keys... (attempt ${++counter})`)
             const responsePromise: Promise<PW.Response> =
                 page.waitForResponse(/\/last-key/, { timeout: 5_000 });
             input.pressSequentially("LOVE")

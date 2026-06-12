@@ -1,7 +1,10 @@
 // src/index.e2e.ts
 import { describe, test, expect, beforeEach, afterEach } from 'bun:test';
 import { testClient } from 'hono/testing';   // https://www.honojs.com/docs/helpers/testing
+import { getLogger } from '@logtape/logtape';
 import { app } from './index';
+
+const logger = getLogger(["my-app", "index.test"]);
 
 describe('getting started', () => {
     test('GET /', async () => {
@@ -48,7 +51,7 @@ describe('verify response as HTML DOM', async () => {
             await new Promise(resolve => setTimeout(resolve, 1000)); // wait for the click event to be processed
             // after clicking the button, the content of the div with id "result" should be updated by htmx
             const resultDiv = dom.querySelector('#result');
-            console.log(resultDiv?.textContent);
+            logger.debug(resultDiv?.textContent);
             expect(resultDiv?.textContent).toBe('こんにちは!');
         });
         button?.click();

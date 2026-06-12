@@ -19,8 +19,14 @@ await configure({
         file: getFileSink("./out/app.log")  // 出力先としてファイルを宣言
     },
     loggers: [
+        { category: ["my-app", "browser-helpers"], lowestLevel: "debug", sinks: ["file"] },
+        { category: ["my-app", "index.test"], lowestLevel: "debug", sinks: ["file"] },
+        { category: ["my-app", "main"], lowestLevel: "debug", sinks: ["file"] },
+        { category: ["my-app", "section6.test"], lowestLevel: "debug", sinks: ["file"] },
+        { category: ["my-app", "section12.test"], lowestLevel: "debug", sinks: ["file"] },
         { category: ["my-app", "promise-utils"], lowestLevel: "debug", sinks: ["file"] },
         { category: ["my-app", "promise-utils.test"], lowestLevel: "debug", sinks: ["file"] },
+        { category: ["my-app", "withTimeout.test"], lowestLevel: "debug", sinks: ["file"] },
         { category: ["logtape", "meta"], lowestLevel: "warning", sinks: ["console"] },
     ],
 });

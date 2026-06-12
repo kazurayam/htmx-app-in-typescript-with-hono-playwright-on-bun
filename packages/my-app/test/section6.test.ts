@@ -1,7 +1,10 @@
 // e2e/section6.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
+import { getLogger } from '@logtape/logtape';
 import * as PW from '@playwright/test';
 import * as BH from './browser-helpers';
+
+const logger = getLogger(["my-app", "section6.test"])
 
 describe('test http://localhost:3001/section6', async () => {
     let browser: PW.Browser;
@@ -162,6 +165,7 @@ describe('test http://localhost:3001/section6', async () => {
         const response = await responsePromise;
         expect(response.status()).toBe(200);
         const content1 = await page.locator('css=p#throttle-target2').innerText();
+        logger.debug(content1);
         expect(content1).toMatch(/[0-9]+/);
         // Typing "1" will trigger web interaction only after 3 seconds, as the "throttle:3s" is given.
         // Therefore, immediately after typing, the <p id="throttle-target2"> won't change
@@ -176,9 +180,10 @@ describe('test http://localhost:3001/section6', async () => {
         await input.pressSequentially("X");
         await page.keyboard.up("Shift");
         const response2 = await responsePromise2;
+        logger.debug(content2);
         expect(response2.status()).toBe(200);
         const content3 = await page.locator('css=p#throttle-target2').innerText();
-        //console.log(content1, content2, content3);
+        logger.debug(content3);
         expect(content3).not.toEqual(content2);
     }, 10_000)
 

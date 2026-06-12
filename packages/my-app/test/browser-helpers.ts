@@ -1,6 +1,9 @@
 // e2e/browser-helpers.ts
 import { Browser, BrowserContext, Page, chromium } from '@playwright/test';
 import { withTimeout, TimeoutError } from '../src/withTimeout';
+import { getLogger } from '@logtape/logtape';
+
+const logger = getLogger(["my-app", "browser-helpers"]);
 
 /**
  * https://www.technetexperts.com/slow-playwright-new-page-fix/
@@ -54,13 +57,13 @@ export const newPage = async (context: BrowserContext): Promise<Page> => {
                 timeoutMs: 10_000,
                 abortable: false,
                 onTimeout: () => {
-                    console.log('context.newPage() timeout!');
+                    logger.info('context.newPage() timeout!');
                 }
             });
         return page;
     } catch (error) {
         if (TimeoutError.isTimeoutError(error)) {
-            console.log("TimeoutError occured");
+            logger.error("TimeoutError occured");
             const browser = context.browser();
             if (browser !== null) {
                 const nctx: BrowserContext = await newContext(browser);

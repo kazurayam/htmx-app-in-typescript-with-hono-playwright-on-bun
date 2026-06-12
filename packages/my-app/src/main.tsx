@@ -5,6 +5,7 @@ import { logger } from 'hono/logger'
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 import { HTTPException } from 'hono/http-exception'
+import { getLogger } from '@logtape/logtape';
 import { Top } from './top'
 import { Section3 } from './section3'
 import { Section4 } from './section4'
@@ -19,6 +20,8 @@ import { Section12 } from './section12'
 import { Section13 } from './section13'
 import { Section14 } from './section14'
 import { Section15 }  from './section15'
+
+const logger = getLogger(["my-app", "main"]);
 
 const app = new Hono()
 
@@ -232,7 +235,7 @@ app.get("/append-head", async (c) => {
 
 app.post("/send-form", async (c) => {
     await sleep(1000);    // sleep for 1s
-    //console.log("Content-Type: " + c.req.header('Content-Type'))
+    logger.debug("Content-Type: " + c.req.header('Content-Type'))
     return c.render(`<span style='color:#ff0000; font-weight: bold;'>送信完了しました。${await c.req.text()}</span>`)
 })
 
