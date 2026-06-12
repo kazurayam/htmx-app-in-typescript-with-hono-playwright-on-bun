@@ -1,7 +1,7 @@
 // e2e/section11.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
-import * as BH from './playwright-browser-helpers';
+import * as BH from './browser-helpers';
 
 describe('test http://localhost:3001/section11', async () => {
     let browser: PW.Browser;
@@ -13,7 +13,7 @@ describe('test http://localhost:3001/section11', async () => {
         await context.tracing.start({ screenshots: true, snapshots: true })
     });
     beforeEach(async () => {
-        page = BH.newPage(context);
+        page = await BH.newPage(context);
         await page.goto('http://localhost:3001/section11', { timeout: 20_000})
         await page.waitForLoadState('load', { timeout: 10_000 });
     }, 20_000);

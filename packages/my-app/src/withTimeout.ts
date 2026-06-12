@@ -87,7 +87,7 @@ export async function withTimeout<T>(
     return Promise.race([
         promise,
         new Promise<never>((_, reject) => {
-            const TimeoutId = setTimeout(() => {
+            const timeoutId = setTimeout(() => {
                 onTimeout?.();
                 reject(new TimeoutError(`Timeout of ${timeoutMs} exceeded`))
             }, timeoutMs);

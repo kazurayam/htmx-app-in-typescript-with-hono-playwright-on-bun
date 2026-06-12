@@ -7,12 +7,12 @@ describe("test withTimeout function", async () => {
     it("fetch http://localhost:3001/heavy with timeout shorter than 5 seconds", async () => {
         // The URL '/heavy' will take 5 seconds to respond
         const res = fetchResource('http://localhost:3001/heavy', 4_000);
-        console.log(await res)   // would print "<span style='color:#ff0000;'>ロード完了!</span>"
+        expect(await res).toBe('data as fall back')
     }, 15_000)
     it("fetch http://localhost:3001/heavy with timeout longer than 5 seconds", async () => {
         // The URL '/heavy' will take 5 seconds to respond
         const res = fetchResource('http://localhost:3001/heavy', 6_000);
-        console.log(await res)   // would print "<span style='color:#ff0000;'>ロード完了!</span>"
+        expect(await res).toBe("<span style='color:#ff0000;'>ロード完了!</span>")
     }, 15_000)
 })
 

@@ -1,6 +1,6 @@
 // e2e/browser-helpers.ts
 import { Browser, BrowserContext, Page, chromium } from '@playwright/test';
-import { waitUntil, TimeoutError } from 'async-wait-until';
+import { withTimeout, TimeoutError } from '../src/withTimeout';
 
 /**
  * https://www.technetexperts.com/slow-playwright-new-page-fix/
@@ -20,19 +20,20 @@ export const launchChromium = async (): Promise<Browser> => {
                 '--disable-dev-shm-usage',
             ],
             headless: true,
-            timeout: 20_000,
+            timeout: 10_000,
          });
     return browser;
 };
 
 export const newContext = async (browser: Browser): Promise<BrowserContext> => {
-    const context = await browser.newContext({
-        javaScriptEnabled: true
-    });
-    context.removeAllListeners();
-
+    if (browser === null) {
+        throw new Error('invalid argument. browser is null')
+    }
     // some custom settings
+    const context = await browser.newContext({ javaScriptEnabled: true });
+    context.removeAllListeners();
     context.setDefaultNavigationTimeout(20_000);
+
     return context;
 };
 
@@ -40,25 +41,32 @@ export const newContext = async (browser: Browser): Promise<BrowserContext> => {
 export const newPage = async (context: BrowserContext) : Promise<Page> => {
     return await context.newPage();
 }
-    */
+*/
+
 export const newPage = async (context: BrowserContext): Promise<Page> => {
-    const p = new Promise((resolve, reject) => {
-        (async () => {
-            try {
-                const pg = await context.newPage();
-                resolve(pg);
-            } catch (error) {
-                reject(null);
-            }
-        })()
-    });
+    if (context === null) {
+        throw new Error('invalid argument. context is null');
+    }
     try {
-        const page = await waitUntil(async () => {
-            await p;
-        }, { timeout: 5_000, intervalBetweenAttempts: 1_000 });
-        resolve(page);
+        const page = await withTimeout(
+            context.newPage(),
+            {
+                timeoutMs: 10_000,
+                abortable: false,
+                onTimeout: () => {
+                    console.log('context.newPage() timeout!');
+                }
+            });
+        return page;
     } catch (error) {
-        rejects(error);
+        if (TimeoutError.isTimeoutError(error)) {
+            console.log("TimeoutError occured");
+            const browser = context.browser();
+            if (browser !== null) {
+                const nctx: BrowserContext = await newContext(browser);
+                return await newPage(nctx);
+            }
+        }
+        throw error;
     }
 }
-
