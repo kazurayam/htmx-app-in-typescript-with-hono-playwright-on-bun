@@ -1,24 +1,25 @@
 // e2e/section15.test.ts
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
+import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
-import * as BH from './browser-helpers';
+import { BrowserDriverChromium } from './BrowserDriverChromium';
+import { getLogger } from '@logtape/logtape';
 
-describe('test http://localhost:3001/section15', async () => {
-    let browser: PW.Browser;
-    let context: PW.BrowserContext;
+const logger = getLogger(["my-app", "section15.test"]);
+const url = 'http://localhost:3001/section15';
+
+describe(`test ${url}`, async () => {
+    // Here I assume that the server at http://localhost:3001 is already up and running.
+    let driver: BrowserDriverChromium;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await BH.launchChromium();
-        context = await BH.newContext(browser);
-        await context.tracing.start({ screenshots: true, snapshots: true })
+        driver = await BrowserDriverChromium.create();
+        await driver.getContext().tracing.start({ screenshots: true, snapshots: true })
     });
     beforeEach(async () => {
-        page = await BH.newPage(context);
-        await page.goto('http://localhost:3001/section15', { timeout: 20_000 })
-        await page.waitForLoadState('load', { timeout: 10_000 });
+        page = await driver.navigateToUrl(url);
     }, 20_000);
 
-    it("hx-ext=head-support hx-head=merge", async () => {
+    test("hx-ext=head-support hx-head=merge", async () => {
         // click the button with hx-get="/update-head"
         const button = page.locator('css=div[hx-ext="head-support"] > button[hx-get="/update-head"]')
         await button.waitFor({ state: 'visible', timeout: 5000 });
@@ -29,7 +30,7 @@ describe('test http://localhost:3001/section15', async () => {
             await button.click()
             const response = await responsePromise;
             expect(response.status()).toBe(200);
-        }).toPass({timeout:25000});
+        }).toPass({ timeout: 25000 });
         // the response contains a head element with hx-head="merge",
         // which should merge the new head with the existing head elements.
         // Assert that the background-color: yellow is applied
@@ -39,7 +40,7 @@ describe('test http://localhost:3001/section15', async () => {
         expect(backgroundColor).toEqual("rgb(255, 255, 0)")   // yellow
     })
 
-    it("hx-ext=head-support hx-head=re-eval", async () => {
+    test("hx-ext=head-support hx-head=re-eval", async () => {
         // Let's listen for the console log from the page
         page.on('console', msg => {
             expect(msg.type()).toBe('log');
@@ -55,12 +56,12 @@ describe('test http://localhost:3001/section15', async () => {
             await button.click()
             const response = await responsePromise;
             expect(response.status()).toBe(200);
-        }).toPass({timeout:25000});
+        }).toPass({ timeout: 25000 });
         // by clicking the button, foo.js should be loaded and executed,
         // which will log "foo.js is loaded" to the console
     })
 
-    it("hx-ext=head-support hx-head=append", async () => {
+    test("hx-ext=head-support hx-head=append", async () => {
         // click the button with hx-get="/append-head"
         const button = page.locator('css=div[hx-ext="head-support"] > button[hx-get="/append-head"]')
         await button.waitFor({ state: 'visible', timeout: 5000 });
@@ -71,7 +72,7 @@ describe('test http://localhost:3001/section15', async () => {
             await button.click();
             const response = await responsePromise;
             expect(response.status()).toBe(200);
-        }).toPass({timeout: 25000});
+        }).toPass({ timeout: 25000 });
         // the response contains a head element with hx-head="append",
         // which should append the new head to the existing head
         // assert that the background-color: yellow is applied
@@ -81,7 +82,7 @@ describe('test http://localhost:3001/section15', async () => {
         expect(backgroundColor).toEqual("rgb(255, 255, 0)")   // yellow
     })
 
-    it("hx-ext=preload preloadあり", async () => {
+    test("hx-ext=preload preloadあり", async () => {
         const button = page.locator('css=p#preload-target2 + button[preload]')
         await button.waitFor({ state: 'visible', timeout: 5000 });
         await PW.expect(button).toBeEnabled();
@@ -92,13 +93,13 @@ describe('test http://localhost:3001/section15', async () => {
             await button.click()
             const response = await responsePromise;
             expect(response.status()).toBe(200);
-        }).toPass({timeout:25000});
+        }).toPass({ timeout: 25000 });
         // the target should be updated to "GETリクエスト!"
         const target = page.locator('css=#preload-target2')
         await PW.expect(target).toContainText(/GETリクエスト!/)
     })
 
-    it("hx-ext=response-targets hx-get=/success", async () => {
+    test("hx-ext=response-targets hx-get=/success", async () => {
         const button = page.locator('css=button[hx-get="/success"]')
         await button.waitFor({ state: 'visible', timeout: 5000 });
         await PW.expect(button).toBeEnabled();
@@ -109,13 +110,13 @@ describe('test http://localhost:3001/section15', async () => {
             await button.click()
             const response = await responsePromise;
             expect(response.status()).toBe(200);
-        }).toPass({timeout:25000});
+        }).toPass({ timeout: 25000 });
         // the target with id "success" should be updated to "Success!"
         const divSuccess = page.locator('css=#success')
         await PW.expect(divSuccess).toContainText(/Success!/)
     })
 
-    it("hx-ext=response-targets hx-get=/not-found", async () => {
+    test("hx-ext=response-targets hx-get=/not-found", async () => {
         const button = page.locator('css=button[hx-get="/not-found"]')
         await button.waitFor({ state: 'visible', timeout: 5000 });
         await PW.expect(button).toBeEnabled();
@@ -126,13 +127,13 @@ describe('test http://localhost:3001/section15', async () => {
             await button.click()
             const response = await responsePromise;
             expect(response.status()).toBe(404);
-        }).toPass({timeout:25000});
+        }).toPass({ timeout: 25000 });
         // the target with id "not-found" should be updated to "Not Found!"
         const divNotFound = page.locator('css=#not-found')
         await PW.expect(divNotFound).toContainText(/Not Found!/)
     })
 
-    it("hx-ext=response-targets hx-get=/server-error", async () => {
+    test("hx-ext=response-targets hx-get=/server-error", async () => {
         const button = page.locator('css=button[hx-get="/server-error"]')
         await button.waitFor({ state: 'visible', timeout: 5000 });
         await PW.expect(button).toBeEnabled();
@@ -160,9 +161,12 @@ describe('test http://localhost:3001/section15', async () => {
         }
     });
     afterAll(async () => {
-        if (browser) {
-            await context.tracing.stop({ path: `./out/traces/${Date.now()}-section15.zip` });
-            await browser.close();
+        if (driver.getContext()) {
+            await driver.getContext().tracing.stop({ path: `./out/traces/${Date.now()}-section4.zip` });
+            await driver.getContext().close()
         }
-    });
+        if (driver.getBrowser()) {
+            await driver.getBrowser().close()
+        }
+    })
 });

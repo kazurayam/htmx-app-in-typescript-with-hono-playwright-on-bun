@@ -1,24 +1,25 @@
 // e2e/section13.test.ts
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
+import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
-import * as BH from './browser-helpers';
+import { BrowserDriverChromium } from './BrowserDriverChromium';
+import { getLogger } from '@logtape/logtape';
 
-describe('test http://localhost:3001/section13', async () => {
-    let browser: PW.Browser;
-    let context: PW.BrowserContext;
+const logger = getLogger(["my-app", "section13.test"]);
+const url = 'http://localhost:3001/section13';
+
+describe(`test ${url}`, async () => {
+    // Here I assume that the server at http://localhost:3001 is already up and running.
+    let driver: BrowserDriverChromium;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await BH.launchChromium();
-        context = await BH.newContext(browser);
-        await context.tracing.start({ screenshots: true, snapshots: true })
+        driver = await BrowserDriverChromium.create();
+        await driver.getContext().tracing.start({ screenshots: true, snapshots: true })
     });
     beforeEach(async () => {
-        page = await BH.newPage(context);
-        await page.goto('http://localhost:3001/section13', { timeout: 20_000 });
-        await page.waitForLoadState('load', { timeout: 10_000 });
+        page = await driver.navigateToUrl(url);
     }, 20_000);
 
-    it("ダイアログ", async () => {
+    test("ダイアログ", async () => {
         page.on('dialog', async (dialog) => {
             await page.waitForTimeout(100)
             expect(dialog.message()).toMatch(/ハロー/)
@@ -28,39 +29,39 @@ describe('test http://localhost:3001/section13', async () => {
         await button.click()
     })
 
-    it("hx-boost(有効時) リンクの例", async () => {
+    test("hx-boost(有効時) リンクの例", async () => {
         // I don't see what's the use
     })
 
-    it("hx-boost(無効時) リンクの例", async () => {
+    test("hx-boost(無効時) リンクの例", async () => {
         // I don't see what's the use
     })
 
-    it("hx-boost(有効時) formの例", async () => {
+    test("hx-boost(有効時) formの例", async () => {
         // I don't see what's the use
     })
 
-    it("hx-push-url(true)", async () => {
+    test("hx-push-url(true)", async () => {
         // I don't see what's the use
     })
 
-    it("hx-push-url(false)", async () => {
+    test("hx-push-url(false)", async () => {
         // I don't see what's the use
     })
 
-    it("hx-push-url(カスタムURL)", async () => {
+    test("hx-push-url(カスタムURL)", async () => {
         // I don't see what's the use
     })
 
-    it("hx-on", async () => {
+    test("hx-on", async () => {
         // I don't see what's the use
     })
 
-    it("htmx:before-request", async () => {
+    test("htmx:before-request", async () => {
         // I don't see what's the use
     })
 
-    it("htmx:after-request", async () => {
+    test("htmx:after-request", async () => {
         // I don't see what's the use
     })
 
@@ -70,9 +71,12 @@ describe('test http://localhost:3001/section13', async () => {
         }
     });
     afterAll(async () => {
-        if (browser) {
-            await context.tracing.stop({ path: `./out/traces/${Date.now()}-section13.zip` });
-            await browser.close();
+        if (driver.getContext()) {
+            await driver.getContext().tracing.stop({ path: `./out/traces/${Date.now()}-section4.zip` });
+            await driver.getContext().close()
         }
-    });
+        if (driver.getBrowser()) {
+            await driver.getBrowser().close()
+        }
+    })
 });

@@ -1,7 +1,7 @@
 // e2e/withTimeout.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import { getLogger } from '@logtape/logtape';
-import { withTimeout, TimeoutError } from '../src/withTimeout';
+import { withTimeout, TimeoutError } from './withTimeout';
 
 const logger = getLogger(["my-app", "withTimeout.test"]);
 
@@ -28,7 +28,7 @@ const fetchResource = async (url: string, timeoutMs: number) => {
                 abortable: false,
                 onTimeout: () => {
                     // Log timeout event to monitoring system
-                    logger.info('fetch timeout!');
+                    logger.info(`fetch('${url}') timeout after ${timeoutMs}Ms!`);
                 }
             });
         return await response.text();

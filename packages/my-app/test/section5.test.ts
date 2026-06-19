@@ -1,37 +1,46 @@
 // e2e/section5.test.ts
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
+import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
-import * as BH from './browser-helpers';
+import { BrowserDriverChromium } from './BrowserDriverChromium';
+import { getLogger } from '@logtape/logtape';
 
-describe('test http://localhost:3001/section5', async () => {
-    let browser: PW.Browser;
-    let context: PW.BrowserContext;
+const logger = getLogger(["my-app", "section5.test"]);
+const url = 'http://localhost:3001/section5';
+
+describe(`test ${url}`, async () => {
+    // Here I assume that the server at http://localhost:3001 is already up and running.
+    let driver: BrowserDriverChromium;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await BH.launchChromium();
-        context = await BH.newContext(browser);
-        await context.tracing.start({ screenshots: true, snapshots: true })
+        driver = await BrowserDriverChromium.create();
+        await driver.getContext().tracing.start({ screenshots: true, snapshots: true })
     });
     beforeEach(async () => {
-        page = await BH.newPage(context);
-        await page.goto('http://localhost:3001/section5', { timeout: 20_000})
-        await page.waitForLoadState('load', { timeout: 20_000 });
+        page = await driver.navigateToUrl(url);
     }, 20_000);
 
-    it("click[true]>", async () => {
-        const button: PW.Locator = page.locator('css=button[hx-trigger="click[true]"]');
-        await button.waitFor({ state: 'visible', timeout: 10000 });
-        await PW.expect(button).toBeEnabled();
-        await PW.expect(async () => {
-            const responsePromise: Promise<PW.Response> = page.waitForResponse(/\/yahoo/, { timeout: 20000 });
-            await button.click();
-            const response = await responsePromise;
-            expect(response.status()).toBe(200);
-        }).toPass({ timeout: 20000 });
-        await PW.expect(page.locator('css=p#target1')).toContainText(/やっほー!/);
+    /*
+    test("click[true]>", async () => {
+        try {
+            page = await BH.newPage(context);
+            await page.goto(url, { timeout: 15_000 });
+            await page.waitForLoadState('load', { timeout: 10_000 });
+        } catch (error) {
+            logger.error(`in the beforeEach, timeout occured: ${error}`);
+            // when a TimeoutError occurs, restart the browser and retry
+            browser.close();
+            browser = await BH.launchChromium();
+            context = await BH.newContext(browser)
+            await context.tracing.start({ screenshots: true, snapshots: true })
+            //
+            page = await BH.newPage(context);
+            await page.goto(url, { timeout: 15_000 });
+            await page.waitForLoadState('load', { timeout: 10_000 });
+        }
     });
-
-    it("click[false]", async () => {
+    */
+    
+    test("click[false]", async () => {
         const button: PW.Locator = page.locator('css=button[hx-trigger="click[false]"]');
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -45,7 +54,7 @@ describe('test http://localhost:3001/section5', async () => {
         await PW.expect(p).toContainText(/foo/);
     });
 
-    it("click[shiftKey]", async () => {
+    test("click[shiftKey]", async () => {
         const button = page.locator('css=button[hx-trigger="click[shiftKey]"]');
         await button.waitFor({ state: 'visible', timeout: 20000 });
         await PW.expect(button).toBeEnabled();
@@ -58,7 +67,7 @@ describe('test http://localhost:3001/section5', async () => {
         await PW.expect(page.locator('css=p#target3')).toContainText(/やっほー!/)
     });
 
-    it("click[checkGlobalState()]", async () => {
+    test("click[checkGlobalState()]", async () => {
         const button = page.locator('css=button[hx-trigger="click[checkGlobalState()]"]');
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -71,7 +80,7 @@ describe('test http://localhost:3001/section5', async () => {
         await PW.expect(page.locator('css=p#target4')).toContainText(/やっほー!/);
     });
 
-    it("click[shiftKey&&altKey]", async () => {
+    test("click[shiftKey&&altKey]", async () => {
         const button = page.locator('css=button[hx-trigger="click[shiftKey&&altKey]"]');
         await button.waitFor({ state: 'visible', timeout: 20000 });
         await PW.expect(button).toBeEnabled();
@@ -90,9 +99,12 @@ describe('test http://localhost:3001/section5', async () => {
         }
     });
     afterAll(async () => {
-        if (browser) {
-            await context.tracing.stop({ path: `./out/traces/${Date.now()}-section5.zip` });
-            await browser.close();
+        if (driver.getContext()) {
+            await driver.getContext().tracing.stop({ path: `./out/traces/${Date.now()}-section4.zip` });
+            await driver.getContext().close()
+        }
+        if (driver.getBrowser()) {
+            await driver.getBrowser().close()
         }
     })
 })

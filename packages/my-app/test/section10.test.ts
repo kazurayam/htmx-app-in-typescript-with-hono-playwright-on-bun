@@ -1,24 +1,25 @@
 // e2e/section10.test.ts
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
+import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
-import * as BH from './browser-helpers';
+import { BrowserDriverChromium } from './BrowserDriverChromium';
+import { getLogger } from '@logtape/logtape';
 
-describe('test http://localhost:3001/section10', async () => {
-    let browser: PW.Browser;
-    let context: PW.BrowserContext;
+const logger = getLogger(["my-app", "section10.test"]);
+const url = 'http://localhost:3001/section10';
+
+describe(`test ${url}`, async () => {
+    // Here I assume that the server at http://localhost:3001 is already up and running.
+    let driver: BrowserDriverChromium;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await BH.launchChromium();
-        context = await BH.newContext(browser);
-        await context.tracing.start({ screenshots: true, snapshots: true })
+        driver = await BrowserDriverChromium.create();
+        await driver.getContext().tracing.start({ screenshots: true, snapshots: true })
     });
     beforeEach(async () => {
-        page = await BH.newPage(context);
-        await page.goto('http://localhost:3001/section10', { timeout: 20_000})
-        await page.waitForLoadState('load', { timeout: 20_000 });
+        page = await driver.navigateToUrl(url);
     }, 20_000);
 
-    it("click button with hx-swap=innerHTML", async () => {
+    test("click button with hx-swap=innerHTML", async () => {
         const button: PW.Locator = page.locator('css=button[hx-target="#inner-target"][hx-swap="innerHTML"]');
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -36,7 +37,7 @@ describe('test http://localhost:3001/section10', async () => {
         // expect(await p2.innerHTML()).toMatch(/[0-9]/)
     })
 
-    it("click button with hx-swap=outerHTML", async () => {
+    test("click button with hx-swap=outerHTML", async () => {
         const button = page.locator('css=button[hx-target="#outer-target"][hx-swap="outerHTML"]');
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -54,7 +55,7 @@ describe('test http://localhost:3001/section10', async () => {
         await PW.expect(p1).toHaveCount(0)
     })
 
-    it("click button with hx-swap=textContent", async () => {
+    test("click button with hx-swap=textContent", async () => {
         const button = page.locator('css=button[hx-target="#text-target"][hx-swap="textContent"]');
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -74,7 +75,7 @@ describe('test http://localhost:3001/section10', async () => {
         expect(content2).toMatch(/>[0-9]+<\/p>/)
     })
 
-    it("click button with hx-swap=beforeend", async () => {
+    test("click button with hx-swap=beforeend", async () => {
         const button = page.locator('css=button[hx-target="#afterbegin-target"][hx-swap="afterbegin"]')
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -89,7 +90,7 @@ describe('test http://localhost:3001/section10', async () => {
         expect(content).toMatch(/[0-9]+\s+hoge/)
     })
 
-    it("click button with hx-swap=beforebegin", async () => {
+    test("click button with hx-swap=beforebegin", async () => {
         const button = page.locator('css=button[hx-target="#beforebegin-target"][hx-swap="beforebegin"]')
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -104,7 +105,7 @@ describe('test http://localhost:3001/section10', async () => {
         expect(await p.innerText()).toMatch(/[0-9]+/)
     })
 
-    it("click button with hx-swap=beforeend", async () => {
+    test("click button with hx-swap=beforeend", async () => {
         const button = page.locator('css=button[hx-target="#beforeend-target"][hx-swap="beforeend"]')
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -119,7 +120,7 @@ describe('test http://localhost:3001/section10', async () => {
         await PW.expect(p).toContainText(/hoge\s*[0-9]+/)
     })
 
-    it("click button with hx-swap=afterend", async () => {
+    test("click button with hx-swap=afterend", async () => {
         const button = page.locator('css=button[hx-target="#afterend-target"][hx-swap="afterend"]')
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -135,7 +136,7 @@ describe('test http://localhost:3001/section10', async () => {
         expect(content).toMatch(/foo\s+hoge\s+[0-9]+/)
     })
 
-    it("click button with hx-swap=delete", async () => {
+    test("click button with hx-swap=delete", async () => {
         const button = page.locator('css=button[hx-swap="delete"]')
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -151,7 +152,7 @@ describe('test http://localhost:3001/section10', async () => {
         expect(content).not.toMatch(/hoge/)
     })
 
-    it("click button with hx-swap=none", async () => {
+    test("click button with hx-swap=none", async () => {
         const button = page.locator('css=button[hx-swap="none"]')
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -168,7 +169,7 @@ describe('test http://localhost:3001/section10', async () => {
         expect(content2).toEqual(content1)
     })
 
-    it("transition:true", async () => {
+    test("transition:true", async () => {
         const button = page.locator('xpath=//h2[contains(.,"transition:true")][not(contains(.,"settle"))]/following-sibling::div[1]/button[contains(@hx-swap,"transition:true")]')
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -185,7 +186,7 @@ describe('test http://localhost:3001/section10', async () => {
         await PW.expect(p2).toContainText(/挑戦を受け入れよう/)
     })
 
-    it("swap:3s", async () => {
+    test("swap:3s", async () => {
         const content = await page.locator('p#swap-target').innerText()
         expect(content).toMatch(/foo/)
         const button = page.locator('p#swap-target').locator('xpath=following-sibling::button[1]')
@@ -204,7 +205,7 @@ describe('test http://localhost:3001/section10', async () => {
         expect(content2).not.toEqual(content)
     })
 
-    it("transition:true settle:3s", async () => {
+    test("transition:true settle:3s", async () => {
         const div = page.locator('xpath=//h2[contains(.,"settle")]/following-sibling::div[1]')
         const content = await div.locator('css=p').innerText()
         expect(content).toMatch(/Embrace challenges/)
@@ -222,7 +223,7 @@ describe('test http://localhost:3001/section10', async () => {
         expect(content2).toMatch(/挑戦を受け入れよう/)
     })
 
-    it("ignoreTitle:false", async () => {
+    test("ignoreTitle:false", async () => {
         const button = page.locator('xpath=//h3[contains(.,"ignoreTitleがfalseの時")]/following-sibling::button[1]')
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -235,7 +236,7 @@ describe('test http://localhost:3001/section10', async () => {
         await PW.expect(page).toHaveTitle(/New Title/)
     })
 
-    it("ignoreTitle:true", async () => {
+    test("ignoreTitle:true", async () => {
         const button = page.locator('xpath=//h3[contains(.,"ignoreTitleがtrueの時")]/following-sibling::button[1]')
         await button.waitFor({ state: 'visible', timeout: 10000 });
         await PW.expect(button).toBeEnabled();
@@ -247,11 +248,11 @@ describe('test http://localhost:3001/section10', async () => {
         await PW.expect(page).not.toHaveTitle(/New Title/)
     })
 
-    it("scroll", async () => {
+    test("scroll", async () => {
         // what use? I don't see
     })
 
-    it("show", async () => {
+    test("show", async () => {
         // difficult to test
     })
 
@@ -261,9 +262,12 @@ describe('test http://localhost:3001/section10', async () => {
         }
     });
     afterAll(async () => {
-        if (browser) {
-            await context.tracing.stop({ path: `./out/traces/${Date.now()}-section10.zip` });
-            await browser.close();
+        if (driver.getContext()) {
+            await driver.getContext().tracing.stop({ path: `./out/traces/${Date.now()}-section4.zip` });
+            await driver.getContext().close()
         }
-    });
+        if (driver.getBrowser()) {
+            await driver.getBrowser().close()
+        }
+    })
 });

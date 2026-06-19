@@ -1,27 +1,25 @@
 // e2e/section12.test.ts
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
-import { getLogger } from '@logtape/logtape';
+import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
-import * as BH from './browser-helpers';
+import { BrowserDriverChromium } from './BrowserDriverChromium';
+import { getLogger } from '@logtape/logtape';
 
 const logger = getLogger(["my-app", "section12.test"]);
+const url = 'http://localhost:3001/section12';
 
-describe('test http://localhost:3001/section12', async () => {
-    let browser: PW.Browser;
-    let context: PW.BrowserContext;
+describe(`test ${url}`, async () => {
+    // Here I assume that the server at http://localhost:3001 is already up and running.
+    let driver: BrowserDriverChromium;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await BH.launchChromium();
-        context = await BH.newContext(browser);
-        await context.tracing.start({ screenshots: true, snapshots: true })
+        driver = await BrowserDriverChromium.create();
+        await driver.getContext().tracing.start({ screenshots: true, snapshots: true })
     });
     beforeEach(async () => {
-        page = await BH.newPage(context);
-        await page.goto('http://localhost:3001/section12', { timeout: 20_000 })
-        await page.waitForLoadState('load', { timeout: 10_000 });
+        page = await driver.navigateToUrl(url);
     }, 20_000);
 
-    it("hx-params=*", async () => {
+    test("hx-params=*", async () => {
         const form = page.locator('css=form[hx-params="*"]')
         await PW.expect(form).toBeVisible()
         // send texts in the input fields
@@ -35,20 +33,20 @@ describe('test http://localhost:3001/section12', async () => {
         // click the button
         // hx-post="/send-form" will take longer longer than 1 second
         await PW.expect(async () => {
-                const responsePromise: Promise<PW.Response> =
-                    page.waitForResponse(/\/send-form/, { timeout: 5_000 });
-                await button.click()
-                const response: PW.Response = await responsePromise;
-                expect(response.status()).toBe(200);
+            const responsePromise: Promise<PW.Response> =
+                page.waitForResponse(/\/send-form/, { timeout: 5_000 });
+            await button.click()
+            const response: PW.Response = await responsePromise;
+            expect(response.status()).toBe(200);
         }).toPass({ timeout: 15000 });
         // assert the target to contain "title=aaa&name=bbb&age=66"
         await PW.expect(page.locator('css=p#all-target'))
             .toContainText(/title=greeting&name=kazurayam&age=66/)
     })
 
-    it("hx-params=none", async () => { /* omit */ })
+    test("hx-params=none", async () => { /* omit */ })
 
-    it("hx-params param-list", async () => {
+    test("hx-params param-list", async () => {
         const form = page.locator('css=form[hx-params="title,age"]')
         // send texts in the input fields
         await form.locator('css=input[name="title"]').fill('greeting')
@@ -59,20 +57,20 @@ describe('test http://localhost:3001/section12', async () => {
         await button.waitFor({ state: 'visible', timeout: 5000 });
         await PW.expect(button).toBeEnabled();
         await PW.expect(async () => {
-                const responsePromise: Promise<PW.Response> =
-                    page.waitForResponse(/\/send-form/, { timeout: 5_000 });
-                await button.click();
-                const response = await responsePromise;
-                expect(response.status()).toBe(200);
+            const responsePromise: Promise<PW.Response> =
+                page.waitForResponse(/\/send-form/, { timeout: 5_000 });
+            await button.click();
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
         }).toPass({ timeout: 15000 });
         // assert the target to contain "title=aaa&age=66"
         await PW.expect(page.locator('css=p#param-target'))
             .toContainText(/title=greeting&age=66/)
     })
 
-    //it("hx-params, not param-list", async () => { /* omit */ })
+    //test("hx-params, not param-list", async () => { /* omit */ })
 
-    it("hx-include", async () => {
+    test("hx-include", async () => {
         // fill the input[name='name'] with my name
         const div = page.locator('xpath=//p[@id="include-target"]/following-sibling::div[1]')
         const input = div.locator('input[name="name"]')
@@ -82,20 +80,20 @@ describe('test http://localhost:3001/section12', async () => {
         await PW.expect(async () => {
             await button.waitFor({ state: 'visible', timeout: 5000 });
             await PW.expect(button).toBeEnabled();
-        }).toPass({timeout: 15000});
+        }).toPass({ timeout: 15000 });
         await PW.expect(async () => {
-                const responsePromise: Promise<PW.Response> =
-                    page.waitForResponse(/\/send-form/, { timeout: 10_000 });
-                await button.click()
-                const response = await responsePromise;
-                expect(response.status()).toBe(200);
+            const responsePromise: Promise<PW.Response> =
+                page.waitForResponse(/\/send-form/, { timeout: 10_000 });
+            await button.click()
+            const response = await responsePromise;
+            expect(response.status()).toBe(200);
         }).toPass({ timeout: 25000 });
         // assert the target <p> contains "name=kazurayam"
         const p = page.locator('css=p#include-target')
         expect(await p.innerText()).toMatch(/kazurayam/)
     })
 
-    it("hx-vals", async () => {
+    test("hx-vals", async () => {
         // click the button
         const h2 = page.locator('xpath=//h2[contains(text(),"hx-vals")]')
         const button = h2.locator('xpath=following-sibling::button[1]')
@@ -116,7 +114,7 @@ describe('test http://localhost:3001/section12', async () => {
     })
 
     /* difficult to test event.key
-    it("hx-vals=js:{lastkey: event.key}", async () => {
+    test("hx-vals=js:{lastkey: event.key}", async () => {
         // into the input field, press keys 'L', 'O', 'V', 'E'
         const input = page.locator('css=div[hx-target="#vals-target2"] input')
         await input.waitFor({ state: 'visible', timeout: 5000 });
@@ -142,9 +140,12 @@ describe('test http://localhost:3001/section12', async () => {
         }
     });
     afterAll(async () => {
-        if (browser) {
-            await context.tracing.stop({ path: `./out/traces/${Date.now()}-section12.zip` });
-            await browser.close();
+        if (driver.getContext()) {
+            await driver.getContext().tracing.stop({ path: `./out/traces/${Date.now()}-section4.zip` });
+            await driver.getContext().close()
+        }
+        if (driver.getBrowser()) {
+            await driver.getBrowser().close()
         }
     })
 });

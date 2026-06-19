@@ -1,24 +1,25 @@
 // e2e/section9.test.ts
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
+import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
-import * as BH from './browser-helpers';
+import { BrowserDriverChromium } from './BrowserDriverChromium';
+import { getLogger } from '@logtape/logtape';
 
-describe('test http://localhost:3001/section9', async () => {
-    let browser: PW.Browser;
-    let context: PW.BrowserContext;
+const logger = getLogger(["my-app", "section9.test"]);
+const url = 'http://localhost:3001/section9';
+
+describe(`test ${url}`, async () => {
+    // Here I assume that the server at http://localhost:3001 is already up and running.
+    let driver: BrowserDriverChromium;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await BH.launchChromium();
-        context = await BH.newContext(browser);
-        await context.tracing.start({ screenshots: true, snapshots: true })
+        driver = await BrowserDriverChromium.create();
+        await driver.getContext().tracing.start({ screenshots: true, snapshots: true })
     });
     beforeEach(async () => {
-        page = await BH.newPage(context);
-        await page.goto('http://localhost:3001/section9', { timeout: 20_000 })
-        await page.waitForLoadState('load', { timeout: 10_000 });
+        page = await driver.navigateToUrl(url);
     }, 20_000);
 
-    it("スピナー", async () => {
+    test("スピナー", async () => {
         //click the button, a spinner appears and moves for 5seconds until the response is received, then the label changes from クリック to ロード完了
         const button = page.locator('css=button[hx-indicator="#spinner"]');
         await button.waitFor({ state: 'visible', timeout: 10000 });
@@ -47,11 +48,14 @@ describe('test http://localhost:3001/section9', async () => {
         }
     });
     afterAll(async () => {
-        if (browser) {
-            await context.tracing.stop({ path: `./out/traces/${Date.now()}-section9.zip` });
-            await browser.close();
+        if (driver.getContext()) {
+            await driver.getContext().tracing.stop({ path: `./out/traces/${Date.now()}-section4.zip` });
+            await driver.getContext().close()
         }
-    });
+        if (driver.getBrowser()) {
+            await driver.getBrowser().close()
+        }
+    })
 });
 
 // A helper function that verifies the class attribute of an element to which the locator points

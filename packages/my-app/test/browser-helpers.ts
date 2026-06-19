@@ -1,9 +1,15 @@
 // e2e/browser-helpers.ts
 import { Browser, BrowserContext, Page, chromium } from '@playwright/test';
-import { withTimeout, TimeoutError } from '../src/withTimeout';
+import { withTimeout, TimeoutError } from './withTimeout';
 import { getLogger } from '@logtape/logtape';
 
 const logger = getLogger(["my-app", "browser-helpers"]);
+
+export const openChromium = async (): Promise<{ browser: Browser, context: BrowserContext }> => {
+    const browser = await launchChromium();
+    const context = await newContext(browser);
+    return { browser, context };
+}
 
 /**
  * https://www.technetexperts.com/slow-playwright-new-page-fix/
@@ -32,44 +38,17 @@ export const newContext = async (browser: Browser): Promise<BrowserContext> => {
     if (browser === null) {
         throw new Error('invalid argument. browser is null')
     }
+    const context = await browser.newContext({
+        javaScriptEnabled: true,
+        viewport: { width: 700, height: 800 }
+    });
     // some custom settings
-    const context = await browser.newContext({ javaScriptEnabled: true });
     context.removeAllListeners();
     context.setDefaultNavigationTimeout(20_000);
-
     return context;
 };
 
-/*
+
 export const newPage = async (context: BrowserContext) : Promise<Page> => {
     return await context.newPage();
-}
-*/
-
-export const newPage = async (context: BrowserContext): Promise<Page> => {
-    if (context === null) {
-        throw new Error('invalid argument. context is null');
-    }
-    try {
-        const page = await withTimeout(
-            context.newPage(),
-            {
-                timeoutMs: 10_000,
-                abortable: false,
-                onTimeout: () => {
-                    logger.info('context.newPage() timeout!');
-                }
-            });
-        return page;
-    } catch (error) {
-        if (TimeoutError.isTimeoutError(error)) {
-            logger.error("TimeoutError occured");
-            const browser = context.browser();
-            if (browser !== null) {
-                const nctx: BrowserContext = await newContext(browser);
-                return await newPage(nctx);
-            }
-        }
-        throw error;
-    }
 }

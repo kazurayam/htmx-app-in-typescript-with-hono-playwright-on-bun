@@ -2,7 +2,7 @@
 
 import { describe, test, expect } from 'bun:test';
 import { getLogger } from '@logtape/logtape';
-import { PromiseUtils } from '../src/promise-utils';
+import { PromiseUtils } from './promise-utils';
 
 const logger = getLogger(["my-app", "PromiseUtils.test"]);
 

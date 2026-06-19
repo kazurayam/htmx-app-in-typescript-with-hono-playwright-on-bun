@@ -1,25 +1,25 @@
 // e2e/section3.test.ts
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
+import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
-import * as BH from './browser-helpers';
+import { BrowserDriverChromium } from './BrowserDriverChromium';
+import { getLogger } from '@logtape/logtape';
 
-describe('test http://localhost:3001/section3', async () => {
+const logger = getLogger(["my-app", "section3.test"]);
+const url = 'http://localhost:3001/section3';
+
+describe(`test ${url}`, async () => {
     // Here I assume that the server at http://localhost:3001 is already up and running.
-    let browser: PW.Browser;
-    let context: PW.BrowserContext;
+    let driver: BrowserDriverChromium;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await BH.launchChromium();
-        context = await BH.newContext(browser);
-        await context.tracing.start({ screenshots: true, snapshots: true })
+        driver = await BrowserDriverChromium.create();
+        await driver.getContext().tracing.start({ screenshots: true, snapshots: true })
     });
     beforeEach(async () => {
-        page = await BH.newPage(context);
-        await page.goto('http://localhost:3001/section3', { timeout: 20_000 });
-        await page.waitForLoadState('load', { timeout: 20_000 });
+        page = await driver.navigateToUrl(url);
     }, 20_000);
 
-    it("click <button hx-get=/hello>, then the button should show GETリクエスト!", async () => {
+    test("click <button hx-get=/hello>, then the button should show GETリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-get]');
         // make sure the button is clickable
@@ -31,7 +31,7 @@ describe('test http://localhost:3001/section3', async () => {
         await PW.expect(span).toBeVisible();
     });
 
-    it("click <button hx-post=/hello>, then the button should show POSTリクエスト!", async () => {
+    test("click <button hx-post=/hello>, then the button should show POSTリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-post]');
         await button.waitFor({ state: 'visible', timeout: 5000 });
@@ -42,7 +42,7 @@ describe('test http://localhost:3001/section3', async () => {
         await PW.expect(span).toBeVisible();
     });
 
-    it("click <button hx-put=/hello>, then the button should show PUTリクエスト!", async () => {
+    test("click <button hx-put=/hello>, then the button should show PUTリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-put]');
         await button.waitFor({ state: 'visible', timeout: 5000 });
@@ -53,7 +53,7 @@ describe('test http://localhost:3001/section3', async () => {
         await PW.expect(span).toBeVisible();
     });
 
-    it("click <button hx-patch=/hello>, then the button should show PATCHリクエスト!", async () => {
+    test("click <button hx-patch=/hello>, then the button should show PATCHリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-patch]');
         await button.waitFor({ state: 'visible', timeout: 5000 });
@@ -64,7 +64,7 @@ describe('test http://localhost:3001/section3', async () => {
         await PW.expect(span).toBeVisible();
     });
 
-    it("click <button hx-delete=/hello>, then the button should show DELETEリクエスト!", async () => {
+    test("click <button hx-delete=/hello>, then the button should show DELETEリクエスト!", async () => {
         // Select the button
         const button: PW.Locator = page.locator('css=button[hx-delete]');
         await button.waitFor({ state: 'visible', timeout: 5000 });
@@ -74,16 +74,19 @@ describe('test http://localhost:3001/section3', async () => {
         const span: PW.Locator = page.getByText('DELETEリクエスト!');
         await PW.expect(span).toBeVisible();
     });
-
+    
     afterEach(async () => {
         if (page) {
             await page.close();
         }
     });
     afterAll(async () => {
-        if (browser) {
-            await context.tracing.stop({ path: `./out/traces/${Date.now()}-section3.zip` });
-            await browser.close()
+        if (driver.getContext()) {
+            await driver.getContext().tracing.stop({ path: `./out/traces/${Date.now()}-section4.zip` });
+            await driver.getContext().close()
+        }
+        if (driver.getBrowser()) {
+            await driver.getBrowser().close()
         }
     })
 })

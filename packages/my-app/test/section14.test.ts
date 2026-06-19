@@ -1,24 +1,25 @@
 // e2e/section14.test.ts
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
+import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
-import * as BH from './browser-helpers';
+import { BrowserDriverChromium } from './BrowserDriverChromium';
+import { getLogger } from '@logtape/logtape';
 
-describe('test http://localhost:3001/section14', async () => {
-    let browser: PW.Browser;
-    let context: PW.BrowserContext;
+const logger = getLogger(["my-app", "section14.test"]);
+const url = 'http://localhost:3001/section14';
+
+describe(`test ${url}`, async () => {
+    // Here I assume that the server at http://localhost:3001 is already up and running.
+    let driver: BrowserDriverChromium;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await BH.launchChromium();
-        context = await BH.newContext(browser);
-        await context.tracing.start({ screenshots: true, snapshots: true })
+        driver = await BrowserDriverChromium.create();
+        await driver.getContext().tracing.start({ screenshots: true, snapshots: true })
     });
     beforeEach(async () => {
-        page = await BH.newPage(context);
-        await page.goto('http://localhost:3001/section14', { timeout: 20_000 })
-        await page.waitForLoadState('load', { timeout: 10_000 });
+        page = await driver.navigateToUrl(url);
     }, 20_000);
 
-    it("継承 hx-targetの例", async () => {
+    test("継承 hx-targetの例", async () => {
         const div = page.locator('css=div[hx-target="#target1"]')
         const button1 = div.locator('css=button:nth-child(1)')
         const button2 = div.locator('css=button:nth-child(2)')
@@ -52,7 +53,7 @@ describe('test http://localhost:3001/section14', async () => {
         await PW.expect(button3).toContainText(/[0-9]+/)
     })
 
-    it("継承 hx-confirmの例", async () => {
+    test("継承 hx-confirmの例", async () => {
         const div = page.locator('xpath=//h2[contains(text(),"hx-confirmの例")]/following-sibling::div[1]')
         await PW.expect(div).toBeVisible();
         let buttonName = ""
@@ -95,7 +96,7 @@ describe('test http://localhost:3001/section14', async () => {
         await PW.expect(buttonC).toContainText(/[0-9]+/)
     })
 
-    it("継承 hx-disinherit hx-target指定なし", async () => {
+    test("継承 hx-disinherit hx-target指定なし", async () => {
         //buttonの親要素のdivにhx-target属性が指定されている
         //buttonをクリックするとhx-targetに指定されたp要素の内容が変化する
         const h3 = page.locator('xpath=//h3[contains(text(),"hx-target指定なし")]')
@@ -112,7 +113,7 @@ describe('test http://localhost:3001/section14', async () => {
         await PW.expect(p).toContainText(/[0-9]+/)
     })
 
-    it("継承 hx-disinherit hx-target指定あり", async () => {
+    test("継承 hx-disinherit hx-target指定あり", async () => {
         //buttonの親要素にhx-target属性が指定されているが
         //あわせてhx-disinherit="hx-target"と指定されているのでhx-targetが無効化される
         //buttonをクリックするとp要素は変化しないでbutton自身の内容が変化する
@@ -130,7 +131,7 @@ describe('test http://localhost:3001/section14', async () => {
         await PW.expect(button).toContainText(/[0-9]+/)
     })
 
-    it("継承 hx-disinheritに*を指定", async () => {
+    test("継承 hx-disinheritに*を指定", async () => {
         //buttonの親要素にhx-target属性が指定されているが
         //合わせてhx-disinherit="*"と指定されているのでhx-targetが無効化される
         //buttonをクリックするとp要素は変化しないでbutton自身の内容が変化する
@@ -156,9 +157,12 @@ describe('test http://localhost:3001/section14', async () => {
         }
     });
     afterAll(async () => {
-        if (browser) {
-            await context.tracing.stop({ path: `./out/traces/${Date.now()}-section14.zip` });
-            await browser.close();
+        if (driver.getContext()) {
+            await driver.getContext().tracing.stop({ path: `./out/traces/${Date.now()}-section4.zip` });
+            await driver.getContext().close()
         }
-    });
+        if (driver.getBrowser()) {
+            await driver.getBrowser().close()
+        }
+    })
 });

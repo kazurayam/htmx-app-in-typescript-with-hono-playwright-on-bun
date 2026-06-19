@@ -1,24 +1,25 @@
 // e2e/section11.test.ts
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
+import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
-import * as BH from './browser-helpers';
+import { BrowserDriverChromium } from './BrowserDriverChromium';
+import { getLogger } from '@logtape/logtape';
 
-describe('test http://localhost:3001/section11', async () => {
-    let browser: PW.Browser;
-    let context: PW.BrowserContext;
+const logger = getLogger(["my-app", "section11.test"]);
+const url = 'http://localhost:3001/section11';
+
+describe(`test ${url}`, async () => {
+    // Here I assume that the server at http://localhost:3001 is already up and running.
+    let driver: BrowserDriverChromium;
     let page: PW.Page;
     beforeAll(async () => {
-        browser = await BH.launchChromium();
-        context = await BH.newContext(browser);
-        await context.tracing.start({ screenshots: true, snapshots: true })
+        driver = await BrowserDriverChromium.create();
+        await driver.getContext().tracing.start({ screenshots: true, snapshots: true })
     });
     beforeEach(async () => {
-        page = await BH.newPage(context);
-        await page.goto('http://localhost:3001/section11', { timeout: 20_000})
-        await page.waitForLoadState('load', { timeout: 10_000 });
+        page = await driver.navigateToUrl(url);
     }, 20_000);
 
-    it("drop", async () => {
+    test("drop", async () => {
         // check the initial state
         await PW.expect(page.locator('css=p#drop-target1')).toContainText(/foo/)
         await PW.expect(page.locator('css=p#drop-target2')).toContainText(/hoge/)
@@ -53,15 +54,15 @@ describe('test http://localhost:3001/section11', async () => {
         await PW.expect(page.locator('css=p#drop-target1')).toContainText(/送信完了しました/)
     })
 
-    it("abort", async () => {
+    test("abort", async () => {
         // for what use? I don't understand this.
     })
 
-    it("replace", async () => {
+    test("replace", async () => {
         // for what use? I don't understand this.
     })
 
-    it("queue", async () => {
+    test("queue", async () => {
         // for what use? I don't have any idea how to use this.
     })
 
@@ -71,9 +72,12 @@ describe('test http://localhost:3001/section11', async () => {
         }
     });
     afterAll(async () => {
-        if (browser) {
-            await context.tracing.stop({ path: `./out/traces/${Date.now()}-section11.zip` });
-            await browser.close();
+        if (driver.getContext()) {
+            await driver.getContext().tracing.stop({ path: `./out/traces/${Date.now()}-section4.zip` });
+            await driver.getContext().close()
         }
-    });
+        if (driver.getBrowser()) {
+            await driver.getBrowser().close()
+        }
+    })
 });
