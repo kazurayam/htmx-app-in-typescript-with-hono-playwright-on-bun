@@ -12,8 +12,7 @@ describe(`test ${url}`, async () => {
     let driver: BrowserDriverChromium;
     let page: PW.Page;
     beforeAll(async () => {
-        driver = await BrowserDriverChromium.create();
-        await driver.getContext().tracing.start({ screenshots: true, snapshots: true })
+        driver = await BrowserDriverChromium.create('section7');
     });
     beforeEach(async () => {
         page = await driver.navigateToUrl(url);
@@ -42,18 +41,10 @@ describe(`test ${url}`, async () => {
      */
 
     afterEach(async () => {
-        if (page) {
-            await page.close();
-        }
+        await page.close();
     });
-    
+
     afterAll(async () => {
-        if (driver.getContext()) {
-            await driver.getContext().tracing.stop({ path: `./out/traces/${Date.now()}-section4.zip` });
-            await driver.getContext().close()
-        }
-        if (driver.getBrowser()) {
-            await driver.getBrowser().close()
-        }
+        driver.close();
     })
 });

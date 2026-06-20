@@ -7,20 +7,23 @@ import { getLogger } from '@logtape/logtape';
 const logger = getLogger(["my-app", "BrowserDriverChromium"]);
 
 export class BrowserDriverChromium {
+    private id: string;
     private browser: Browser;
     private context: BrowserContext;
 
     // you should call create() instead of the private constructor
-    private constructor(browser: Browser, context: BrowserContext) {
+    private constructor(id: string, browser: Browser, context: BrowserContext) {
+        this.id = encodeURIComponent(id);
         this.browser = browser;
         this.context = context;
     }
 
     // static method for async initialization
-    static async create(): Promise<BrowserDriverChromium> {
+    static async create(id: string): Promise<BrowserDriverChromium> {
         const browser = await BH.launchChromium();
         const context = await BH.newContext(browser);
-        return new BrowserDriverChromium(browser, context);
+        context.tracing.start({ screenshots: true, snapshots: true })
+        return new BrowserDriverChromium(id, browser, context);
     }
 
     getBrowser(): Browser {
@@ -50,6 +53,16 @@ export class BrowserDriverChromium {
             await page.waitForLoadState('load', { timeout: 10_000 });
             logger.info(`[beforeEach] recreated the browser`)
             return page;
+        }
+    }
+
+    async close() {
+        if (this.context) {
+            await this.context.tracing.stop({ path: `./out/traces/${Date.now()}-${this.id}` });
+            await this.context.close()
+        }
+        if (this.browser) {
+            await this.browser.close()
         }
     }
 }
