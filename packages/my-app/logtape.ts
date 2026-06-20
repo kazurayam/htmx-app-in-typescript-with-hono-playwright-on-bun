@@ -37,9 +37,6 @@ await configure({
         { category: ["my-app", "section13.test"], lowestLevel: "debug", sinks: ["file"] },
         { category: ["my-app", "section14.test"], lowestLevel: "debug", sinks: ["file"] },
         { category: ["my-app", "section15.test"], lowestLevel: "debug", sinks: ["file"] },
-        { category: ["my-app", "promise-utils"], lowestLevel: "debug", sinks: ["file"] },
-        { category: ["my-app", "promise-utils.test"], lowestLevel: "debug", sinks: ["file"] },
-        { category: ["my-app", "withTimeout.test"], lowestLevel: "debug", sinks: ["file"] },
         { category: ["logtape", "meta"], lowestLevel: "warning", sinks: ["console"] },
     ],
 });

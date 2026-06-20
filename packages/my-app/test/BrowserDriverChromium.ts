@@ -50,7 +50,7 @@ export class BrowserDriverChromium {
             //
             const page = await BH.newPage(this.context);
             await page.goto(url, { timeout: 15_000 });
-            await page.waitForLoadState('load', { timeout: 10_000 });
+            await page.waitForLoadState('load', { timeout: 5_000 });
             logger.info(`[beforeEach] recreated the browser`)
             return page;
         }
