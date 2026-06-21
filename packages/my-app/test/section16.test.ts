@@ -19,9 +19,9 @@ describe(`test ${url}`, async () => {
         }, 20_000);
 
     test("validation", async () => {
-        const input = page.locator('css=input[hx-on-htmx-validation-validate]');
+        const input = page.locator('css=input[name="example"]');
         await input.waitFor({ state: 'visible', timeout: 5_000 });
-        await input.fill('鳥');
+        await input.fill('ペンギン');
         const button = input.locator('xpath=following-sibling::button[1]');
         await PW.expect(button).toBeEnabled();
         const responsePromise =
@@ -30,7 +30,7 @@ describe(`test ${url}`, async () => {
         const response = await responsePromise;
         expect(response.status()).toBe(200);
         const p = page.locator('css=p#target');
-        await PW.expect(p).toContainText('ペンギンと入力してください')
+        await PW.expect(p).toContainText('%E3%83%9A%E3%83%B3%E3%82%AE%E3%83%B3')
     })
 
     afterEach(async () => {
