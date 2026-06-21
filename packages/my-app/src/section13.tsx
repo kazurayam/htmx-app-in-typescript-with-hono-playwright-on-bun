@@ -37,7 +37,7 @@ export const Section13: FC = () => {
                 <button hx-get="/random" hx-push-url="/section13/random">クリック</button>
 
                 <h2>hx-on</h2>
-                <button hx-on:click="alert('こんにちは!')">クリック</button>
+                <button hx-on-click="alert('こんにちは!')">クリック</button>
 
                 <h2>htmx:before-request</h2>
                 <button hx-get="/random" hx-on-htmx-before-request="alert('こんにちは!')">クリック</button>

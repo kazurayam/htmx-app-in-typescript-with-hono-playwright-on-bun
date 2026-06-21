@@ -1,10 +1,10 @@
 // main.tsx
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { logger } from 'hono/logger'
+//import { logger } from 'hono/logger'
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
-import { HTTPException } from 'hono/http-exception'
+//import { HTTPException } from 'hono/http-exception'
 import { getLogger } from '@logtape/logtape';
 import { Top } from './top'
 import { Section3 } from './section3'
@@ -15,11 +15,12 @@ import { Section7 } from './section7'
 import { Section8 } from './section8'
 import { Section9 } from './section9'
 import { Section10 } from './section10'
-import { Section11 }  from './section11'
+import { Section11 } from './section11'
 import { Section12 } from './section12'
 import { Section13 } from './section13'
 import { Section14 } from './section14'
-import { Section15 }  from './section15'
+import { Section15 } from './section15'
+import { Section16 } from './section16'
 
 const logger = getLogger(["my-app", "main"]);
 
@@ -141,10 +142,17 @@ app.get('/section14', (c) => {
     )
 })
 
-app.get('/section15', (c) => {
+app.on('GET', '/section15', (c) => {
     const messages = ['Hello htmx']
     return c.render(
         <Section15 messages={messages} />
+    )
+})
+
+app.on('GET', '/section16', (c) => {
+    const messages = ['Hello htmx']
+    return c.render(
+        <Section16 messages={messages} />
     )
 })
 

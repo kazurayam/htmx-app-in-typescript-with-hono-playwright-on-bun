@@ -52,8 +52,14 @@ describe(`test ${url}`, async () => {
         // I don't see what's the use
     })
 
-    test("hx-on", async () => {
-        // I don't see what's the use
+    test("hx-on-click", async () => {
+        page.on('dialog', async (dialog) => {
+            await page.waitForTimeout(100)
+            expect(dialog.message()).toMatch(/こんにちは/)
+            dialog.accept()
+        });
+        const button = page.locator('css=button[hx-on-click]')
+        await button.click()
     })
 
     test("htmx:before-request", async () => {
