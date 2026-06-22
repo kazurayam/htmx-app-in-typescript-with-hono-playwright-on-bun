@@ -20,29 +20,13 @@ export const Section16: FC = () => {
                     <button class="btn btn-default">送信</button>
                 </form>
 
-                <h2>Server-side validation</h2>
-                <p><a href="https://htmx.org/examples/inline-validation/">https://htmx.org/examples/inline-validation/</a></p>
-                <h3>Singup Form</h3>
-                <p>Enter an email into the input below and on tab out it will validated. Only "test@test.com" will pass.</p>
-                <form hx-post="/contact">
-                    <div ht-target="this" hx-swap="outerHTML">
-                        <label>Email Address</label>
-                        <input name="email" hx-post="/contact/email"
-                            hx-indicator="#ind"></input>
-                        <img id="ind" src="/img/bars.svg" alt="Checking..."
-                            class="htmx-indicator"></img>
-                    </div>
-                    <div class="form-group">
-                        <label>First Name</label>
-                        <input type="text" class="form-control" name="firstName"></input>
-                    </div>
-                    <div class="form-group">
-                        <label>Last Name</label>
-                        <input type="text" class="form-control" name="lastName"></input>
-                    </div>
-                    <button class="btn primary">Submit</button>
-                </form>
 
+                <h2>Logging</h2>
+                <button hx-get="/random" hx-target="#content" hx-swap="innerHTML">
+                    コンテンツをロード
+                </button>
+                <div id="content"></div>
+                <script src="/js/section16.js"></script>
 
             </div>
         </Layout>
