@@ -19,8 +19,8 @@ export class BrowserDriverChromium {
     }
 
     // static method for async initialization
-    static async create(id: string): Promise<BrowserDriverChromium> {
-        const browser = await BH.launchChromium();
+    static async create(id: string, options: object = {}, args: string[] = []): Promise<BrowserDriverChromium> {
+        const browser = await BH.launchChromium(options, args);
         const context = await BH.newContext(browser);
         context.tracing.start({ screenshots: true, snapshots: true })
         return new BrowserDriverChromium(id, browser, context);
