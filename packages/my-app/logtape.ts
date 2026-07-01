@@ -1,22 +1,10 @@
 import { configure, getConsoleSink } from "@logtape/logtape";
-import { getFileSink, getRotatingFileSink } from "@logtape/file";
-
-
-// 単純なファイル出力
-const fileSink = getFileSink("app.log");
-
-// ローテーション付き（10MBで切り替え、5ファイルまで保持）
-/*
-const rotatingFileSink = getRotatingFileSink("app.log", {
-    maxSize: 10 * 1024 * 1024,
-    maxFiles: 5,
-});
-*/
+import { getFileSink } from "@logtape/file";
 
 await configure({
     sinks: {
         console: getConsoleSink(),  // 出力先としてコンソールを宣言
-        file: getFileSink("./out/app.log")  // 出力先としてファイルを宣言
+        file: getFileSink("./out/my-app.log")  // 出力先としてファイルを宣言
     },
     loggers: [
         { category: ["my-app", "browser-helpers"], lowestLevel: "debug", sinks: ["file"] },
@@ -24,6 +12,7 @@ await configure({
         { category: ["my-app", "BrowserDriverChromium"], lowestLevel: "debug", sinks: ["file"] },
         { category: ["my-app", "index.test"], lowestLevel: "debug", sinks: ["file"] },
         { category: ["my-app", "main"], lowestLevel: "debug", sinks: ["file"] },
+        { category: ["my-app", "play-on-browser.test"], lowestLevel: "debug", sinks: ["console", "file"] },
         { category: ["my-app", "section3.test"], lowestLevel: "debug", sinks: ["file"] },
         { category: ["my-app", "section4.test"], lowestLevel: "debug", sinks: ["file"] },
         { category: ["my-app", "section5.test"], lowestLevel: "debug", sinks: ["file"] },
