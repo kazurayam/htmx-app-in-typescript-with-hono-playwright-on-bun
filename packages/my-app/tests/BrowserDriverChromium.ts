@@ -1,4 +1,4 @@
-// test/BrowserDriverChromium.ts
+// tests/BrowserDriverChromium.ts
 
 import { Browser, BrowserContext, Page } from '@playwright/test';
 import * as BH from './browser-helpers';

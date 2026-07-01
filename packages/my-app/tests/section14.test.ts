@@ -1,4 +1,4 @@
-// e2e/section14.test.ts
+// tests/section14.test.ts
 import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
 import { BrowserDriverChromium } from './BrowserDriverChromium';

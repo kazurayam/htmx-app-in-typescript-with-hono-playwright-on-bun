@@ -1,4 +1,4 @@
-// test/browser-helpers.test.ts
+// tests/browser-helpers.test.ts
 import { describe, test, expect } from 'bun:test';
 import { getLogger } from '@logtape/logtape';
 import * as PW from '@playwright/test';
@@ -15,9 +15,13 @@ describe('test browser-helpers', () => {
     test('open chromium with headless=false', async () => {
         const browser = await BH.launchChromium({ headless: false });
         expect(browser.browserType().name()).toBe('chromium');
+        const context = await browser.newContext();
+        const page = await context.newPage();
+        await page.goto("http://example.com", { timeout: 15_000 });
+        await page.waitForLoadState('load', { timeout: 5_000 });
         await delay(3000);
         browser.close();
-    })
+    }, {timeout: 15000})
     test('test openChromium function', async () => {
         const { browser, context } = await BH.openChromium();
         expect(browser.browserType().name()).toBe('chromium');

@@ -1,4 +1,4 @@
-// e2e/section3.test.ts
+// tests/section3.test.ts
 import { describe, test, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
 import { BrowserDriverChromium } from './BrowserDriverChromium';
@@ -12,7 +12,7 @@ describe(`test ${url}`, async () => {
     let driver: BrowserDriverChromium;
     let page: PW.Page;
     beforeAll(async () => {
-        driver = await BrowserDriverChromium.create('section3');
+        driver = await BrowserDriverChromium.create('section3', { headless: false });
     });
     beforeEach(async () => {
         page = await driver.navigateToUrl(url);

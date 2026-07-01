@@ -1,4 +1,4 @@
-// e2e/main.test.ts
+// tests/main.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import * as PW from '@playwright/test';
 

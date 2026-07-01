@@ -1,4 +1,4 @@
-// test/BrowserDriverChromium.test.ts
+// tests/BrowserDriverChromium.test.ts
 import { describe, test, expect } from 'bun:test';
 import { BrowserDriverChromium } from './BrowserDriverChromium';
 

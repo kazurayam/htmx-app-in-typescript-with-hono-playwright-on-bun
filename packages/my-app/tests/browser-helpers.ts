@@ -1,6 +1,5 @@
-// e2e/browser-helpers.ts
+// tests/browser-helpers.ts
 import { Browser, BrowserContext, Page, chromium } from '@playwright/test';
-import { withTimeout, TimeoutError } from '../../promise-utils/src/withTimeout';
 import { getLogger } from '@logtape/logtape';
 
 const logger = getLogger(["my-app", "browser-helpers"]);
