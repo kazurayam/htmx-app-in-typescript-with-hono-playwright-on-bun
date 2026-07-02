@@ -2,6 +2,9 @@
 import { describe, test, expect } from 'bun:test';
 import type { Browser, BrowserContext, Page } from '@playwright/test';
 import { chromium } from '@playwright/test';
+import { getLogger } from '@logtape/logtape';
+
+const logger = getLogger(["my-app", "play-on-browser.test"]);
 
 describe("Play on Playwright's Browser API", async () => {
     // Here I assume that the server at http://localhost:3001 is already up and running.
@@ -13,7 +16,7 @@ describe("Play on Playwright's Browser API", async () => {
         browser = await chromium.launch({ headless: false });
         expect(browser).toBeDefined();
         expect(browser.browserType().name()).toBe('chromium');
-        console.log(`browser.browserType().executablePath()=${browser.browserType().executablePath()}`);
+        logger.info(`browser.browserType().executablePath()=${browser.browserType().executablePath()}`);
         context = await browser.newContext({
             viewport: { width: 800, height: 300 }
         });

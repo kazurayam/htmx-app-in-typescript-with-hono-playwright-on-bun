@@ -4,7 +4,10 @@ import { getFileSink } from "@logtape/file";
 await configure({
     sinks: {
         console: getConsoleSink(),  // 出力先としてコンソールを宣言
-        file: getFileSink("./out/my-app.log")  // 出力先としてファイルを宣言
+        file: getFileSink("./out/my-app.log", {
+            flushInterval: 1000,
+            nonBlocking: true,
+        })  // 出力先としてファイルを宣言
     },
     loggers: [
         { category: ["my-app", "browser-helpers"], lowestLevel: "debug", sinks: ["file"] },
