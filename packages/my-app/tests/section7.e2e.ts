@@ -4,7 +4,7 @@ import * as PW from '@playwright/test';
 import { BrowserDriverChromium } from './BrowserDriverChromium';
 import { getLogger } from '@logtape/logtape';
 
-const logger = getLogger(["my-app", "section7.test"]);
+const logger = getLogger(["my-app", "section7.e2e"]);
 const url = 'http://localhost:3001/section7';
 
 describe(`test ${url}`, async () => {
