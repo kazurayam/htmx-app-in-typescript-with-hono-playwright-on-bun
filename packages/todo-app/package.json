@@ -3,6 +3,9 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "main": "bun run --hot ./src/main.tsx"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -10,5 +13,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@hono/node-server": "^2.0.8",
+    "hono": "^4.12.27"
   }
 }
