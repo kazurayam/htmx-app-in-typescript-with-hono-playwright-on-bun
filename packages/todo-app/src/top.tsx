@@ -14,7 +14,13 @@ export const Top: FC<{ messages: string[] }> = (props: {
             }
             <div id="app">
                 <h1>ToDo App</h1>
-                <p>Hello World</p>
+                <div id="app-contents">
+                    <form hx-post="/add" hx-target="#task-list" hx-swap="beforeend" hx-on--after-request="this.reset()">
+                        <input type="text" name="task" placeholder="新しいタスク" required />
+                        <button type="submit">追加</button>
+                    </form>
+                    <ul id="task-list"></ul>
+                </div>
             </div>
         </Layout>
     );
