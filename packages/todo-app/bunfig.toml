@@ -1,0 +1,4 @@
+# $PROJECT/bunfig.toml
+[test]
+root = "tests"
+preload = [ "./logtape.ts" ]

@@ -49,6 +49,8 @@
       "name": "todo-app",
       "dependencies": {
         "@hono/node-server": "^2.0.8",
+        "@logtape/file": "^2.2.4",
+        "@logtape/logtape": "^2.2.4",
         "hono": "^4.12.27",
       },
       "devDependencies": {
@@ -117,5 +119,9 @@
     "promise-utils/@logtape/logtape": ["@logtape/logtape@2.1.5", "", {}, "sha512-59fyskQ9hR5mYQP9YMznZDtwRS4gIN7VIJkoRe0SLTmU+BQGaSP1s+ve8r+Binj1m6jNpwlF7yu9fz2/asSFLw=="],
 
     "todo-app/@hono/node-server": ["@hono/node-server@2.0.8", "", { "peerDependencies": { "hono": "^4" } }, "sha512-GuCWzLxwg218fy1JaHculFsdcuY12hxit83V+algozTPnwhNjLrRL/Alg9OYjLZLoUZ1rw/S4CdTMsnkSKCmFA=="],
+
+    "todo-app/@logtape/file": ["@logtape/file@2.2.4", "", { "peerDependencies": { "@logtape/logtape": "^2.2.4" } }, "sha512-f+1g4VvB+HegOYwt8GAhYFk1OO9nbi5l0hn7hkKxjnyedE9CBEoKgN36nIYIt58asRms2GDXLtxeK0OStYjnsQ=="],
+
+    "todo-app/@logtape/logtape": ["@logtape/logtape@2.2.4", "", {}, "sha512-2rALzv9m4ibE5FyB8/FMm5MPMMlK7ujgy3ufricVKIxj6e7SZbw4w6J16/fRAsXgdDlOXPUA0aa6XoEQvdlKxw=="],
   }
 }

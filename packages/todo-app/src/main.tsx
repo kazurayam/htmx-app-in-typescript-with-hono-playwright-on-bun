@@ -1,31 +1,55 @@
 import { Hono } from 'hono'
-import { Top } from './top';
 import { serveStatic } from '@hono/node-server/serve-static'
+import { Top } from './top';
 import { Task } from './task';
+import { configure, getConsoleSink, getLogger } from '@logtape/logtape';
+import { getFileSink } from "@logtape/file";
+
+await configure({
+    sinks: {
+        console: getConsoleSink(),
+        file: getFileSink("./out/my-app.log", {
+            flushInterval: 1000, // flush every 1 second
+            nonBlocking: true,
+        })
+    },
+    loggers: [
+        { category: ["my-app"], lowestLevel: "debug", sinks: ["file"] },
+        { category: ["logtape", "meta"], lowestLevel: "warning", sinks: ["console"] },
+    ],
+});
+const logger = getLogger(["my-app", "main"]);
 
 const app = new Hono();
 app.use('*', serveStatic({ root: './static' }))
 
+// ページをリロードしても追加されたタスクが消えないように覚えておく
+let tasks: string[] = [];
+
 app.get('/', (c) => {
-    const messages = [''];
     return c.render(
-        <Top messages={messages} />
+        <Top tasks={tasks} />
     )
 });
 
 app.post("/add", async (c) => {
     const formData = await c.req.formData();
     const task = formData.get("task") as string;
-    return c.html(`<li>
-        <p>${task}</p>
-        <button class="delete-btn" hx-target="closest li" hx-delete="/delete"
-            hx-trigger='click' hx-ext='json-enc'
-            hx-vals='{"task": "${task}"}' hx-swap="delete"
-            hx-confirm="${task} を本当に削除しますか？">削除</button>
-    </li>`);
+    tasks.push(task);
+    logger.debug(`Added ${task}`)
+    return c.render(
+        <Task task={task} />
+    );
 });
 
 app.delete("/delete", async (c) => {
+    const task: string = c.req.query('task') as string;
+    logger.debug(`task to be deleted: ${task}`)
+    if (task !== undefined && tasks.includes(task)) {
+        tasks.splice(tasks.indexOf(task), 1);
+        logger.debug(`Deleted task: ${task}`);
+    }
+    logger.debug(`Remaining tasks: ${tasks}`);
     c.status(204);
     return c.text('');
 });
