@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "main": "bun run --hot ./src/main.tsx"
+    "todo": "bun run --hot ./src/todo.tsx"
   },
   "devDependencies": {
     "@types/bun": "latest"
