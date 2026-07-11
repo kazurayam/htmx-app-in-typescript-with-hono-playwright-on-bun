@@ -1,5 +1,5 @@
 {
-  "name": "@kazurayam/htmx-app-in-typescript-with-hono-playwright-on-bun_my-app",
+  "name": "@kazurayam/htmx-app-in-typescript-with-hono-playwright-on-bun-my-app",
   "main": "src/index",
   "type": "module",
   "scripts": {

@@ -5,6 +5,7 @@
     "jsxImportSource": "hono/jsx",
     "types": [
         "bun-types"
-    ]
+    ],
+    "composite": true
   }
 }
