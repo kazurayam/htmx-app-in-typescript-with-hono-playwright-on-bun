@@ -1,0 +1,8 @@
+{
+  "name": "htmx-app-in-typescript-with-hono-playwright-on-bun",
+  "private": true,
+  "workspaces": [
+    "packages/my-app",
+    "packages/todo-app"
+  ]
+}

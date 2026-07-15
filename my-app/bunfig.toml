@@ -1,3 +1,0 @@
-[test]
-preload = "./happydom.ts"
-root = "e2e"  # scanfor tests only in the e2e directory

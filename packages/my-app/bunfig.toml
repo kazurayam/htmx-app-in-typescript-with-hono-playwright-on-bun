@@ -1,0 +1,6 @@
+[test]
+root = "test"  # scan for tests only in the e2e directory
+preload = ["./happydom.ts", "./logtape.ts"]
+
+randomize = false
+

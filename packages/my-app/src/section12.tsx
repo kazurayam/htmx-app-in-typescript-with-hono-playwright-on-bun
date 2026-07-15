@@ -1,0 +1,70 @@
+// section12.tsx
+
+import type { FC } from 'hono/jsx'
+import { Layout }  from "./layout"
+
+export const Section12: FC = () => {
+    return (
+        <Layout>
+            <div class="section-contents">
+                <h1>Section12</h1>
+
+                <h2>hx-params</h2>
+                <h3>*</h3>
+                <p id="all-target">foo</p>
+                <form hx-post="/send-form" hx-params="*" hx-target="#all-target">
+                    <input name="title" type="text" placeholder="タイトル" />
+                    <input name="name" type="text" placeholder="名前" />
+                    <input name="age" type="number" placeholder="年齢" />
+                    <button type="submit">送信</button>
+                </form>
+
+                <h3>none</h3>
+                <p id="none-target">foo</p>
+                <form hx-post="/send-form" hx-params="none" hx-target="#none-target">
+                    <input name="title" type="text" placeholder="タイトル" />
+                    <input name="name" type="text" placeholder="名前" />
+                    <input name="age" type="number" placeholder="年齢" />
+                    <button type="submit">送信</button>
+                </form>
+
+                <h3>param-list</h3>
+                <p id="param-target">foo</p>
+                <form hx-post="/send-form" hx-params="title,age" hx-target="#param-target">
+                    <input name="title" type="text" placeholder="タイトル" />
+                    <input name="name" type="text" placeholder="名前" />
+                    <input name="age" type="number" placeholder="年齢" />
+                    <button type="submit">送信</button>
+                </form>
+
+                <h3>not param-list</h3>
+                <p id="no-param-target">foo</p>
+                <form hx-post="/send-form" hx-params="not title,age" hx-target="#no-param-target">
+                    <input name="title" type="text" placeholder="タイトル" />
+                    <input name="name" type="text" placeholder="名前" />
+                    <input name="age" type="number" placeholder="年齢" />
+                    <button type="submit">送信</button>
+                </form>
+
+                <h2>hx-include</h2>
+                <p id="include-target">foo</p>
+                <div>
+                    <input name="title" type="text" placeholder="タイトル" />
+                    <input name="name" type="text" placeholder="名前" />
+                    <input name="age" type="number" placeholder="年齢" />
+                    <button hx-post="/send-form" hx-include="previous [name='name']" hx-target="#include-target">送信</button>
+                </div>
+
+                <h2>hx-vals</h2>
+                <p id="vals-target1">foo</p>
+                <button hx-post="/greeting" hx-vals='{"title": "Hello", "name": "Taro"}' hx-target="#vals-target1">送信</button>
+
+                <p id="vals-target2">foo</p>
+                <div hx-target="#vals-target2" hx-post="/last-key" hx-trigger="keyup" hx-vals='js:{lastkey: event.key}'>
+                    <input type="text" />
+                </div>
+
+            </div>
+        </Layout>
+    )
+}

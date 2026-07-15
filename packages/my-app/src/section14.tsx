@@ -1,0 +1,56 @@
+// section14.tsx
+import type { FC } from 'hono/jsx'
+import { Layout } from "./layout"
+
+export const Section14: FC = () => {
+    return (
+        <Layout>
+            <div class="section-contents">
+                <h1>Section14</h1>
+
+                <h2>hx-targetの例</h2>
+                <p id="target1">foo</p>
+                <p id="target2">hoge</p>
+                <div hx-target="#target1">
+                    <button hx-get="/random" hx-trigger="click">ボタン1</button>
+                    <button hx-get="/random" hx-target="#target2" hx-trigger="click">ボタン2</button>
+                </div>
+                <button hx-get="/random" hx-trigger="click">ボタン3</button>
+
+                <h2>hx-confirmの例</h2>
+                <div hx-confirm="本当にこのボタンでいいですか？">
+                    <p>好きなボタンを選んでください</p>
+                    <button hx-get="/random">
+                        ボタンA
+                    </button>
+                    <button hx-get="/random">
+                        ボタンB
+                    </button>
+                    <button hx-confirm="unset" hx-get="/random">
+                        ボタンC
+                    </button>
+                </div>
+
+                <h2>hx-disinherit</h2>
+                <h3>hx-target指定なし</h3>
+                <p id="no-disinherit-target1">foo</p>
+                <div hx-target="#no-disinherit-target1">
+                    <button hx-get="/random" hx-trigger="click">クリック</button>
+                </div>
+
+                <h3>hx-targetを指定</h3>
+                <p id="disinherit-target1">foo</p>
+                <div hx-target="#disinherit-target1" hx-disinherit="hx-target">
+                    <button hx-get="/random" hx-trigger="click">クリック</button>
+                </div>
+
+                <h3>*を指定</h3>
+                <p id="disinherit-target2">foo</p>
+                <div hx-target="#disinherit-target2" hx-confirm="" hx-disinherit="*">
+                    <button hx-get="/random" hx-trigger="click">クリック</button>
+                </div>
+
+            </div>
+        </Layout>
+    )
+}
