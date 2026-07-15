@@ -44,6 +44,3 @@ const Top: FC<{ messages: string[] }> = (props: {
         </Layout>
     )
 }
-
-export { BrowserDriverChromium } from '../tests/BrowserDriverChromium'
-export { }

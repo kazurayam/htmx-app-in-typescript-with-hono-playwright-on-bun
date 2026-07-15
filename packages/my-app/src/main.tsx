@@ -275,7 +275,11 @@ app.get("/server-error", async (c) => {
     return c.render(`<span style='color:#ff0000; font-weight: bold;'>Internal Server Error!</span>`)
 })
 
-export const server = serve({
+const server = serve({
     port: 3001,
     fetch: app.fetch
 })
+
+export default server;
+
+export { BrowserDriverChromium } from '../tests/BrowserDriverChromium'
