@@ -8,7 +8,7 @@
     ],
     "composite": true,
     "references": [
-        { "path": "../my-app" }  // 依存するパッケージを指定
+        { "path": "../todo-app" }  // 依存するパッケージを指定
     ]
   }
 }
