@@ -1,0 +1,23 @@
+{
+  "name": "chat",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "chat": "bun --hot ./src/chat.tsx",
+  },
+"devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/bun": "^1.3.14",
+    "bun-types": "^1.3.14"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.0.10",
+    "@logtape/file": "^2.2.4",
+    "@logtape/logtape": "^2.2.4",
+    "hono": "^4.12.30"
+  }
+}
