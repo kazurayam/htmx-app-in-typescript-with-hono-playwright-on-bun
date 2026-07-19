@@ -1,8 +1,8 @@
 // src/chat.tsx
 import { Hono } from 'hono';
-import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { Top } from './top';
+import { upgradeWebSocket, websocket } from 'hono/bun';
 import { configure, getConsoleSink, getLogger } from '@logtape/logtape';
 import { getFileSink } from '@logtape/file';
 
@@ -31,7 +31,33 @@ app.get('/', (c) => {
     );
 })
 
+app.get(
+    '/chatroom',
+    upgradeWebSocket(() => {
+        return {
+            onOpen: () => {
+                logger.debug('Connection opened');
+            },
+            onMessage: (event, ws) => {
+                const data = JSON.parse(event.data.toString());
+                logger.debug(`Message from client: ${data.message}`)
+                const tag = (
+                    <div hx-swap-oob="beforeend:#messages" >
+                        <span>{data.message}</span>
+                    </div>
+                );
+                ws.send(tag.toString());
+            },
+            onClose: () => {
+                logger.debug('Connection closed');
+            }
+        }
+    })
+
+);
+
 export default {
     port: 8000,
-    fetch: app.fetch
-};
+    fetch: app.fetch,
+    websocket
+}
