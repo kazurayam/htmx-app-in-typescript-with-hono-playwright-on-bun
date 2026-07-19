@@ -2,7 +2,6 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 //import { logger } from 'hono/logger'
-import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 //import { HTTPException } from 'hono/http-exception'
 import { getLogger } from '@logtape/logtape';
@@ -275,11 +274,9 @@ app.get("/server-error", async (c) => {
     return c.render(`<span style='color:#ff0000; font-weight: bold;'>Internal Server Error!</span>`)
 })
 
-const server = serve({
+export default {
     port: 3001,
     fetch: app.fetch
-})
-
-export default server;
+}
 
 export { BrowserDriverChromium } from '../tests/BrowserDriverChromium'

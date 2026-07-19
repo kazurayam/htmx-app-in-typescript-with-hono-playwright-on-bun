@@ -31,11 +31,7 @@ app.get('/', (c) => {
     );
 })
 
-const server = serve({
+export default {
     port: 8000,
     fetch: app.fetch
-});
-
-console.log(`start http://localhost:8000`);
-
-export default server;
+};
