@@ -6,21 +6,7 @@ import { upgradeWebSocket, websocket } from 'hono/bun';
 import type { WSMessageReceive } from 'hono/ws';
 import { WSContext } from 'hono/ws';
 
-import { configure, getConsoleSink, getLogger } from '@logtape/logtape';
-import { getFileSink } from '@logtape/file';
-await configure({
-    sinks: {
-        console: getConsoleSink(),
-        file: getFileSink("./out/chat-app.log", {
-            flushInterval: 1000,
-            nonBlocking: true,
-        })
-    },
-    loggers: [
-        { category: ["chat-app"], lowestLevel: "debug", sinks: ["file"] },
-        { category: ["logtape","meta"], lowestLevel: "warning", sinks: ["console"] }
-    ]
-});
+import { getLogger } from '@logtape/logtape'
 const logger = getLogger(["chat-app", "chat"]);
 
 const app = new Hono();
@@ -41,7 +27,7 @@ app.get(
     '/chatroom',
     upgradeWebSocket(() => {
         return {
-            onOpen: () => {
+            onOpen: (_, ws) => {
                 logger.debug('Connection opened');
             },
             onMessage: (event: MessageEvent<WSMessageReceive>, ws: WSContext) => {
@@ -57,7 +43,7 @@ app.get(
                     client.send(tag.toString());
                 }
             },
-            onClose: () => {
+            onClose: (_, ws) => {
                 logger.debug('Connection closed');
             }
         }
