@@ -3,9 +3,11 @@ import { Hono } from 'hono';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { Top } from './top';
 import { upgradeWebSocket, websocket } from 'hono/bun';
+import type { WSMessageReceive } from 'hono/ws';
+import { WSContext } from 'hono/ws';
+
 import { configure, getConsoleSink, getLogger } from '@logtape/logtape';
 import { getFileSink } from '@logtape/file';
-
 await configure({
     sinks: {
         console: getConsoleSink(),
@@ -31,6 +33,10 @@ app.get('/', (c) => {
     );
 })
 
+//type Message = { message: string };
+
+let clients: Set<WSContext> = new Set();
+
 app.get(
     '/chatroom',
     upgradeWebSocket(() => {
@@ -38,15 +44,18 @@ app.get(
             onOpen: () => {
                 logger.debug('Connection opened');
             },
-            onMessage: (event, ws) => {
+            onMessage: (event: MessageEvent<WSMessageReceive>, ws: WSContext) => {
+                clients.add(ws);
                 const data = JSON.parse(event.data.toString());
-                logger.debug(`Message from client: ${data.message}`)
+                logger.debug(`data.message: ${data.message}`);
                 const tag = (
                     <div hx-swap-oob="beforeend:#messages" >
                         <span>{data.message}</span>
                     </div>
                 );
-                ws.send(tag.toString());
+                for (let client of clients) {
+                    client.send(tag.toString());
+                }
             },
             onClose: () => {
                 logger.debug('Connection closed');
