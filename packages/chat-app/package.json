@@ -4,8 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "chat": "bun --hot ./src/chat.tsx",
-    "pubsub": "bun --hot ./src/pubsub.tsx"
+    "dev": "bun --hot ./src/chat.tsx"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",

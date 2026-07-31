@@ -12,6 +12,7 @@ export const Top: FC<{ messages: string[] }> = (props: {
                 <h1>Chat App</h1>
                 <div hx-ext="ws" ws-connect="/chatroom" {...reset}>
                     <form id="form" ws-send>
+                        <input name="name" type="text" placeholder="名前" required></input>
                         <input name="message" type="text" placeholder="メッセージ" required></input>
                         <button type="submit">送信</button>
                     </form>
