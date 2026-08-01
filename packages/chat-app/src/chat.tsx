@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { Top } from './top';
 import { upgradeWebSocket, websocket } from 'hono/bun';
+import type { ServerWebSocket } from 'bun';
 import type { WSMessageReceive } from 'hono/ws';
 import { WSContext } from 'hono/ws';
 
@@ -13,6 +14,13 @@ const logger = getLogger(["chat-app", "chat"]);
 const app = new Hono();
 app.use('*', serveStatic({ root: './static' }))
 
+const server = Bun.serve({
+    port: 8000,
+    fetch: app.fetch,
+    websocket
+});
+export default server;
+
 app.get('/', (c) => {
     const messages = ['']
     return c.render(
@@ -20,19 +28,18 @@ app.get('/', (c) => {
     );
 })
 
-//type Message = { message: string };
-
-let clients: Set<WSContext> = new Set();
+const topic = 'the-group-chat';
 
 app.get(
     '/chatroom',
     upgradeWebSocket(() => {
         return {
-            onOpen: () => {
+            onOpen: (_, ws) => {
+                const rawWs = ws.raw as ServerWebSocket;
+                rawWs.subscribe(topic);
                 logger.debug('Connection opened');
             },
             onMessage: (event: MessageEvent<WSMessageReceive>, ws: WSContext) => {
-                clients.add(ws);
                 const data = JSON.parse(event.data.toString());
                 //console.log(event.data)
                 let input_name = data.name;
@@ -55,19 +62,14 @@ app.get(
                         </span>
                     </div>
                 );
-                for (let client of clients) {
-                    client.send(tag.toString());
-                }
+                server.publish(topic, tag.toString());
             },
-            onClose: () => {
+            onClose: (_, ws) => {
+                const rawWs = ws.raw as ServerWebSocket;
+                rawWs.unsubscribe(topic);
                 logger.debug('Connection closed');
             }
         }
     })
 );
 
-export default {
-    port: 8000,
-    fetch: app.fetch,
-    websocket
-}
