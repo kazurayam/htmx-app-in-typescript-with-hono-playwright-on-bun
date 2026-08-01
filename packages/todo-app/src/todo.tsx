@@ -3,22 +3,9 @@ import { Hono } from 'hono'
 import { serveStatic } from '@hono/node-server/serve-static'
 import { Top } from './top';
 import { Task } from './task';
-import { configure, getConsoleSink, getLogger } from '@logtape/logtape';
-import { getFileSink } from "@logtape/file";
 
-await configure({
-    sinks: {
-        console: getConsoleSink(),
-        file: getFileSink("./out/my-app.log", {
-            flushInterval: 1000, // flush every 1 second
-            nonBlocking: true,
-        })
-    },
-    loggers: [
-        { category: ["my-app"], lowestLevel: "debug", sinks: ["file"] },
-        { category: ["logtape", "meta"], lowestLevel: "warning", sinks: ["console"] },
-    ],
-});
+import { getLogger } from '@logtape/logtape'
+import '../logtape'
 const logger = getLogger(["my-app", "main"]);
 
 const app = new Hono();
@@ -55,4 +42,7 @@ app.delete("/delete", async (c) => {
     return c.text('');
 });
 
-export default app;
+export default {
+    port: 3000,
+    fetch: app.fetch
+};
